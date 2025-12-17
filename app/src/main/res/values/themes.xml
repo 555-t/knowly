@@ -1,11 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-
-    <style name="roundedCornersImageView" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">16dp</item>
-    </style>
-
+    <!-- Base application theme. -->
     <style name="Base.Theme.Knowly" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
     <style name="Theme.Knowly" parent="Base.Theme.Knowly" />
