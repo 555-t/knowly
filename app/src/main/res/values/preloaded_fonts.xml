@@ -7,6 +7,6 @@
         <item>@font/inter_light</item>
         <item>@font/inter_medium</item>
         <item>@font/inter_semibold</item>
-        <item>@font/inter_tight_semibold</item>
+        <item>@font/inter_thin</item>
     </array>
 </resources>
