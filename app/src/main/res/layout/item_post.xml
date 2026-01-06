@@ -11,7 +11,8 @@
     android:layout_marginEnd="18dp"
     android:layout_marginRight="18dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="2dp">
+    app:cardElevation="2dp"
+    tools:ignore="MissingClass">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="375dp"
