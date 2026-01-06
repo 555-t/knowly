@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">knowly</string>
+    <string name="verification_sent"> //mention in java code
+</string>
+    <string name="sent_to_email">"Verification code sent to %1$s "</string>
+    <string name="failed_to_send">Unable to send code to %1$s\n</string>
 </resources>
