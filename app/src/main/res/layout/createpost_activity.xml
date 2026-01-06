@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/CreatePost"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/light_wallpaper">
+
+    <View
+        android:id="@+id/Header"
+        android:layout_width="414dp"
+        android:layout_height="105dp"
+        android:background="@drawable/gradient_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="44dp"
+        android:background="@null"
+        android:contentDescription="go back to home page"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/back_arrow"
+        app:tint="#FDFDFD" />
+
+    <TextView
+        android:id="@+id/Activityname"
+        android:layout_width="215dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="44dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="Create Post"
+        android:textColor="#FCF5FD"
+        android:textSize="30sp"
+        app:layout_constraintStart_toEndOf="@+id/backButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="48dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Header">
+
+        <ScrollView
+            android:id="@+id/scrollcreatepost"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Scrollable form"
+            android:fillViewport="true">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/profilepic"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="16dp"
+                    app:cardCornerRadius="25dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.023">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/gradient_button">
+
+                        <TextView
+                            android:id="@+id/user_profile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_medium"
+                            android:text="S"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="student_user"
+                    app:layout_constraintStart_toEndOf="@+id/profilepic"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/user_bio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Sharing Knowledge..."
+                    android:textColor="#8C8989"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toEndOf="@+id/profilepic"
+                    app:layout_constraintTop_toBottomOf="@+id/username" />
+
+                <EditText
+                    android:id="@+id/post_content"
+                    android:layout_width="339dp"
+                    android:layout_height="194dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="75dp"
+                    android:layout_marginRight="30dp"
+                    android:background="@drawable/input_box"
+                    android:ems="10"
+                    android:fontFamily="@font/inter_medium"
+                    android:gravity="start|top"
+                    android:hint="What would you like to share today?"
+                    android:inputType="textMultiLine"
+                    android:minLines="5"
+                    android:padding="12dp"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/word_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="28dp"
+                    android:layout_marginTop="24dp"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="0/500"
+                    android:textColor="#807E7E"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/post_content" />
+
+                <Button
+                    android:id="@+id/add_image"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:contentDescription="adding an image"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Add image"
+                    android:textColor="#4E4D4D"
+                    app:cornerRadius="8dp"
+                    app:icon="@android:drawable/ic_menu_gallery"
+                    app:iconPadding="4dp"
+                    app:iconSize="20dp"
+                    app:iconTint="#232222"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.895"
+                    app:layout_constraintStart_toEndOf="@+id/word_count"
+                    app:layout_constraintTop_toBottomOf="@+id/post_content"
+                    app:strokeColor="#D1D1D1" />
+
+                <TextView
+                    android:id="@+id/slct_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="28dp"
+                    android:layout_marginTop="28dp"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Select Categories (at least 1)"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/word_count" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/slct_category"
+                    app:layout_constraintVertical_bias="0.106">
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cat_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        android:layout_marginEnd="2dp"
+
+                        android:layout_marginBottom="2dp"
+
+                        android:background="@drawable/chip_background_selector"
+
+                        android:button="@null"
+                        android:fontFamily="@font/inter_bold"
+                        android:gravity="center"
+                        android:minHeight="40dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="8dp"
+                        android:text="Mathematics"
+                        android:textColor="#3A3A3A"
+                        android:textSize="14sp" />
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cat_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        android:layout_marginBottom="2dp"
+                        android:background="@drawable/chip_background_selector"
+                        android:button="@null"
+                        android:fontFamily="@font/inter_bold"
+                        android:gravity="center"
+                        android:minHeight="40dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="8dp"
+                        android:text="Science"
+                        android:textColor="#3A3A3A"
+                        android:textSize="14sp" />
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cat_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        android:layout_marginBottom="2dp"
+                        android:background="@drawable/chip_background_selector"
+                        android:button="@null"
+                        android:fontFamily="@font/inter_bold"
+                        android:gravity="center"
+                        android:minHeight="40dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="8dp"
+                        android:text="History"
+                        android:textColor="#3A3A3A"
+                        android:textSize="14sp" />
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cat_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        android:layout_marginBottom="2dp"
+                        android:background="@drawable/chip_background_selector"
+                        android:button="@null"
+                        android:fontFamily="@font/inter_bold"
+                        android:gravity="center"
+                        android:minHeight="40dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="8dp"
+                        android:text="Literature"
+                        android:textColor="#3A3A3A"
+                        android:textSize="14sp" />
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cat_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        android:layout_marginBottom="2dp"
+                        android:background="@drawable/chip_background_selector"
+                        android:button="@null"
+                        android:fontFamily="@font/inter_bold"
+                        android:gravity="center"
+                        android:minHeight="40dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="8dp"
+                        android:text="Computer Science"
+                        android:textColor="#3A3A3A"
+                        android:textSize="14sp" />
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cat_6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        android:layout_marginBottom="2dp"
+                        android:background="@drawable/chip_background_selector"
+                        android:button="@null"
+                        android:fontFamily="@font/inter_bold"
+                        android:gravity="center"
+                        android:minHeight="40dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="8dp"
+                        android:text="Art"
+                        android:textColor="#3A3A3A"
+                        android:textSize="14sp" />
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cat_7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        android:layout_marginBottom="2dp"
+                        android:background="@drawable/chip_background_selector"
+                        android:button="@null"
+                        android:fontFamily="@font/inter_bold"
+                        android:gravity="center"
+                        android:minHeight="40dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="8dp"
+                        android:text="Music"
+                        android:textColor="#3A3A3A"
+                        android:textSize="14sp" />
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cat_8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        android:layout_marginBottom="2dp"
+                        android:background="@drawable/chip_background_selector"
+                        android:button="@null"
+                        android:fontFamily="@font/inter_bold"
+                        android:gravity="center"
+                        android:minHeight="40dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="8dp"
+                        android:text="Philosophy"
+                        android:textColor="#3A3A3A"
+                        android:textSize="14sp" />
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cat_9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        android:layout_marginBottom="2dp"
+                        android:background="@drawable/chip_background_selector"
+                        android:button="@null"
+                        android:fontFamily="@font/inter_bold"
+                        android:gravity="center"
+                        android:minHeight="40dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="8dp"
+                        android:text="psychology"
+                        android:textColor="#3A3A3A"
+                        android:textSize="14sp" />
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cat_10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/chip_background_selector"
+                        android:button="@null"
+                        android:fontFamily="@font/inter_bold"
+                        android:gravity="center"
+                        android:minHeight="40dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="8dp"
+                        android:text="Biology"
+                        android:textColor="#3A3A3A"
+                        android:textSize="14sp" />
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cat_11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/chip_background_selector"
+                        android:button="@null"
+                        android:fontFamily="@font/inter_bold"
+                        android:gravity="center"
+                        android:minHeight="40dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="8dp"
+                        android:text="Chemistry"
+                        android:textColor="#3A3A3A"
+                        android:textSize="14sp" />
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cat_12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/chip_background_selector"
+                        android:button="@null"
+                        android:fontFamily="@font/inter_bold"
+                        android:gravity="center"
+                        android:minHeight="40dp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="8dp"
+                        android:text="Physics"
+                        android:textColor="#3A3A3A"
+                        android:textSize="14sp">
+                    </androidx.appcompat.widget.AppCompatCheckBox>
+
+                </com.google.android.material.chip.ChipGroup>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardPostButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:layout_margin="20dp"
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="2dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ChipGroup"
+                    >
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnPost"
+                        android:layout_width="340dp"
+                        android:layout_height="match_parent"
+
+                        android:background="@drawable/gradient_button"
+                        android:backgroundTint="@null"
+                        android:fontFamily="@font/inter_bold"
+                        android:text="Post"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </androidx.cardview.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
