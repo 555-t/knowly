@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="18dp"
+    android:layout_marginLeft="18dp"
+    android:layout_marginTop="18dp"
+    android:layout_marginEnd="18dp"
+    android:layout_marginRight="18dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="375dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#7E1818"
+        android:clickable="true"
+        android:elevation="2dp"
+        android:padding="@dimen/top_section_margin">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profile_pic"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="339dp"
+            android:clickable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/CircleImage"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:clickable="true"
+            android:fontFamily="@font/inter_bold"
+            android:text="username"
+            android:textSize="12dp"
+            app:layout_constraintStart_toEndOf="@+id/profile_pic"
+            app:layout_constraintTop_toTopOf="@+id/profile_pic" />
+
+        <TextView
+            android:id="@+id/post_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/inter"
+            android:text="Knowly is great!"
+            app:layout_constraintTop_toBottomOf="@+id/profile_pic"
+            tools:layout_editor_absoluteX="1dp" />
+
+        <TextView
+            android:id="@+id/time_of_post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:text="3m ago"
+            android:textSize="8sp"
+            app:layout_constraintStart_toEndOf="@+id/profile_pic"
+            app:layout_constraintTop_toBottomOf="@+id/username" />
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="44dp"
+            android:layout_height="42dp"
+            android:layout_marginTop="-10dp"
+            android:layout_marginEnd="-5dp"
+            android:backgroundTint="@android:color/transparent"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/more_vert_post" />
+
+        <androidx.constraintlayout.helper.widget.Flow
+            android:id="@+id/category_flow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:constraint_referenced_ids="category_text"
+            app:flow_horizontalGap="8dp"
+            app:flow_verticalGap="8dp"
+            app:flow_wrapMode="chain"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/post_content" />
+
+        <TextView
+            android:id="@+id/category_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_category_gradient"
+            android:fontFamily="@font/inter_medium"
+            android:paddingStart="6dp"
+            android:paddingLeft="6dp"
+            android:paddingTop="2dp"
+            android:paddingRight="6dp"
+            android:paddingBottom="2dp"
+            android:text="History"
+            android:textColor="#2788A0"
+            android:textSize="10sp"
+            tools:layout_editor_absoluteX="23dp"
+            tools:layout_editor_absoluteY="86dp" />
+
+        <View
+            android:id="@+id/line_separate"
+            android:layout_width="340dp"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="10dp"
+            android:background="#F5F5F5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/category_flow" />
+
+        <ImageView
+            android:id="@+id/upvote_img"
+            android:layout_width="17dp"
+            android:layout_height="19dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:scaleType="centerCrop"
+            android:tint="@color/upvote_tint"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/line_separate"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/selector_upvote"
+            tools:selected="true" />
+
+        <TextView
+            android:id="@+id/upvote_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="11dp"
+            android:fontFamily="@font/inter_medium"
+            android:text="142"
+            android:textSize="11sp"
+            app:layout_constraintStart_toEndOf="@+id/upvote_img"
+            app:layout_constraintTop_toBottomOf="@+id/line_separate" />
+
+        <ImageView
+            android:id="@+id/downvote_img"
+            android:layout_width="17dp"
+            android:layout_height="19dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:clickable="true"
+            android:rotation="180"
+            android:scaleType="centerCrop"
+            android:tint="@color/downvote_tint"
+            app:layout_constraintStart_toEndOf="@+id/upvote_num"
+            app:layout_constraintTop_toBottomOf="@+id/line_separate"
+            app:srcCompat="@drawable/selector_downvote" />
+
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/inter_medium"
+            android:text="2"
+            android:textSize="11dp"
+            app:layout_constraintBottom_toBottomOf="@+id/upvote_num"
+            app:layout_constraintStart_toEndOf="@+id/downvote_img"
+            app:layout_constraintTop_toTopOf="@+id/upvote_num" />
+
+        <ImageView
+            android:id="@+id/bookmark_img"
+            android:layout_width="19dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/line_separate"
+            app:srcCompat="@drawable/selector_bookmark" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
