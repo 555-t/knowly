@@ -7,6 +7,13 @@ pluginManagement {
                 includeGroupByRegex("androidx.*")
             }
         }
+        /*resolutionStrategy {
+            eachPlugin {
+                if (requested.id.id == "com.android.application") {
+                    useModule("com.android.tools.build:gradle:8.13.2")
+                }
+            }
+        }*/
         mavenCentral()
         gradlePluginPortal()
     }

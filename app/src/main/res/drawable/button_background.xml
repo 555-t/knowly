@@ -4,7 +4,7 @@
     <!-- Gradient image -->
     <item>
         <bitmap
-            android:src="@drawable/button_gradient"
+            android:src="@drawable/gradient_button"
             android:gravity="fill"
             android:tileMode="disabled" />
     </item>

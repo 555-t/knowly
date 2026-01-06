@@ -64,7 +64,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="46dp"
+                android:layout_height="74dp"
                 android:layout_marginBottom="15dp"
                 android:hint="Enter your email"
                 android:textColorHint="#B3808382"
@@ -73,8 +73,7 @@
                 app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusTopEnd="12dp"
                 app:boxCornerRadiusTopStart="12dp"
-                app:boxStrokeColor="#E3E5E9"
-                app:boxStrokeColorFocused="#3191B5">
+                app:boxStrokeColor="#E3E5E9">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etEmail"
@@ -96,7 +95,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="46dp"
+                android:layout_height="68dp"
                 android:layout_marginBottom="15dp"
                 android:hint="Choose a username"
                 android:textColorHint="#B3808382"
@@ -105,8 +104,7 @@
                 app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusTopEnd="12dp"
                 app:boxCornerRadiusTopStart="12dp"
-                app:boxStrokeColor="#E3E5E9"
-                app:boxStrokeColorFocused="#3191B5">
+                app:boxStrokeColor="#E3E5E9">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etUsername"
@@ -130,7 +128,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="46dp"
+                android:layout_height="71dp"
                 android:layout_marginBottom="15dp"
                 android:hint="Enter your password"
                 android:textColorHint="#B3808382"
@@ -139,8 +137,7 @@
                 app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusTopEnd="12dp"
                 app:boxCornerRadiusTopStart="12dp"
-                app:boxStrokeColor="#E3E5E9"
-                app:boxStrokeColorFocused="#3191B5">
+                app:boxStrokeColor="#E3E5E9">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPassword"
@@ -161,7 +158,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="46dp"
+                android:layout_height="72dp"
                 android:hint="Re-enter your password"
                 android:textColorHint="#B3808382"
                 app:boxBackgroundMode="outline"
@@ -169,8 +166,7 @@
                 app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusTopEnd="12dp"
                 app:boxCornerRadiusTopStart="12dp"
-                app:boxStrokeColor="#E3E5E9"
-                app:boxStrokeColorFocused="#3191B5">
+                app:boxStrokeColor="#E3E5E9">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etConfirmPassword"
@@ -199,7 +195,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/button_gradient" />
+                        android:src="@drawable/gradient_button" />
 
                     <TextView
                         android:id="@+id/btnSignUp"

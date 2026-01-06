@@ -32,7 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_signup);
 
         // Bind views
         etEmail = findViewById(R.id.etEmail);
@@ -80,11 +80,19 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void registerUser(String username, String email, String password) {
 
-        pd.setMessage("Creating account...");
-        pd.show();
+       pd.setMessage("Creating account...");
+       pd.setCancelable(false);
+       pd.show();
 
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnSuccessListener(authResult -> {
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        pd.dismiss();
+                        Toast.makeText(this,
+                                task.getException().getMessage(),
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
 
                     String userId = mAuth.getCurrentUser().getUid();
 
@@ -92,28 +100,24 @@ public class RegisterActivity extends AppCompatActivity {
                     map.put("id", userId);
                     map.put("username", username);
                     map.put("email", email);
-                    map.put("bio", "");
-                    map.put("imageurl", "default");
 
                     mRootRef.child("Users").child(userId)
                             .setValue(map)
-                            .addOnCompleteListener(task -> {
+                            .addOnCompleteListener(task2 -> {
                                 pd.dismiss();
 
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(this,
-                                            "Account created successfully",
-                                            Toast.LENGTH_SHORT).show();
-
+                                if (task2.isSuccessful()) {
                                     Intent intent = new Intent(this, MainActivity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                                            Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent);
+                                } else {
+                                    Toast.makeText(this,
+                                            "Database error",
+                                            Toast.LENGTH_SHORT).show();
                                 }
                             });
-                })
-                .addOnFailureListener(e -> {
-                    pd.dismiss();
-                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
 }
