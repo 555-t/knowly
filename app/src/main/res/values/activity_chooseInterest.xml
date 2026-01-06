@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:padding="16dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Choose Your Interests"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.9"
+            android:layout_marginTop="8dp" />
+
+        <!-- Subtitle -->
+        <TextView
+            android:id="@+id/subtitleTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Select topics you'd like to learn about (choose at least 3)"
+            android:textSize="16sp"
+            android:textColor="#666666"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/titleTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.9"
+            android:layout_marginTop="8dp" />
+
+        <!-- Row 1 - Column 1: Mathematics -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mathCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:layout_constraintTop_toBottomOf="@+id/subtitleTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/scienceCard"
+            app:layout_constraintWidth_percent="0.23"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mathematics"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="16dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Row 1 - Column 2: Science -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/scienceCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:layout_constraintTop_toTopOf="@+id/mathCard"
+            app:layout_constraintStart_toEndOf="@+id/mathCard"
+            app:layout_constraintEnd_toStartOf="@+id/historyCard"
+            app:layout_constraintWidth_percent="0.23"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Science"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="16dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Row 1 - Column 3: History -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/historyCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:layout_constraintTop_toTopOf="@+id/mathCard"
+            app:layout_constraintStart_toEndOf="@+id/scienceCard"
+            app:layout_constraintEnd_toStartOf="@+id/literatureCard"
+            app:layout_constraintWidth_percent="0.23"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="History"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="16dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Row 1 - Column 4: Literature -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/literatureCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:layout_constraintTop_toTopOf="@+id/mathCard"
+            app:layout_constraintStart_toEndOf="@+id/historyCard"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.23">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Literature"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="16dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Row 2 - Column 1: Computer Science -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/csCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:layout_constraintTop_toBottomOf="@+id/mathCard"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/artCard"
+            app:layout_constraintWidth_percent="0.23"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Computer Science"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="16dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Row 2 - Column 2: Art -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/artCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:layout_constraintTop_toTopOf="@+id/csCard"
+            app:layout_constraintStart_toEndOf="@+id/csCard"
+            app:layout_constraintEnd_toStartOf="@+id/musicCard"
+            app:layout_constraintWidth_percent="0.23"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Art"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="16dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Row 2 - Column 3: Music -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/musicCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:layout_constraintTop_toTopOf="@+id/csCard"
+            app:layout_constraintStart_toEndOf="@+id/artCard"
+            app:layout_constraintEnd_toStartOf="@+id/philosophyCard"
+            app:layout_constraintWidth_percent="0.23"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Music"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="16dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Row 2 - Column 4: Philosophy -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/philosophyCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:layout_constraintTop_toTopOf="@+id/csCard"
+            app:layout_constraintStart_toEndOf="@+id/musicCard"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.23">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Philosophy"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="16dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Row 3 - Column 1: Psychology -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/psychologyCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:layout_constraintTop_toBottomOf="@+id/csCard"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/biologyCard"
+            app:layout_constraintWidth_percent="0.23"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Psychology"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="16dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Row 3 - Column 2: Biology -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/biologyCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:layout_constraintTop_toTopOf="@+id/psychologyCard"
+            app:layout_constraintStart_toEndOf="@+id/psychologyCard"
+            app:layout_constraintEnd_toStartOf="@+id/chemistryCard"
+            app:layout_constraintWidth_percent="0.23"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Biology"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="16dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Row 3 - Column 3: Chemistry -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/chemistryCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:layout_constraintTop_toTopOf="@+id/psychologyCard"
+            app:layout_constraintStart_toEndOf="@+id/biologyCard"
+            app:layout_constraintEnd_toStartOf="@+id/physicsCard"
+            app:layout_constraintWidth_percent="0.23"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chemistry"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="16dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Row 3 - Column 4: Physics -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/physicsCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:layout_constraintTop_toTopOf="@+id/psychologyCard"
+            app:layout_constraintStart_toEndOf="@+id/chemistryCard"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.23">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Physics"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="16dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Row 4 - Column 1: Economics -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/economicsCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:layout_constraintTop_toBottomOf="@+id/psychologyCard"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/languagesCard"
+            app:layout_constraintWidth_percent="0.23"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Economics"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="16dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Row 4 - Column 2: Languages -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/languagesCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:layout_constraintTop_toTopOf="@+id/economicsCard"
+            app:layout_constraintStart_toEndOf="@+id/economicsCard"
+            app:layout_constraintEnd_toStartOf="@+id/engineeringCard"
+            app:layout_constraintWidth_percent="0.23"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Languages"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="16dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Row 4 - Column 3: Engineering -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/engineeringCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:layout_constraintTop_toTopOf="@+id/economicsCard"
+            app:layout_constraintStart_toEndOf="@+id/languagesCard"
+            app:layout_constraintEnd_toStartOf="@+id/medicineCard"
+            app:layout_constraintWidth_percent="0.23"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Engineering"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="16dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Row 4 - Column 4: Medicine -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/medicineCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:layout_constraintTop_toTopOf="@+id/economicsCard"
+            app:layout_constraintStart_toEndOf="@+id/engineeringCard"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.23">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Medicine"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="16dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
