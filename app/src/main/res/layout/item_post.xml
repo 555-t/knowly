@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="18dp"
     android:layout_marginLeft="18dp"
-    android:layout_marginTop="18dp"
+    android:layout_marginTop="10dp"
+
     android:layout_marginEnd="18dp"
     android:layout_marginRight="18dp"
     app:cardCornerRadius="16dp"
@@ -41,7 +42,7 @@
             android:clickable="true"
             android:fontFamily="@font/inter_bold"
             android:text="username"
-            android:textSize="12dp"
+            android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@+id/profile_pic"
             app:layout_constraintTop_toTopOf="@+id/profile_pic" />
 
@@ -50,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:fontFamily="@font/inter"
+            android:fontFamily="@font/inter_medium"
             android:text="Knowly is great!"
             app:layout_constraintTop_toBottomOf="@+id/profile_pic"
             tools:layout_editor_absoluteX="1dp" />
@@ -60,9 +61,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/inter_medium"
             android:text="3m ago"
-            android:textSize="8sp"
+            android:textColor="#808080"
+            android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/profile_pic"
             app:layout_constraintTop_toBottomOf="@+id/username" />
 
@@ -103,17 +106,17 @@
             android:paddingBottom="2dp"
             android:text="History"
             android:textColor="#2788A0"
-            android:textSize="10sp"
+            android:textSize="12sp"
             tools:layout_editor_absoluteX="23dp"
             tools:layout_editor_absoluteY="86dp" />
 
         <View
             android:id="@+id/line_separate"
             android:layout_width="340dp"
-            android:layout_height="0.5dp"
+            android:layout_height="1dp"
             android:layout_marginStart="1dp"
             android:layout_marginTop="10dp"
-            android:background="#F5F5F5"
+            android:background="#CACACA"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -121,8 +124,8 @@
 
         <ImageView
             android:id="@+id/upvote_img"
-            android:layout_width="17dp"
-            android:layout_height="19dp"
+            android:layout_width="20dp"
+            android:layout_height="22dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="16dp"
             android:clickable="true"
@@ -143,15 +146,15 @@
             android:layout_marginTop="11dp"
             android:fontFamily="@font/inter_medium"
             android:text="142"
-            android:textSize="11sp"
+            android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/upvote_img"
             app:layout_constraintTop_toBottomOf="@+id/line_separate" />
 
         <ImageView
             android:id="@+id/downvote_img"
-            android:layout_width="17dp"
-            android:layout_height="19dp"
-            android:layout_marginStart="8dp"
+            android:layout_width="20dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="22dp"
             android:layout_marginTop="10dp"
             android:clickable="true"
             android:rotation="180"
@@ -163,28 +166,53 @@
 
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/downvote_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:fontFamily="@font/inter_medium"
             android:text="2"
-            android:textSize="11dp"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/upvote_num"
             app:layout_constraintStart_toEndOf="@+id/downvote_img"
             app:layout_constraintTop_toTopOf="@+id/upvote_num" />
 
         <ImageView
             android:id="@+id/bookmark_img"
-            android:layout_width="19dp"
-            android:layout_height="20dp"
+            android:layout_width="22dp"
+            android:layout_height="24dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="8dp"
             android:clickable="true"
             android:scaleType="centerCrop"
+            android:tint="@color/bookmark_tint"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/line_separate"
             app:srcCompat="@drawable/selector_bookmark" />
+
+        <ImageView
+            android:id="@+id/comment_img"
+            android:layout_width="21dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="10dp"
+            android:scaleType="fitCenter"
+            android:tint="#808080"
+            app:layout_constraintStart_toEndOf="@+id/downvote_num"
+            app:layout_constraintTop_toBottomOf="@+id/line_separate"
+            app:srcCompat="@drawable/comment" />
+
+        <TextView
+            android:id="@+id/comment_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/inter_medium"
+            android:text="5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/comment_img"
+            app:layout_constraintTop_toBottomOf="@+id/line_separate"
+            app:layout_constraintVertical_bias="0.413" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
