@@ -42,6 +42,20 @@
         app:layout_constraintStart_toEndOf="@+id/backButton"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <include
+        android:id="@+id/included_post"
+        layout="@layout/item_post"
+        android:layout_width="375dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/comment_section"
         android:layout_width="375dp"
@@ -51,7 +65,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header">
+        app:layout_constraintTop_toBottomOf="@+id/included_post">
 
         <ScrollView
             android:layout_width="match_parent"
