@@ -18,6 +18,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -46,6 +50,10 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-database")
 
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.5")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.5")
+    implementation("androidx.fragment:fragment-ktx:1.8.5")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -53,6 +61,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.cardview)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
