@@ -1,20 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    package="com.example.knowly">
 
     <application
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
+        android:label="Knowly"
         android:theme="@style/Theme.Knowly">
 
-        <!-- SplashActivity is now the launcher -->
-        <activity
-            android:name=".SplashActivity"
+        <!-- Splash screen -->
+        <activity android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,15 +16,16 @@
         </activity>
 
         <!-- Login screen -->
-        <activity
-            android:name=".LoginActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Knowly" />
+        <activity android:name=".LoginActivity" />
 
-        <!-- Keep MainActivity if you need it later -->
-        <activity
-            android:name=".MainActivity"
-            android:exported="true" />
+        <!-- Forgot password screen -->
+        <activity android:name=".ForgotPasswordActivity" />
+
+        <!-- OTP screen -->
+        <activity android:name=".OtpActivity" />
+
+        <!-- Reset password screen -->
+        <activity android:name=".ResetPasswordActivity" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

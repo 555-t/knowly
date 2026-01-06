@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Gradient image -->
+    <item>
+        <bitmap
+            android:src="@drawable/button_gradient"
+            android:gravity="fill"
+            android:tileMode="disabled" />
+    </item>
+
+    <!-- Rounded clipping -->
+    <item android:drawable="@drawable/rounded_mask" />
+
+</layer-list>
