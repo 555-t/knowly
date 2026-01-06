@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -11,46 +12,39 @@
         android:id="@+id/appbar_WF"
 
         android:layout_width="match_parent"
-        android:layout_height="160dp">
+        android:layout_height="105dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/gradient_button">
+            android:background="@drawable/weeklyf_gradient">
 
             <TextView
                 android:id="@+id/weeklyfeat_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="28dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="44dp"
                 android:fontFamily="@font/inter_bold"
-                android:text="Search"
+                android:text="Weekly Featured"
                 android:textColor="#FFFFFF"
                 android:textColorLink="#FFFFFF"
                 android:textSize="30sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.307" />
+                app:layout_constraintStart_toEndOf="@+id/star_img"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/editTextText"
-                android:layout_width="380dp"
-                android:layout_height="47dp"
-                android:background="@drawable/bg_search_input"
-                android:ems="10"
-                android:fontFamily="@font/inter_medium"
-                android:inputType="text"
-                android:text="Search posts, users, topics..."
-                android:textAlignment="center"
-                android:textColor="#90FFFFFF"
-                android:textColorLink="#FFFFFF"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
+            <ImageView
+                android:id="@+id/star_img"
+                android:layout_width="33dp"
+                android:layout_height="33dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="46dp"
+                android:scaleType="centerCrop"
+                android:tint="#FFFFFF"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.858" />
+                app:srcCompat="@drawable/star" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
