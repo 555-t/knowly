@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "422540539748",
+    "project_id": "knowlymad",
+    "storage_bucket": "knowlymad.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:422540539748:android:a40466e28207ffa72fac71",
+        "android_client_info": {
+          "package_name": "com.example.knowly"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0eXirlZoGZlwT49QdHD8wmNKyUA88fKk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

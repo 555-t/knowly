@@ -54,6 +54,7 @@
             android:fontFamily="@font/inter_medium"
             android:text="Knowly is great!"
             app:layout_constraintTop_toBottomOf="@+id/profile_pic"
+            app:layout_constraintStart_toStartOf="parent"
             tools:layout_editor_absoluteX="1dp" />
 
         <TextView
@@ -130,7 +131,7 @@
             android:layout_marginBottom="16dp"
             android:clickable="true"
             android:scaleType="centerCrop"
-            android:tint="@color/upvote_tint"
+            app:tint="@color/upvote_tint"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/line_separate"
@@ -159,7 +160,7 @@
             android:clickable="true"
             android:rotation="180"
             android:scaleType="centerCrop"
-            android:tint="@color/downvote_tint"
+            app:tint="@color/downvote_tint"
             app:layout_constraintStart_toEndOf="@+id/upvote_num"
             app:layout_constraintTop_toBottomOf="@+id/line_separate"
             app:srcCompat="@drawable/selector_downvote" />
@@ -185,7 +186,7 @@
             android:layout_marginEnd="8dp"
             android:clickable="true"
             android:scaleType="centerCrop"
-            android:tint="@color/bookmark_tint"
+            app:tint="@color/bookmark_tint"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/line_separate"
             app:srcCompat="@drawable/selector_bookmark" />
@@ -197,7 +198,7 @@
             android:layout_marginStart="22dp"
             android:layout_marginTop="10dp"
             android:scaleType="fitCenter"
-            android:tint="#808080"
+            app:tint="#808080"
             app:layout_constraintStart_toEndOf="@+id/downvote_num"
             app:layout_constraintTop_toBottomOf="@+id/line_separate"
             app:srcCompat="@drawable/comment" />
