@@ -1,6 +1,659 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:padding="16dp" />
+    android:background="@drawable/gradient_wallpaper">
+
+    <!-- White background container for scrollable content -->
+    <LinearLayout
+        android:id="@+id/contentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/white_rounded_bg"
+        android:orientation="vertical"
+        android:layout_margin="40dp">
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:padding="20dp">
+
+                <!-- Title -->
+                <TextView
+                    android:id="@+id/titleTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Choose Your Interests"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="12dp"
+                    android:fontFamily="@font/inter_extrabold"/>
+
+                <!-- Subtitle Line 1 -->
+                <TextView
+                    android:id="@+id/subtitleLine1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select topics you'd like to learn about"
+                    android:textSize="16sp"
+                    android:textColor="#666666"
+                    android:layout_marginBottom="2dp"
+                    android:fontFamily="@font/inter_medium"/>
+
+                <!-- Subtitle Line 2 -->
+                <TextView
+                    android:id="@+id/subtitleLine2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="(choose at least 3)"
+                    android:textSize="16sp"
+                    android:textColor="#666666"
+                    android:layout_marginBottom="40dp"
+                    android:fontFamily="@font/inter_medium"/>
+
+                <!-- Grid Layout for Interests (2 columns) -->
+                <androidx.gridlayout.widget.GridLayout
+                    android:id="@+id/interestsGrid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:columnCount="2"
+                    app:rowCount="8"
+                    app:alignmentMode="alignBounds"
+                    app:useDefaultMargins="true">
+
+                    <!-- Row 1: Mathematics -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/mathCard"
+                        android:layout_width="0dp"
+                        android:layout_height="12dp"
+                        app:cardCornerRadius="25dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:layout_columnWeight="1"
+                        app:layout_rowWeight="1"
+                        app:layout_gravity="fill"
+                        android:layout_margin="8dp"
+                        app:layout_column="0"
+                        app:layout_row="0">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="112dp"
+                                android:layout_height="45dp"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/inter_medium"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:text="Mathematics"
+                                android:textColor="#000000"
+                                android:textSize="16sp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Row 1: Science -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/scienceCard"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="25dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:layout_columnWeight="1"
+                        app:layout_rowWeight="1"
+                        app:layout_gravity="fill"
+                        android:layout_margin="8dp"
+                        app:layout_column="1"
+                        app:layout_row="0">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Science"
+                                android:textSize="16sp"
+                                android:textColor="#000000"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/inter_medium"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Row 2: History -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/historyCard"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="25dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:layout_columnWeight="1"
+                        app:layout_rowWeight="1"
+                        app:layout_gravity="fill"
+                        android:layout_margin="8dp"
+                        app:layout_column="0"
+                        app:layout_row="1">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="History"
+                                android:textSize="16sp"
+                                android:textColor="#000000"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/inter_medium"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Row 2: Literature -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/literatureCard"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="25dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:layout_columnWeight="1"
+                        app:layout_rowWeight="1"
+                        app:layout_gravity="fill"
+                        android:layout_margin="8dp"
+                        app:layout_column="1"
+                        app:layout_row="1">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Literature"
+                                android:textSize="16sp"
+                                android:textColor="#000000"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/inter_medium"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Row 3: Computer Science -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/csCard"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="25dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:layout_columnWeight="1"
+                        app:layout_rowWeight="1"
+                        app:layout_gravity="fill"
+                        android:layout_margin="8dp"
+                        app:layout_column="0"
+                        app:layout_row="2">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Computer\nScience"
+                                android:textSize="16sp"
+                                android:textColor="#000000"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/inter_medium"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Row 3: Art -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/artCard"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="25dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:layout_columnWeight="1"
+                        app:layout_rowWeight="1"
+                        app:layout_gravity="fill"
+                        android:layout_margin="8dp"
+                        app:layout_column="1"
+                        app:layout_row="2">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Art"
+                                android:textSize="16sp"
+                                android:textColor="#000000"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/inter_medium"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Row 4: Music -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/musicCard"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="25dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:layout_columnWeight="1"
+                        app:layout_rowWeight="1"
+                        app:layout_gravity="fill"
+                        android:layout_margin="8dp"
+                        app:layout_column="0"
+                        app:layout_row="3">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Music"
+                                android:textSize="16sp"
+                                android:textColor="#000000"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/inter_medium"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Row 4: Philosophy -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/philosophyCard"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="25dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:layout_columnWeight="1"
+                        app:layout_rowWeight="1"
+                        app:layout_gravity="fill"
+                        android:layout_margin="8dp"
+                        app:layout_column="1"
+                        app:layout_row="3">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Philosophy"
+                                android:textSize="16sp"
+                                android:textColor="#000000"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/inter_medium"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Row 5: Psychology -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/psychologyCard"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="25dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:layout_columnWeight="1"
+                        app:layout_rowWeight="1"
+                        app:layout_gravity="fill"
+                        android:layout_margin="8dp"
+                        app:layout_column="0"
+                        app:layout_row="4">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Psychology"
+                                android:textSize="16sp"
+                                android:textColor="#000000"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/inter_medium"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Row 5: Biology -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/biologyCard"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="25dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:layout_columnWeight="1"
+                        app:layout_rowWeight="1"
+                        app:layout_gravity="fill"
+                        android:layout_margin="8dp"
+                        app:layout_column="1"
+                        app:layout_row="4">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Biology"
+                                android:textSize="16sp"
+                                android:textColor="#000000"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/inter_medium"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Row 6: Chemistry -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/chemistryCard"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="25dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:layout_columnWeight="1"
+                        app:layout_rowWeight="1"
+                        app:layout_gravity="fill"
+                        android:layout_margin="8dp"
+                        app:layout_column="0"
+                        app:layout_row="5">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Chemistry"
+                                android:textSize="16sp"
+                                android:textColor="#000000"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/inter_medium"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Row 6: Physics -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/physicsCard"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="25dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:layout_columnWeight="1"
+                        app:layout_rowWeight="1"
+                        app:layout_gravity="fill"
+                        android:layout_margin="8dp"
+                        app:layout_column="1"
+                        app:layout_row="5">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Physics"
+                                android:textSize="16sp"
+                                android:textColor="#000000"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/inter_medium"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Row 7: Economics -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/economicsCard"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="25dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:layout_columnWeight="1"
+                        app:layout_rowWeight="1"
+                        app:layout_gravity="fill"
+                        android:layout_margin="8dp"
+                        app:layout_column="0"
+                        app:layout_row="6">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Economics"
+                                android:textSize="16sp"
+                                android:textColor="#000000"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/inter_medium"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Row 7: Languages -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/languagesCard"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="25dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:layout_columnWeight="1"
+                        app:layout_rowWeight="1"
+                        app:layout_gravity="fill"
+                        android:layout_margin="8dp"
+                        app:layout_column="1"
+                        app:layout_row="6">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Languages"
+                                android:textSize="16sp"
+                                android:textColor="#000000"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/inter_medium"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Row 8: Engineering -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/engineeringCard"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="25dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:layout_columnWeight="1"
+                        app:layout_rowWeight="1"
+                        app:layout_gravity="fill"
+                        android:layout_margin="8dp"
+                        app:layout_column="0"
+                        app:layout_row="7">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Engineering"
+                                android:textSize="16sp"
+                                android:textColor="#000000"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/inter_medium"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Row 8: Medicine -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/medicineCard"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="25dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:layout_columnWeight="1"
+                        app:layout_rowWeight="1"
+                        app:layout_gravity="fill"
+                        android:layout_margin="8dp"
+                        app:layout_column="1"
+                        app:layout_row="7">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Medicine"
+                                android:textSize="16sp"
+                                android:textColor="#000000"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/inter_medium"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                </androidx.gridlayout.widget.GridLayout>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnContinue"
+                    android:layout_width="269dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="40dp"
+                    android:background="@drawable/btn_gradient_rounded"
+                    android:drawablePadding="40dp"
+                    android:paddingEnd="20dp"
+                    android:text="Continue"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </ScrollView>
+
+
+    </LinearLayout>
+
+</RelativeLayout>
