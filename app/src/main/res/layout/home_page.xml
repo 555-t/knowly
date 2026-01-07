@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/light_wallpaper">
 
     <!-- Background  -->
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/light_wallpaper" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,30 +15,33 @@
         android:orientation="vertical">
 
         <!-- Header -->
-        <FrameLayout
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar_WF"
+
             android:layout_width="match_parent"
             android:layout_height="105dp">
 
-            <ImageView
-                android:id="@+id/ivHeader"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/gradient_button" />
+                android:background="@drawable/gradient_button">
 
-            <TextView
-                android:id="@+id/tvTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="28dp"
-                android:fontFamily="@font/inter_bold"
-                android:text="Knowly"
-                android:textColor="@android:color/white"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/homepage_header_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="44dp"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Knowly"
+                    android:textColor="#FFFFFF"
+                    android:textColorLink="#FFFFFF"
+                    android:textSize="30sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        </FrameLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <!-- For You/ Following tabs -->
         <LinearLayout
@@ -50,12 +49,12 @@
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
             android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="0dp"
-            android:padding="6dp"
             android:background="@drawable/bg_tab_container"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="6dp">
 
             <TextView
                 android:id="@+id/btnForYou"
@@ -81,13 +80,14 @@
         </LinearLayout>
 
         <!-- Pages -->
+
+        <!-- Bottom nav (clickable) -->
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <!-- Bottom nav (clickable) -->
         <LinearLayout
             android:id="@+id/bottomNav"
             android:layout_width="match_parent"
@@ -105,16 +105,22 @@
                 android:src="@drawable/ic_home"
                 android:tint="#00C9D6" />
 
-            <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
             <ImageView
                 android:id="@+id/navTrend"
                 android:layout_width="26dp"
                 android:layout_height="26dp"
                 android:src="@drawable/ic_trending"
-                android:tint="#9A9A9A"/>
+                android:tint="#9A9A9A" />
 
-            <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/navProfile"
@@ -140,23 +146,29 @@
                     android:textColor="@android:color/white" />
             </com.google.android.material.card.MaterialCardView>
 
-            <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
             <ImageView
                 android:id="@+id/navSearch"
                 android:layout_width="26dp"
                 android:layout_height="26dp"
                 android:src="@drawable/ic_search"
-                android:tint="#9A9A9A"/>
+                android:tint="#9A9A9A" />
 
-            <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
             <ImageView
                 android:id="@+id/navNotif"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:src="@drawable/ic_notification"
-                android:tint="#9A9A9A"/>
+                android:tint="#9A9A9A" />
         </LinearLayout>
     </LinearLayout>
 
@@ -174,8 +186,8 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/gradient_button"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/gradient_button" />
 
         <TextView
             android:layout_width="match_parent"

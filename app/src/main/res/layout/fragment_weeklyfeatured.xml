@@ -19,7 +19,7 @@
             android:background="@drawable/weeklyf_gradient">
 
             <TextView
-                android:id="@+id/weeklyfeat_txt"
+                android:id="@+id/homepage_header_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
