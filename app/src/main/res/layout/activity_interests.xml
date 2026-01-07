@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/profile_header_gradient"
+    android:background="@drawable/gradient_wallpaper"
     android:fillViewport="true">
 
     <LinearLayout
@@ -45,8 +45,8 @@
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Art"
-                    android:checked="true"/>
+                    android:checked="true"
+                    android:text="Art" />
 
                 <com.google.android.material.chip.Chip
                     style="@style/Widget.MaterialComponents.Chip.Filter"
@@ -77,14 +77,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Gaming" />
-                    
-                 <com.google.android.material.chip.Chip
+
+                <com.google.android.material.chip.Chip
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Cooking" />
-                    
-                 <com.google.android.material.chip.Chip
+
+                <com.google.android.material.chip.Chip
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -104,7 +104,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Cancel"
-                    android:textColor="#666666"/>
+                    android:textColor="#666666" />
 
                 <Button
                     android:id="@+id/btn_confirm_interests"
@@ -113,7 +113,7 @@
                     android:layout_marginStart="10dp"
                     android:backgroundTint="#00BCD4"
                     android:text="Done"
-                    app:cornerRadius="10dp"/>
+                    app:cornerRadius="10dp" />
             </LinearLayout>
 
         </LinearLayout>
