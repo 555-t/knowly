@@ -13,7 +13,7 @@ public class InterestsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_interests);
+        setContentView(R.layout.activity_editinterests);
 
         // 初始化控件
         ChipGroup chipGroup = findViewById(R.id.chip_group_selection);
