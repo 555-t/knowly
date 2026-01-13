@@ -8,6 +8,16 @@
       </config>
     </shared>
     <layouts>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/color/interest_text_selector.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/back_arrow.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/bg_category_gradient.xml">
         <config>
           <theme>@style/Theme.Knowly</theme>
@@ -23,7 +33,22 @@
           <theme>@style/Theme.Knowly</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/card_interest_default.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/card_interest_selector.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/comment.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_check.xml">
         <config>
           <theme>@style/Theme.Knowly</theme>
         </config>
@@ -234,9 +259,15 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="updated userpage">
+    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="fixed ChooseInterestsActivity,">
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/color/interest_text_selector.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/card_interest_default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_check.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/ChooseInterestsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/ChooseInterestsActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/color/card_selector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/card_interest_selector.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_choose_interest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_choose_interest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -253,19 +284,36 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\User\.android\avd\Medium_Phone.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\60193\.android\avd\Medium_Phone.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
     </projectState>
   </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="knowly1.0" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="resourceFile" />
         <option value="Class" />
         <option value="valueResourceFile" />
         <option value="layoutResourceFile" />
+        <option value="resourceFile" />
       </list>
     </option>
   </component>
@@ -328,6 +376,8 @@
       <recent name="C:\Users\User\Documents\GitHub\knowly\app\src\main\res\drawable" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\60193\AndroidStudioProjects\knowly10\app\src\main\res\color" />
+      <recent name="C:\Users\60193\AndroidStudioProjects\knowly10\app\src\main\res\drawable" />
       <recent name="C:\Users\User\Documents\GitHub\knowly\app\src\main\res\drawable" />
     </key>
   </component>
@@ -597,7 +647,47 @@
       <option name="project" value="LOCAL" />
       <updated>1768286799600</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="added ChooseInterestsActivity">
+      <option name="closed" value="true" />
+      <created>1768287260658</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1768287260658</updated>
+    </task>
+    <task id="LOCAL-00025" summary="added ChooseInterestsActivity">
+      <option name="closed" value="true" />
+      <created>1768287725559</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1768287725559</updated>
+    </task>
+    <task id="LOCAL-00026" summary="added ChooseInterestsActivity">
+      <option name="closed" value="true" />
+      <created>1768287926171</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1768287926171</updated>
+    </task>
+    <task id="LOCAL-00027" summary="added ChooseInterestsActivity">
+      <option name="closed" value="true" />
+      <created>1768288175060</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1768288175060</updated>
+    </task>
+    <task id="LOCAL-00028" summary="fixed ChooseInterestsActivity,">
+      <option name="closed" value="true" />
+      <created>1768289122159</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1768289122159</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -636,7 +726,9 @@
     <MESSAGE value="commit changes" />
     <MESSAGE value="readded inter bold font that was deleted" />
     <MESSAGE value="updated userpage" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated userpage" />
+    <MESSAGE value="added ChooseInterestsActivity" />
+    <MESSAGE value="fixed ChooseInterestsActivity," />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed ChooseInterestsActivity," />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
@@ -649,6 +741,16 @@
         <entry key="com.example.knowly.test">
           <value>
             <CheckInfo lastCheckTimestamp="1768281494135" />
+          </value>
+        </entry>
+        <entry key="com.example.knowly10">
+          <value>
+            <CheckInfo lastCheckTimestamp="1768282622052" />
+          </value>
+        </entry>
+        <entry key="com.example.knowly10.test">
+          <value>
+            <CheckInfo lastCheckTimestamp="1768282622051" />
           </value>
         </entry>
       </map>
