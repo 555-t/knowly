@@ -36,7 +36,7 @@
 
         <!-- Keep MainActivity if you need it later -->
         <activity
-            android:name=".MainActivity"
+            android:name=".HomePage"
             android:exported="true" />
 
         <activity android:name=".ChooseInterestsActivity"
