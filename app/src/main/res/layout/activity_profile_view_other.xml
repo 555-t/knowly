@@ -36,7 +36,7 @@
             android:layout_marginStart="8dp"
             android:fontFamily="@font/inter_bold"
             android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="@+id/backButton_APV"
             app:layout_constraintStart_toEndOf="@+id/backButton_APV"
             app:layout_constraintTop_toTopOf="@+id/backButton_APV"
@@ -109,7 +109,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:fontFamily="@font/inter_light"
+                        android:fontFamily="@font/inter_medium"
                         android:text="0 Followers   0 Following"
                         android:textColor="#424242"
                         android:textSize="13sp"
@@ -131,9 +131,12 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/button_gradient"
+                            android:fontFamily="@font/inter_bold"
                             android:gravity="center"
                             android:text="Follow"
                             android:textColor="#FFFFFF"
+                            android:textSize="16sp"
                             android:textStyle="bold" />
                     </androidx.cardview.widget.CardView>
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -166,17 +169,21 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical">
+
                             <TextView
                                 android:id="@+id/tv_posts_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/inter_bold"
                                 android:text="1"
                                 android:textColor="#00ACC1"
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/inter_medium"
                                 android:text="Posts"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -187,17 +194,21 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical">
+
                             <TextView
                                 android:id="@+id/tv_upvotes_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/inter_bold"
                                 android:text="0"
                                 android:textColor="#64DD17"
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/inter_medium"
                                 android:text="Upvotes"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -208,17 +219,20 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical">
+
                             <TextView
                                 android:id="@+id/tv_comments_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/inter_bold"
                                 android:text="0"
                                 android:textColor="#00ACC1"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
+                                android:textSize="20sp" />
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/inter_medium"
                                 android:text="Comments"
                                 android:textSize="12sp" />
                         </LinearLayout>

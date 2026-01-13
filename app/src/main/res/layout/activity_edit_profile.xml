@@ -33,19 +33,16 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        app:cardBackgroundColor="#FFFFFF"
         app:cardCornerRadius="20dp"
         app:cardElevation="4dp"
-        app:cardBackgroundColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/header_bg">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="663dp"
             android:padding="20dp">
 
             <TextView
@@ -66,10 +63,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                app:boxCornerRadiusTopStart="12dp"
-                app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
                 app:boxStrokeColor="#E0E0E0"
                 app:boxStrokeWidth="1dp"
                 app:hintEnabled="false"
@@ -104,10 +101,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                app:boxCornerRadiusTopStart="12dp"
-                app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
                 app:boxStrokeColor="#E0E0E0"
                 app:boxStrokeWidth="1dp"
                 app:hintEnabled="false"
@@ -143,10 +140,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                app:boxCornerRadiusTopStart="12dp"
-                app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
                 app:boxStrokeColor="#E0E0E0"
                 app:boxStrokeWidth="1dp"
                 app:hintEnabled="false"
@@ -199,7 +196,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_tab_selected"
-                    android:fontFamily="@font/inter_light"
+                    android:fontFamily="@font/inter_medium"
                     android:text="Art"
                     android:textColor="#00695C"
                     app:chipBackgroundColor="#E0F2F1"
@@ -213,7 +210,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Entry"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/inter_light"
+                    android:fontFamily="@font/inter_medium"
                     android:text="Music"
                     android:textColor="#00695C"
                     app:chipBackgroundColor="#E0F2F1"
@@ -227,7 +224,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Entry"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/inter_light"
+                    android:fontFamily="@font/inter_medium"
                     android:text="Computer Science"
                     android:textColor="#00695C"
                     app:chipBackgroundColor="#E0F2F1"
@@ -242,26 +239,27 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginBottom="10dp"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_cancel"
                     android:layout_width="0dp"
                     android:layout_height="55dp"
-                    android:layout_weight="1"
-                    android:text="Cancel"
-                    android:textColor="#333333"
-                    android:textStyle="bold"
                     android:layout_marginEnd="8dp"
-                    app:backgroundTint="#FFFFFF"
-                    app:strokeColor="#DDDDDD"
-                    app:strokeWidth="1dp"
-                    app:cornerRadius="12dp"
-                    android:textAllCaps="false"
+                    android:layout_weight="1"
                     android:elevation="0dp"
-                    android:stateListAnimator="@null"/>
+                    android:fontFamily="@font/inter_bold"
+                    android:stateListAnimator="@null"
+                    android:text="Cancel"
+                    android:textAllCaps="false"
+                    android:textColor="#333333"
+                    android:textSize="16sp"
+                    app:backgroundTint="#FFFFFF"
+                    app:cornerRadius="12dp"
+                    app:strokeColor="#DDDDDD"
+                    app:strokeWidth="1dp" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_save"
@@ -270,10 +268,11 @@
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     android:background="@drawable/btn_gradient_rounded"
+                    android:fontFamily="@font/inter_bold"
                     android:text="Save Changes"
                     android:textAllCaps="false"
                     android:textColor="#FFFFFF"
-                    android:textStyle="bold" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
