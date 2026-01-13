@@ -107,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 pd.dismiss();
 
                                 if (task2.isSuccessful()) {
-                                    Intent intent = new Intent(this, MainActivity.class);
+                                    Intent intent = new Intent(this, ChooseInterestsActivity.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                                             Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent);
