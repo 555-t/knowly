@@ -5,31 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="18dp"
-    android:layout_marginLeft="18dp"
     android:layout_marginTop="10dp"
-
     android:layout_marginEnd="18dp"
-    android:layout_marginRight="18dp"
+    android:layout_marginBottom="5dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="2dp"
-    tools:ignore="MissingClass">
+    app:cardElevation="2dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="375dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="#7E1818"
-        android:clickable="true"
-        android:elevation="2dp"
-        android:padding="@dimen/top_section_margin">
+        android:padding="16dp">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/profile_pic"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginEnd="339dp"
             android:clickable="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/CircleImage"
@@ -39,182 +30,147 @@
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:clickable="true"
+            android:layout_marginStart="12dp"
             android:fontFamily="@font/inter_bold"
             android:text="username"
+            android:textColor="#000000"
             android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@+id/profile_pic"
             app:layout_constraintTop_toTopOf="@+id/profile_pic" />
 
         <TextView
-            android:id="@+id/post_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/inter_medium"
-            android:text="Knowly is great!"
-            app:layout_constraintTop_toBottomOf="@+id/profile_pic"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteX="1dp" />
-
-        <TextView
             android:id="@+id/time_of_post"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_marginTop="2dp"
             android:fontFamily="@font/inter_medium"
             android:text="3m ago"
             android:textColor="#808080"
             android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/profile_pic"
+            app:layout_constraintStart_toStartOf="@+id/username"
             app:layout_constraintTop_toBottomOf="@+id/username" />
 
         <ImageButton
             android:id="@+id/imageButton"
-            android:layout_width="44dp"
-            android:layout_height="42dp"
-            android:layout_marginTop="-10dp"
-            android:layout_marginEnd="-5dp"
-            android:backgroundTint="@android:color/transparent"
-            android:scaleType="fitCenter"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/more_vert_post" />
+            app:srcCompat="@drawable/more_vert_post"
+            app:tint="#808080" />
 
-        <androidx.constraintlayout.helper.widget.Flow
-            android:id="@+id/category_flow"
+        <TextView
+            android:id="@+id/post_content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            app:constraint_referenced_ids="category_text"
-            app:flow_horizontalGap="8dp"
-            app:flow_verticalGap="8dp"
-            app:flow_wrapMode="chain"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/inter_medium"
+            android:text="Knowly is great!"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/post_content" />
+            app:layout_constraintTop_toBottomOf="@+id/profile_pic" />
 
         <TextView
             android:id="@+id/category_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:background="@drawable/bg_category_gradient"
             android:fontFamily="@font/inter_medium"
-            android:paddingStart="6dp"
-            android:paddingLeft="6dp"
-            android:paddingTop="2dp"
-            android:paddingRight="6dp"
-            android:paddingBottom="2dp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
             android:text="History"
             android:textColor="#2788A0"
             android:textSize="12sp"
-            tools:layout_editor_absoluteX="23dp"
-            tools:layout_editor_absoluteY="86dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/post_content" />
 
         <View
             android:id="@+id/line_separate"
-            android:layout_width="340dp"
+            android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_marginStart="1dp"
-            android:layout_marginTop="10dp"
-            android:background="#CACACA"
+            android:layout_marginTop="12dp"
+            android:background="#E0E0E0"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/category_flow" />
+            app:layout_constraintTop_toBottomOf="@+id/category_text" />
 
         <ImageView
             android:id="@+id/upvote_img"
-            android:layout_width="20dp"
-            android:layout_height="22dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="16dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="12dp"
             android:clickable="true"
-            android:scaleType="centerCrop"
-            app:tint="@color/upvote_tint"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/line_separate"
-            app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/selector_upvote"
-            tools:selected="true" />
+            app:srcCompat="@drawable/selector_upvote" />
 
         <TextView
             android:id="@+id/upvote_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="11dp"
+            android:layout_marginStart="6dp"
             android:fontFamily="@font/inter_medium"
             android:text="142"
-            android:textSize="12sp"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@+id/upvote_img"
             app:layout_constraintStart_toEndOf="@+id/upvote_img"
-            app:layout_constraintTop_toBottomOf="@+id/line_separate" />
+            app:layout_constraintTop_toTopOf="@+id/upvote_img" />
 
         <ImageView
             android:id="@+id/downvote_img"
-            android:layout_width="20dp"
-            android:layout_height="22dp"
-            android:layout_marginStart="22dp"
-            android:layout_marginTop="10dp"
-            android:clickable="true"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
             android:rotation="180"
-            android:scaleType="centerCrop"
-            app:tint="@color/downvote_tint"
+            app:layout_constraintBottom_toBottomOf="@+id/upvote_img"
             app:layout_constraintStart_toEndOf="@+id/upvote_num"
-            app:layout_constraintTop_toBottomOf="@+id/line_separate"
+            app:layout_constraintTop_toTopOf="@+id/upvote_img"
             app:srcCompat="@drawable/selector_downvote" />
-
 
         <TextView
             android:id="@+id/downvote_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:fontFamily="@font/inter_medium"
+            android:layout_marginStart="6dp"
             android:text="2"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/upvote_num"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@+id/downvote_img"
             app:layout_constraintStart_toEndOf="@+id/downvote_img"
-            app:layout_constraintTop_toTopOf="@+id/upvote_num" />
-
-        <ImageView
-            android:id="@+id/bookmark_img"
-            android:layout_width="22dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="8dp"
-            android:clickable="true"
-            android:scaleType="centerCrop"
-            app:tint="@color/bookmark_tint"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/line_separate"
-            app:srcCompat="@drawable/selector_bookmark" />
+            app:layout_constraintTop_toTopOf="@+id/downvote_img" />
 
         <ImageView
             android:id="@+id/comment_img"
-            android:layout_width="21dp"
+            android:layout_width="22dp"
             android:layout_height="22dp"
-            android:layout_marginStart="22dp"
-            android:layout_marginTop="10dp"
-            android:scaleType="fitCenter"
-            app:tint="#808080"
+            android:layout_marginStart="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/downvote_num"
             app:layout_constraintStart_toEndOf="@+id/downvote_num"
-            app:layout_constraintTop_toBottomOf="@+id/line_separate"
-            app:srcCompat="@drawable/comment" />
+            app:layout_constraintTop_toTopOf="@+id/downvote_num"
+            app:srcCompat="@drawable/comment"
+            app:tint="#808080" />
 
         <TextView
             android:id="@+id/comment_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:fontFamily="@font/inter_medium"
+            android:layout_marginStart="6dp"
             android:text="5"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/comment_img"
             app:layout_constraintStart_toEndOf="@+id/comment_img"
-            app:layout_constraintTop_toBottomOf="@+id/line_separate"
-            app:layout_constraintVertical_bias="0.413" />
+            app:layout_constraintTop_toTopOf="@+id/comment_img" />
+
+        <ImageView
+            android:id="@+id/bookmark_img"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:layout_constraintBottom_toBottomOf="@+id/comment_num"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/comment_num"
+            app:srcCompat="@drawable/selector_bookmark" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
