@@ -258,4 +258,11 @@
         </ScrollView>
     </androidx.cardview.widget.CardView>
 
+    <include
+        android:id="@+id/included_nav"
+        layout="@layout/bottom_nav_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

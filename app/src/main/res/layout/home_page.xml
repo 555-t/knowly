@@ -125,89 +125,6 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:listitem="@layout/item_post" />
 
-
-        <LinearLayout
-            android:id="@+id/bottomNav"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_gravity="bottom"
-            android:background="@android:color/white"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp">
-
-            <ImageView
-                android:id="@+id/navHome"
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:src="@drawable/ic_home"
-                android:tint="#00C9D6" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <ImageView
-                android:id="@+id/navTrend"
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:src="@drawable/ic_trending"
-                android:tint="#9A9A9A" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/navProfile"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                app:cardCornerRadius="50dp"
-                app:cardElevation="6dp">
-
-                <ImageView
-                    android:id="@+id/ivProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/gradient_button" />
-
-                <TextView
-                    android:id="@+id/tvProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:fontFamily="@font/inter_bold"
-                    android:gravity="center"
-                    android:text="S"
-                    android:textColor="@android:color/white" />
-            </com.google.android.material.card.MaterialCardView>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <ImageView
-                android:id="@+id/navSearch"
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:src="@drawable/ic_search"
-                android:tint="#9A9A9A" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <ImageView
-                android:id="@+id/navNotif"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ic_notification"
-                android:tint="#9A9A9A" />
-        </LinearLayout>
     </LinearLayout>
 
     <!-- Floating + (above nav) -->
@@ -237,5 +154,11 @@
             android:textSize="26sp" />
     </com.google.android.material.card.MaterialCardView>
 
+    <include
+        android:id="@+id/included_nav"
+        layout="@layout/bottom_nav_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
