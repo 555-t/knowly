@@ -67,17 +67,33 @@ public class ChooseInterestsActivity extends AppCompatActivity {
     }
 
     private void saveInterestsAndProceed() {
+
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        // Convert Set -> Map (Firebase-safe)
+        java.util.HashMap<String, Boolean> interestsMap = new java.util.HashMap<>();
+        for (String interest : selectedInterests) {
+            interestsMap.put(interest, true);
+        }
 
         FirebaseDatabase.getInstance().getReference("Users")
                 .child(uid)
                 .child("interests")
-                .setValue(selectedInterests)
+                .setValue(interestsMap)
                 .addOnSuccessListener(unused -> {
+                    Toast.makeText(this, "Interests saved!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(this, HomePage.class));
                     finish();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this,
+                            "Save failed: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
                 });
     }
-
 }
-
