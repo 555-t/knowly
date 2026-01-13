@@ -48,6 +48,16 @@
           <theme>@style/Theme.Knowly</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/nav_notif_selector.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/nav_search_selector.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/nav_weekly_selector.xml">
         <config>
           <theme>@style/Theme.Knowly</theme>
@@ -243,6 +253,11 @@
           <theme>@style/Theme.Knowly</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/menu_setting.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/notifications_activity.xml">
         <config>
           <theme>@style/Theme.Knowly</theme>
@@ -259,23 +274,16 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="fixed userpage">
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_home_outlined.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_weekly_outlined.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/nav_home_selector.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/nav_search_selector.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/nav_weekly_selector.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/bottom_nav_bar.xml" afterDir="false" />
+    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="fixed bottom nav bar">
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_notif_filled.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_notif_outlined.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/nav_notif_selector.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/menu_setting.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_edit_profile.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_edit_profile.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_profile_view_other.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_profile_view_other.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_userpage.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_userpage.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_search.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_search.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_weeklyfeatured.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_weeklyfeatured.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/bottom_nav_bar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/bottom_nav_bar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/home_page.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/home_page.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/postdetails_activity.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/postdetails_activity.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -303,8 +311,8 @@
       <list>
         <option value="Class" />
         <option value="valueResourceFile" />
-        <option value="layoutResourceFile" />
         <option value="resourceFile" />
+        <option value="layoutResourceFile" />
       </list>
     </option>
   </component>
@@ -645,7 +653,23 @@
       <option name="project" value="LOCAL" />
       <updated>1768287570626</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="fixed bottom nav bar">
+      <option name="closed" value="true" />
+      <created>1768292570176</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1768292570176</updated>
+    </task>
+    <task id="LOCAL-00026" summary="fixed bottom nav bar">
+      <option name="closed" value="true" />
+      <created>1768292822001</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1768292822001</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -685,7 +709,8 @@
     <MESSAGE value="readded inter bold font that was deleted" />
     <MESSAGE value="updated userpage" />
     <MESSAGE value="fixed userpage" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed userpage" />
+    <MESSAGE value="fixed bottom nav bar" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed bottom nav bar" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
