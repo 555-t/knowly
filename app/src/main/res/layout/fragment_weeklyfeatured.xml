@@ -55,5 +55,11 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/item_post" />
 
+    <include
+        android:id="@+id/included_nav"
+        layout="@layout/bottom_nav_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"  />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
