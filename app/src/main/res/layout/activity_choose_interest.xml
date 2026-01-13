@@ -80,22 +80,26 @@
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/mathCard"
                         android:layout_width="0dp"
-                        android:layout_height="12dp"
+                        android:layout_height="match_parent"
                         android:layout_margin="8dp"
                         android:checkable="true"
                         android:clickable="true"
-                        app:cardBackgroundColor="@color/card_selector"
+                        app:cardForegroundColor="@android:color/transparent"
                         app:cardCornerRadius="25dp"
                         app:cardElevation="2dp"
                         app:layout_column="0"
                         app:layout_columnWeight="1"
                         app:layout_gravity="fill"
                         app:layout_row="0"
-                        app:layout_rowWeight="1">
+                        app:layout_rowWeight="1"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#C7C7C7"
+                        app:checkedIcon="@null">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/card_interest_selector"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:padding="16dp">
@@ -108,9 +112,19 @@
                                 android:gravity="center"
                                 android:maxLines="2"
                                 android:text="Mathematics"
-                                android:textColor="#000000"
+                                android:textColor="@color/interest_text_selector"
                                 android:textSize="16sp" />
                         </LinearLayout>
+
+                        <ImageView
+                            android:tag="checkIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="top|end"
+                            android:layout_margin="12dp"
+                            android:src="@drawable/ic_check"
+                            android:visibility="gone"/>
+
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- Row 1: Science -->
@@ -120,18 +134,22 @@
                         android:layout_height="100dp"
                         android:layout_margin="8dp"
                         android:checkable="true"
-                        app:cardBackgroundColor="@color/card_selector"
+                        app:cardForegroundColor="@android:color/transparent"
                         app:cardCornerRadius="25dp"
                         app:cardElevation="2dp"
                         app:layout_column="1"
                         app:layout_columnWeight="1"
                         app:layout_gravity="fill"
                         app:layout_row="0"
-                        app:layout_rowWeight="1">
+                        app:layout_rowWeight="1"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#C7C7C7"
+                        app:checkedIcon="@null">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/card_interest_selector"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:padding="16dp">
@@ -144,9 +162,19 @@
                                 android:gravity="center"
                                 android:maxLines="2"
                                 android:text="Science"
-                                android:textColor="#000000"
+                                android:textColor="@color/interest_text_selector"
                                 android:textSize="16sp" />
                         </LinearLayout>
+
+                        <ImageView
+                            android:tag="checkIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="top|end"
+                            android:layout_margin="12dp"
+                            android:src="@drawable/ic_check"
+                            android:visibility="gone"/>
+
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- Row 2: History -->
@@ -157,18 +185,22 @@
                         android:layout_margin="8dp"
                         android:checkable="true"
                         android:clickable="true"
-                        app:cardBackgroundColor="@color/card_selector"
+                        app:cardForegroundColor="@android:color/transparent"
                         app:cardCornerRadius="25dp"
                         app:cardElevation="2dp"
                         app:layout_column="0"
                         app:layout_columnWeight="1"
                         app:layout_gravity="fill"
                         app:layout_row="1"
-                        app:layout_rowWeight="1">
+                        app:layout_rowWeight="1"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#C7C7C7"
+                        app:checkedIcon="@null">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/card_interest_selector"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:padding="16dp">
@@ -181,9 +213,19 @@
                                 android:gravity="center"
                                 android:maxLines="2"
                                 android:text="History"
-                                android:textColor="#000000"
+                                android:textColor="@color/interest_text_selector"
                                 android:textSize="16sp" />
                         </LinearLayout>
+
+                        <ImageView
+                            android:tag="checkIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="top|end"
+                            android:layout_margin="12dp"
+                            android:src="@drawable/ic_check"
+                            android:visibility="gone"/>
+
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- Row 2: Literature -->
@@ -194,18 +236,22 @@
                         android:layout_margin="8dp"
                         android:checkable="true"
                         android:clickable="true"
-                        app:cardBackgroundColor="@color/card_selector"
+                        app:cardForegroundColor="@android:color/transparent"
                         app:cardCornerRadius="25dp"
                         app:cardElevation="2dp"
                         app:layout_column="1"
                         app:layout_columnWeight="1"
                         app:layout_gravity="fill"
                         app:layout_row="1"
-                        app:layout_rowWeight="1">
+                        app:layout_rowWeight="1"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#C7C7C7"
+                        app:checkedIcon="@null">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/card_interest_selector"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:padding="16dp">
@@ -218,9 +264,19 @@
                                 android:gravity="center"
                                 android:maxLines="2"
                                 android:text="Literature"
-                                android:textColor="#000000"
+                                android:textColor="@color/interest_text_selector"
                                 android:textSize="16sp" />
                         </LinearLayout>
+
+                        <ImageView
+                            android:tag="checkIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="top|end"
+                            android:layout_margin="12dp"
+                            android:src="@drawable/ic_check"
+                            android:visibility="gone"/>
+
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- Row 3: Computer Science -->
@@ -231,18 +287,22 @@
                         android:layout_margin="8dp"
                         android:checkable="true"
                         android:clickable="true"
-                        app:cardBackgroundColor="@color/card_selector"
+                        app:cardForegroundColor="@android:color/transparent"
                         app:cardCornerRadius="25dp"
                         app:cardElevation="2dp"
                         app:layout_column="0"
                         app:layout_columnWeight="1"
                         app:layout_gravity="fill"
                         app:layout_row="2"
-                        app:layout_rowWeight="1">
+                        app:layout_rowWeight="1"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#C7C7C7"
+                        app:checkedIcon="@null">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/card_interest_selector"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:padding="16dp">
@@ -255,9 +315,19 @@
                                 android:gravity="center"
                                 android:maxLines="2"
                                 android:text="Computer\nScience"
-                                android:textColor="#000000"
+                                android:textColor="@color/interest_text_selector"
                                 android:textSize="16sp" />
                         </LinearLayout>
+
+                        <ImageView
+                            android:tag="checkIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="top|end"
+                            android:layout_margin="12dp"
+                            android:src="@drawable/ic_check"
+                            android:visibility="gone"/>
+
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- Row 3: Art -->
@@ -268,18 +338,22 @@
                         android:layout_margin="8dp"
                         android:checkable="true"
                         android:clickable="true"
-                        app:cardBackgroundColor="@color/card_selector"
+                        app:cardForegroundColor="@android:color/transparent"
                         app:cardCornerRadius="25dp"
                         app:cardElevation="2dp"
                         app:layout_column="1"
                         app:layout_columnWeight="1"
                         app:layout_gravity="fill"
                         app:layout_row="2"
-                        app:layout_rowWeight="1">
+                        app:layout_rowWeight="1"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#C7C7C7"
+                        app:checkedIcon="@null">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/card_interest_selector"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:padding="16dp">
@@ -292,9 +366,18 @@
                                 android:gravity="center"
                                 android:maxLines="2"
                                 android:text="Art"
-                                android:textColor="#000000"
+                                android:textColor="@color/interest_text_selector"
                                 android:textSize="16sp" />
                         </LinearLayout>
+                        <ImageView
+                            android:tag="checkIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="top|end"
+                            android:layout_margin="12dp"
+                            android:src="@drawable/ic_check"
+                            android:visibility="gone"/>
+
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- Row 4: Music -->
@@ -305,18 +388,22 @@
                         android:layout_margin="8dp"
                         android:checkable="true"
                         android:clickable="true"
-                        app:cardBackgroundColor="@color/card_selector"
+                        app:cardForegroundColor="@android:color/transparent"
                         app:cardCornerRadius="25dp"
                         app:cardElevation="2dp"
                         app:layout_column="0"
                         app:layout_columnWeight="1"
                         app:layout_gravity="fill"
                         app:layout_row="3"
-                        app:layout_rowWeight="1">
+                        app:layout_rowWeight="1"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#C7C7C7"
+                        app:checkedIcon="@null">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/card_interest_selector"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:padding="16dp">
@@ -329,9 +416,18 @@
                                 android:gravity="center"
                                 android:maxLines="2"
                                 android:text="Music"
-                                android:textColor="#000000"
+                                android:textColor="@color/interest_text_selector"
                                 android:textSize="16sp" />
                         </LinearLayout>
+                        <ImageView
+                            android:tag="checkIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="top|end"
+                            android:layout_margin="12dp"
+                            android:src="@drawable/ic_check"
+                            android:visibility="gone"/>
+
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- Row 4: Philosophy -->
@@ -342,18 +438,22 @@
                         android:layout_margin="8dp"
                         android:checkable="true"
                         android:clickable="true"
-                        app:cardBackgroundColor="@color/card_selector"
+                        app:cardForegroundColor="@android:color/transparent"
                         app:cardCornerRadius="25dp"
                         app:cardElevation="2dp"
                         app:layout_column="1"
                         app:layout_columnWeight="1"
                         app:layout_gravity="fill"
                         app:layout_row="3"
-                        app:layout_rowWeight="1">
+                        app:layout_rowWeight="1"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#C7C7C7"
+                        app:checkedIcon="@null">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/card_interest_selector"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:padding="16dp">
@@ -366,9 +466,19 @@
                                 android:gravity="center"
                                 android:maxLines="2"
                                 android:text="Philosophy"
-                                android:textColor="#000000"
+                                android:textColor="@color/interest_text_selector"
                                 android:textSize="16sp" />
                         </LinearLayout>
+
+                        <ImageView
+                            android:tag="checkIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="top|end"
+                            android:layout_margin="12dp"
+                            android:src="@drawable/ic_check"
+                            android:visibility="gone"/>
+
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- Row 5: Psychology -->
@@ -378,18 +488,22 @@
                         android:layout_height="100dp"
                         android:layout_margin="8dp"
                         android:checkable="true"
-                        app:cardBackgroundColor="@color/card_selector"
+                        app:cardForegroundColor="@android:color/transparent"
                         app:cardCornerRadius="25dp"
                         app:cardElevation="2dp"
                         app:layout_column="0"
                         app:layout_columnWeight="1"
                         app:layout_gravity="fill"
                         app:layout_row="4"
-                        app:layout_rowWeight="1">
+                        app:layout_rowWeight="1"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#C7C7C7"
+                        app:checkedIcon="@null">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/card_interest_selector"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:padding="16dp">
@@ -402,9 +516,19 @@
                                 android:gravity="center"
                                 android:maxLines="2"
                                 android:text="Psychology"
-                                android:textColor="#000000"
+                                android:textColor="@color/interest_text_selector"
                                 android:textSize="16sp" />
                         </LinearLayout>
+
+                        <ImageView
+                            android:tag="checkIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="top|end"
+                            android:layout_margin="12dp"
+                            android:src="@drawable/ic_check"
+                            android:visibility="gone"/>
+
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- Row 5: Biology -->
@@ -416,18 +540,22 @@
                         android:alwaysDrawnWithCache="false"
                         android:checkable="true"
                         android:clickable="true"
-                        app:cardBackgroundColor="@color/card_selector"
+                        app:cardForegroundColor="@android:color/transparent"
                         app:cardCornerRadius="25dp"
                         app:cardElevation="2dp"
                         app:layout_column="1"
                         app:layout_columnWeight="1"
                         app:layout_gravity="fill"
                         app:layout_row="4"
-                        app:layout_rowWeight="1">
+                        app:layout_rowWeight="1"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#C7C7C7"
+                        app:checkedIcon="@null">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/card_interest_selector"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:padding="16dp">
@@ -440,9 +568,19 @@
                                 android:gravity="center"
                                 android:maxLines="2"
                                 android:text="Biology"
-                                android:textColor="#000000"
+                                android:textColor="@color/interest_text_selector"
                                 android:textSize="16sp" />
                         </LinearLayout>
+
+                        <ImageView
+                            android:tag="checkIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="top|end"
+                            android:layout_margin="12dp"
+                            android:src="@drawable/ic_check"
+                            android:visibility="gone"/>
+
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- Row 6: Chemistry -->
@@ -453,18 +591,22 @@
                         android:layout_margin="8dp"
                         android:checkable="true"
                         android:clickable="true"
-                        app:cardBackgroundColor="@color/card_selector"
+                        app:cardForegroundColor="@android:color/transparent"
                         app:cardCornerRadius="25dp"
                         app:cardElevation="2dp"
                         app:layout_column="0"
                         app:layout_columnWeight="1"
                         app:layout_gravity="fill"
                         app:layout_row="5"
-                        app:layout_rowWeight="1">
+                        app:layout_rowWeight="1"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#C7C7C7"
+                        app:checkedIcon="@null">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/card_interest_selector"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:padding="16dp">
@@ -477,9 +619,19 @@
                                 android:gravity="center"
                                 android:maxLines="2"
                                 android:text="Chemistry"
-                                android:textColor="#000000"
+                                android:textColor="@color/interest_text_selector"
                                 android:textSize="16sp" />
                         </LinearLayout>
+
+                        <ImageView
+                            android:tag="checkIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="top|end"
+                            android:layout_margin="12dp"
+                            android:src="@drawable/ic_check"
+                            android:visibility="gone"/>
+
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- Row 6: Physics -->
@@ -490,18 +642,22 @@
                         android:layout_margin="8dp"
                         android:checkable="true"
                         android:clickable="true"
-                        app:cardBackgroundColor="@color/card_selector"
+                        app:cardForegroundColor="@android:color/transparent"
                         app:cardCornerRadius="25dp"
                         app:cardElevation="2dp"
                         app:layout_column="1"
                         app:layout_columnWeight="1"
                         app:layout_gravity="fill"
                         app:layout_row="5"
-                        app:layout_rowWeight="1">
+                        app:layout_rowWeight="1"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#C7C7C7"
+                        app:checkedIcon="@null">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/card_interest_selector"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:padding="16dp">
@@ -514,9 +670,19 @@
                                 android:gravity="center"
                                 android:maxLines="2"
                                 android:text="Physics"
-                                android:textColor="#000000"
+                                android:textColor="@color/interest_text_selector"
                                 android:textSize="16sp" />
                         </LinearLayout>
+
+                        <ImageView
+                            android:tag="checkIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="top|end"
+                            android:layout_margin="12dp"
+                            android:src="@drawable/ic_check"
+                            android:visibility="gone"/>
+
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- Row 7: Economics -->
@@ -527,18 +693,22 @@
                         android:layout_margin="8dp"
                         android:checkable="true"
                         android:clickable="true"
-                        app:cardBackgroundColor="@color/card_selector"
+                        app:cardForegroundColor="@android:color/transparent"
                         app:cardCornerRadius="25dp"
                         app:cardElevation="2dp"
                         app:layout_column="0"
                         app:layout_columnWeight="1"
                         app:layout_gravity="fill"
                         app:layout_row="6"
-                        app:layout_rowWeight="1">
+                        app:layout_rowWeight="1"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#C7C7C7"
+                        app:checkedIcon="@null">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/card_interest_selector"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:padding="16dp">
@@ -551,9 +721,19 @@
                                 android:gravity="center"
                                 android:maxLines="2"
                                 android:text="Economics"
-                                android:textColor="#000000"
+                                android:textColor="@color/interest_text_selector"
                                 android:textSize="16sp" />
                         </LinearLayout>
+
+                        <ImageView
+                            android:tag="checkIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="top|end"
+                            android:layout_margin="12dp"
+                            android:src="@drawable/ic_check"
+                            android:visibility="gone"/>
+
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- Row 7: Languages -->
@@ -564,18 +744,22 @@
                         android:layout_margin="8dp"
                         android:checkable="true"
                         android:clickable="true"
-                        app:cardBackgroundColor="@color/card_selector"
+                        app:cardForegroundColor="@android:color/transparent"
                         app:cardCornerRadius="25dp"
                         app:cardElevation="2dp"
                         app:layout_column="1"
                         app:layout_columnWeight="1"
                         app:layout_gravity="fill"
                         app:layout_row="6"
-                        app:layout_rowWeight="1">
+                        app:layout_rowWeight="1"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#C7C7C7"
+                        app:checkedIcon="@null">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/card_interest_selector"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:padding="16dp">
@@ -588,9 +772,19 @@
                                 android:gravity="center"
                                 android:maxLines="2"
                                 android:text="Languages"
-                                android:textColor="#000000"
+                                android:textColor="@color/interest_text_selector"
                                 android:textSize="16sp" />
                         </LinearLayout>
+
+                        <ImageView
+                            android:tag="checkIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="top|end"
+                            android:layout_margin="12dp"
+                            android:src="@drawable/ic_check"
+                            android:visibility="gone"/>
+
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- Row 8: Engineering -->
@@ -601,18 +795,22 @@
                         android:layout_margin="8dp"
                         android:checkable="true"
                         android:clickable="true"
-                        app:cardBackgroundColor="@color/card_selector"
+                        app:cardForegroundColor="@android:color/transparent"
                         app:cardCornerRadius="25dp"
                         app:cardElevation="2dp"
                         app:layout_column="0"
                         app:layout_columnWeight="1"
                         app:layout_gravity="fill"
                         app:layout_row="7"
-                        app:layout_rowWeight="1">
+                        app:layout_rowWeight="1"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#C7C7C7"
+                        app:checkedIcon="@null">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/card_interest_selector"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:padding="16dp">
@@ -625,9 +823,19 @@
                                 android:gravity="center"
                                 android:maxLines="2"
                                 android:text="Engineering"
-                                android:textColor="#000000"
+                                android:textColor="@color/interest_text_selector"
                                 android:textSize="16sp" />
                         </LinearLayout>
+
+                        <ImageView
+                            android:tag="checkIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="top|end"
+                            android:layout_margin="12dp"
+                            android:src="@drawable/ic_check"
+                            android:visibility="gone"/>
+
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- Row 8: Medicine -->
@@ -638,18 +846,22 @@
                         android:layout_margin="8dp"
                         android:checkable="true"
                         android:clickable="true"
-                        app:cardBackgroundColor="@color/card_selector"
+                        app:cardForegroundColor="@android:color/transparent"
                         app:cardCornerRadius="25dp"
                         app:cardElevation="2dp"
                         app:layout_column="1"
                         app:layout_columnWeight="1"
                         app:layout_gravity="fill"
                         app:layout_row="7"
-                        app:layout_rowWeight="1">
+                        app:layout_rowWeight="1"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#C7C7C7"
+                        app:checkedIcon="@null">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="@drawable/card_interest_selector"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:padding="16dp">
@@ -662,9 +874,19 @@
                                 android:gravity="center"
                                 android:maxLines="2"
                                 android:text="Medicine"
-                                android:textColor="#000000"
+                                android:textColor="@color/interest_text_selector"
                                 android:textSize="16sp" />
                         </LinearLayout>
+
+                        <ImageView
+                            android:tag="checkIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="top|end"
+                            android:layout_margin="12dp"
+                            android:src="@drawable/ic_check"
+                            android:visibility="gone"/>
+
                     </com.google.android.material.card.MaterialCardView>
 
                 </androidx.gridlayout.widget.GridLayout>

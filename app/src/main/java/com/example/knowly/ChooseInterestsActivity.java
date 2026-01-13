@@ -2,9 +2,14 @@ package com.example.knowly;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -54,30 +59,61 @@ public class ChooseInterestsActivity extends AppCompatActivity {
 
     private void setupCard(int cardId, String interest) {
         MaterialCardView card = findViewById(cardId);
+        ViewGroup bg = (ViewGroup) card.getChildAt(0);
+        TextView text = (TextView) bg.getChildAt(0);
+        ImageView checkIcon = card.findViewWithTag("checkIcon");
 
         card.setOnClickListener(v -> {
-            card.setChecked(!card.isChecked());
+            boolean checked = !card.isChecked();
+            card.setChecked(checked);
 
-            if (card.isChecked()) {
+            bg.setSelected(checked);
+            text.setSelected(checked);
+            checkIcon.setVisibility(checked ? View.VISIBLE : View.GONE);
+
+            card.setStrokeColor(
+                    checked
+                            ? ContextCompat.getColor(this, android.R.color.white)
+                            : ContextCompat.getColor(this, R.color.dark_gray) // default
+            );
+
+            if (checked) {
                 selectedInterests.add(interest);
             } else {
                 selectedInterests.remove(interest);
             }
         });
+
     }
 
     private void saveInterestsAndProceed() {
+
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        // Convert Set -> Map (Firebase-safe)
+        java.util.HashMap<String, Boolean> interestsMap = new java.util.HashMap<>();
+        for (String interest : selectedInterests) {
+            interestsMap.put(interest, true);
+        }
 
         FirebaseDatabase.getInstance().getReference("Users")
                 .child(uid)
                 .child("interests")
-                .setValue(selectedInterests)
+                .setValue(interestsMap)
                 .addOnSuccessListener(unused -> {
+                    Toast.makeText(this, "Interests saved!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(this, HomePage.class));
                     finish();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this,
+                            "Save failed: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
                 });
     }
-
 }
-
