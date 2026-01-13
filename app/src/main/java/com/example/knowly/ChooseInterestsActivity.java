@@ -56,16 +56,12 @@ public class ChooseInterestsActivity extends AppCompatActivity {
         MaterialCardView card = findViewById(cardId);
 
         card.setOnClickListener(v -> {
-            if (selectedInterests.contains(interest)) {
-                selectedInterests.remove(interest);
-                card.setCardBackgroundColor(
-                        getResources().getColor(android.R.color.white)
-                );
-            } else {
+            card.setChecked(!card.isChecked());
+
+            if (card.isChecked()) {
                 selectedInterests.add(interest);
-                card.setCardBackgroundColor(
-                        getResources().getColor(R.color.card_selector)
-                );
+            } else {
+                selectedInterests.remove(interest);
             }
         });
     }
