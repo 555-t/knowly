@@ -76,12 +76,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     });
         }
 
-        // 3. Set the interaction numbers
+        // 3. TIMESTAMP LOGIC (NEW)
+        if (post.getTimestamp() != 0) {
+            holder.timeOfPost.setText(getTimeAgo(post.getTimestamp()));
+        } else {
+            holder.timeOfPost.setText("just now");
+        }
+
+        // 4. Set the interaction numbers
         holder.upvoteNum.setText(String.valueOf(post.getUpvote_num()));
         holder.downvoteNum.setText(String.valueOf(post.getDownvote_num()));
         holder.commentNum.setText(String.valueOf(post.getComment_num()));
 
-        // 4. Category logic
+        // 5. Category logic
         if (post.getCategories() != null && !post.getCategories().isEmpty()) {
             holder.category.setText(post.getCategories().get(0));
             holder.category.setVisibility(View.VISIBLE);
@@ -89,10 +96,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             holder.category.setVisibility(View.GONE);
         }
 
-        // 5. Visual Feedback for Votes (Updated logic)
+        // 6. Visual Feedback for Votes
         updateVoteUI(holder, post, userId);
 
-        // 6. Voting Logic
+        // 7. Voting Logic
         if (post.getPostId() != null) {
             DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("Posts").child(post.getPostId());
 
@@ -119,48 +126,63 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             });
         }
 
-        // 7. Navigation to Details
+        // 8. Navigation to Details
         holder.commentImg.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), PostDetailsActivity.class);
             intent.putExtra("POST_ID", post.getPostId());
             v.getContext().startActivity(intent);
         });
 
-        // 8. THREE DOT MENU (Delete/Report)
+        // 9. THREE DOT MENU (Delete/Report)
         holder.moreBtn.setOnClickListener(v -> {
             showPopupMenu(v, post, userId);
         });
     }
 
-    private void updateVoteUI(ViewHolder holder, Post post, String userId) {
-        // UPVOTE UI
-        if (post.getUpvotes() != null && post.getUpvotes().containsKey(userId)) {
-            holder.upvoteImg.setSelected(true); // Triggers 'vote_filled' in selector
-            holder.upvoteImg.setColorFilter(Color.parseColor("#3498db")); // Bright Blue
+    // HELPER METHOD FOR TIMESTAMP
+    private String getTimeAgo(long time) {
+        long now = System.currentTimeMillis();
+        if (time > now || time <= 0) return "just now";
+
+        final long diff = now - time;
+        if (diff < 60000) {
+            return "just now";
+        } else if (diff < 3600000) {
+            return (diff / 60000) + "m ago";
+        } else if (diff < 86400000) {
+            return (diff / 3600000) + "h ago";
+        } else if (diff < 604800000) {
+            return (diff / 86400000) + "d ago";
         } else {
-            holder.upvoteImg.setSelected(false); // Triggers 'vote_unfilled' in selector
-            holder.upvoteImg.setColorFilter(Color.parseColor("#808080")); // Dark Gray
+            return (diff / 604800000) + "w ago";
+        }
+    }
+
+    private void updateVoteUI(ViewHolder holder, Post post, String userId) {
+        if (post.getUpvotes() != null && post.getUpvotes().containsKey(userId)) {
+            holder.upvoteImg.setSelected(true);
+            holder.upvoteImg.setColorFilter(Color.parseColor("#3498db"));
+        } else {
+            holder.upvoteImg.setSelected(false);
+            holder.upvoteImg.setColorFilter(Color.parseColor("#808080"));
         }
 
-        // DOWNVOTE UI
         if (post.getDownvotes() != null && post.getDownvotes().containsKey(userId)) {
-            holder.downvoteImg.setSelected(true); // Triggers 'vote_filled' in selector
-            holder.downvoteImg.setColorFilter(Color.parseColor("#e74c3c")); // Bright Red
+            holder.downvoteImg.setSelected(true);
+            holder.downvoteImg.setColorFilter(Color.parseColor("#e74c3c"));
         } else {
-            holder.downvoteImg.setSelected(false); // Triggers 'vote_unfilled' in selector
-            holder.downvoteImg.setColorFilter(Color.parseColor("#808080")); // Dark Gray
+            holder.downvoteImg.setSelected(false);
+            holder.downvoteImg.setColorFilter(Color.parseColor("#808080"));
         }
     }
 
     private void showPopupMenu(View view, Post post, String userId) {
         PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
-
         if (post.getAuthor() != null && post.getAuthor().equals(userId)) {
             popupMenu.getMenu().add("Delete Post");
         } else {
             popupMenu.getMenu().add("Report Post");
         }
-
         popupMenu.setOnMenuItemClickListener(item -> {
             if (item.getTitle().equals("Delete Post")) {
                 showDeleteConfirmation(view.getContext(), post.getPostId());
@@ -191,7 +213,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView content, author, category, postInitial;
+        TextView content, author, category, postInitial, timeOfPost;
         TextView upvoteNum, downvoteNum, commentNum;
         ImageView upvoteImg, downvoteImg, commentImg;
         ImageButton moreBtn;
@@ -200,6 +222,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             super(v);
             content = v.findViewById(R.id.post_content);
             author = v.findViewById(R.id.username);
+            timeOfPost = v.findViewById(R.id.time_of_post); // FIXED: Linked ID
             category = v.findViewById(R.id.category_text);
             postInitial = v.findViewById(R.id.post_initial);
             upvoteNum = v.findViewById(R.id.upvote_num);

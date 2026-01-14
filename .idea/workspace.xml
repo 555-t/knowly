@@ -282,13 +282,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="can load username and pfp for some">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/PostAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/PostAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/selector_downvote.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/selector_downvote.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/selector_upvote.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/selector_upvote.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
-    </list>
+    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="fixed the vote buttons" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -782,7 +776,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768413980488</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="fixed the vote buttons">
+      <option name="closed" value="true" />
+      <created>1768415233052</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1768415233052</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -831,7 +833,8 @@
     <MESSAGE value="clicking on comment button opens postdetails page, and can comment now" />
     <MESSAGE value="can delete comment" />
     <MESSAGE value="can load username and pfp for some" />
-    <option name="LAST_COMMIT_MESSAGE" value="can load username and pfp for some" />
+    <MESSAGE value="fixed the vote buttons" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed the vote buttons" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
