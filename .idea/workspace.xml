@@ -28,12 +28,37 @@
           <theme>@style/Theme.Knowly</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_home_filled.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_launcher_foreground.xml">
         <config>
           <theme>@style/Theme.Knowly</theme>
         </config>
       </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/more_vert_post.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/nav_home_selector.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/nav_notif_selector.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/nav_search_selector.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/nav_weekly_selector.xml">
         <config>
           <theme>@style/Theme.Knowly</theme>
         </config>
@@ -124,6 +149,11 @@
         </config>
       </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_userpage.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/bottom_nav_bar.xml">
         <config>
           <theme>@style/Theme.Knowly</theme>
         </config>
@@ -223,6 +253,11 @@
           <theme>@style/Theme.Knowly</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/menu_setting.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/notifications_activity.xml">
         <config>
           <theme>@style/Theme.Knowly</theme>
@@ -239,9 +274,9 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="fixed ChooseInterestsActivity buttons,">
+    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="commit workspace and misc">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/home_page.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/home_page.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -258,36 +293,19 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\Malak\.android\avd\MyPhone.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\User\.android\avd\Medium_Phone.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
     </projectState>
-  </component>
-  <component name="ExternalProjectsManager">
-    <system id="GRADLE">
-      <state>
-        <projects_view>
-          <tree_state>
-            <expand>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="knowly1.0" type="f1a62948:ProjectNode" />
-              </path>
-            </expand>
-            <select />
-          </tree_state>
-        </projects_view>
-      </state>
-    </system>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
         <option value="valueResourceFile" />
-        <option value="layoutResourceFile" />
         <option value="resourceFile" />
+        <option value="layoutResourceFile" />
       </list>
     </option>
   </component>
@@ -310,12 +328,12 @@
     &quot;assignee&quot;: &quot;kamtrbl&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/555-t/knowly.git",
-    "accountId": "7eb6e738-c634-4f9f-9c5c-0ed0cbe6f161"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/555-t/knowly.git&quot;,
+    &quot;accountId&quot;: &quot;bcb2c10b-2723-4fbf-af99-ea2b88f66de9&quot;
   }
-}]]></component>
+}</component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -343,7 +361,7 @@
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;last_directory_selection&quot;: &quot;C:/Users/User/Documents/GitHub/knowly/app/src/main/java&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/User/Documents/GitHub/knowly/app/src/main/res/drawable&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;AndroidSdkUpdater&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;
   }
 }</component>
   <component name="RecentsManager">
@@ -628,23 +646,55 @@
       <option name="project" value="LOCAL" />
       <updated>1768287570626</updated>
     </task>
-    <task id="LOCAL-00025" summary="fixed ChooseInterestsActivity buttons,">
+    <task id="LOCAL-00025" summary="fixed bottom nav bar">
       <option name="closed" value="true" />
-      <created>1768295025076</created>
+      <created>1768292570176</created>
       <option name="number" value="00025" />
       <option name="presentableId" value="LOCAL-00025" />
       <option name="project" value="LOCAL" />
-      <updated>1768295025076</updated>
+      <updated>1768292570176</updated>
     </task>
-    <task id="LOCAL-00026" summary="fixed ChooseInterestsActivity buttons,">
+    <task id="LOCAL-00026" summary="fixed bottom nav bar">
       <option name="closed" value="true" />
-      <created>1768295210335</created>
+      <created>1768292822001</created>
       <option name="number" value="00026" />
       <option name="presentableId" value="LOCAL-00026" />
       <option name="project" value="LOCAL" />
-      <updated>1768295210335</updated>
+      <updated>1768292822001</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="fixed pages with bottom nav bar">
+      <option name="closed" value="true" />
+      <created>1768301509009</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1768301509009</updated>
+    </task>
+    <task id="LOCAL-00028" summary="fixed pages with bottom nav bar">
+      <option name="closed" value="true" />
+      <created>1768302070999</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1768302070999</updated>
+    </task>
+    <task id="LOCAL-00029" summary="fixed pages with bottom nav bar">
+      <option name="closed" value="true" />
+      <created>1768302404257</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1768302404257</updated>
+    </task>
+    <task id="LOCAL-00030" summary="commit workspace and misc">
+      <option name="closed" value="true" />
+      <created>1768304258849</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1768304258849</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -684,8 +734,10 @@
     <MESSAGE value="readded inter bold font that was deleted" />
     <MESSAGE value="updated userpage" />
     <MESSAGE value="fixed userpage" />
-    <MESSAGE value="fixed ChooseInterestsActivity buttons," />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed ChooseInterestsActivity buttons," />
+    <MESSAGE value="fixed bottom nav bar" />
+    <MESSAGE value="fixed pages with bottom nav bar" />
+    <MESSAGE value="commit workspace and misc" />
+    <option name="LAST_COMMIT_MESSAGE" value="commit workspace and misc" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
