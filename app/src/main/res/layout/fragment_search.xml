@@ -44,10 +44,11 @@
                 android:background="@drawable/bg_search_input"
                 android:ems="10"
                 android:fontFamily="@font/inter_medium"
+                android:hint="Search posts, users, topics..."
                 android:inputType="text"
-                android:text="Search posts, users, topics..."
                 android:textAlignment="center"
                 android:textColor="#90FFFFFF"
+                android:textColorHint="#90FFFFFF"
                 android:textColorLink="#FFFFFF"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -59,6 +60,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/light_wallpaper"

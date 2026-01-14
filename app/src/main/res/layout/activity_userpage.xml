@@ -59,23 +59,26 @@
             app:tint="#FFFFFF" />
     </com.google.android.material.card.MaterialCardView>
 
+
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="434dp"
+        android:layout_height="646dp"
         android:clipToPadding="false"
         android:paddingBottom="100dp"
         android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewHeader">
+        app:layout_constraintTop_toBottomOf="@+id/viewHeader"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="-16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipToPadding="false"
             android:orientation="vertical"
             android:padding="16dp"
-            android:clipToPadding="false"
-            android:paddingBottom="40dp" >
+            android:paddingBottom="40dp">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -94,6 +97,8 @@
                         android:id="@+id/cvAvatar"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
+                        android:clickable="true"
+                        android:focusable="true"
                         app:cardBackgroundColor="#69F0AE"
                         app:cardCornerRadius="35dp"
                         app:cardElevation="0dp"
@@ -125,6 +130,18 @@
                         app:layout_constraintTop_toTopOf="@+id/cvAvatar" />
 
                     <TextView
+                        android:id="@+id/tvCredentials"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_light"
+                        android:text="Credentials loading..."
+                        android:textColor="#757575"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/tvName"
+                        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+
+                    <TextView
                         android:id="@+id/tvEmail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -133,13 +150,13 @@
                         android:textColor="#757575"
                         android:textSize="14sp"
                         app:layout_constraintStart_toStartOf="@+id/tvName"
-                        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+                        app:layout_constraintTop_toBottomOf="@+id/tvCredentials" />
 
                     <TextView
                         android:id="@+id/tvFollowers"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="4dp"
                         android:fontFamily="@font/inter_light"
                         android:text="0 Followers   0 Following"
                         android:textColor="#424242"
@@ -148,17 +165,31 @@
                         app:layout_constraintStart_toStartOf="@+id/tvName"
                         app:layout_constraintTop_toBottomOf="@+id/tvEmail" />
 
+                    <TextView
+                        android:id="@+id/tvBio"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:fontFamily="@font/inter_light"
+                        android:lineSpacingExtra="2dp"
+                        android:text="Bio loading..."
+                        android:textColor="#616161"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvFollowers" />
+
                     <androidx.cardview.widget.CardView
                         android:id="@+id/btnEditProfile"
                         android:layout_width="0dp"
                         android:layout_height="45dp"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="20dp"
                         app:cardBackgroundColor="#64DD17"
                         app:cardCornerRadius="18dp"
-                        app:cardElevation="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/cvAvatar">
+                        app:layout_constraintTop_toBottomOf="@+id/tvBio">
 
                         <TextView
                             android:layout_width="match_parent"
@@ -199,6 +230,7 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical">
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -209,8 +241,8 @@
                             <com.google.android.material.card.MaterialCardView
                                 android:layout_width="match_parent"
                                 android:layout_height="3dp"
-                                android:layout_marginTop="8dp"
                                 android:layout_marginHorizontal="12dp"
+                                android:layout_marginTop="8dp"
                                 app:cardBackgroundColor="#00ACC1"
                                 app:cardCornerRadius="10dp"
                                 app:cardElevation="0dp"
@@ -238,8 +270,8 @@
                         android:id="@+id/rvUserPosts"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false"
                         android:layout_marginTop="8dp"
+                        android:nestedScrollingEnabled="false"
                         android:paddingBottom="20dp"
                         tools:listitem="@layout/item_post" />
                 </LinearLayout>
@@ -252,8 +284,8 @@
         android:id="@+id/logoutMenu"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="30dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="28dp"
         android:visibility="gone"
         app:cardBackgroundColor="#FFFFFF"
         app:cardCornerRadius="8dp"
@@ -262,10 +294,8 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
 
-        <include layout="@layout/menu_setting"/>
+        <include layout="@layout/menu_setting" />
     </androidx.cardview.widget.CardView>
-
-
 
     <include
         android:id="@+id/included_nav"
