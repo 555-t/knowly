@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
+
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
 
     private List<NotificationItem> list;
@@ -20,7 +21,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // This inflates the individual row layout
+        // This connects to your item_notification.xml layout
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notification, parent, false);
         return new ViewHolder(view);
     }
@@ -29,27 +30,45 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         NotificationItem item = list.get(position);
 
-        // Setting the text and images for each row
-        holder.user.setText(item.getUsername());
-        holder.info.setText(item.getAction());
+        holder.username.setText(item.getUsername());
+        holder.action.setText(item.getAction());
         holder.time.setText(item.getTime());
-        holder.icon.setImageResource(item.getIconRes());
+
+        // --- IMPROVED ICON LOGIC ---
+        String iconName = item.getIconRes();
+        int resId = 0;
+
+        if (iconName != null && !iconName.isEmpty()) {
+            // Find the image ID by its string name
+            resId = holder.itemView.getContext().getResources().getIdentifier(
+                    iconName,
+                    "drawable",
+                    holder.itemView.getContext().getPackageName()
+            );
+        }
+
+        // Use the icon from Firebase if found, otherwise use your new default_icon.xml
+        if (resId != 0) {
+            holder.icon.setImageResource(resId);
+        } else {
+            holder.icon.setImageResource(R.drawable.default_icon);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return list == null ? 0 : list.size();
+        return list.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView user, info, time;
+        TextView username, action, time;
         ImageView icon;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            // These IDs must match the ones in your item_notification.xml
-            user = itemView.findViewById(R.id.user_name);
-            info = itemView.findViewById(R.id.notif_description);
+            // These IDs must match your item_notification.xml exactly
+            username = itemView.findViewById(R.id.user);
+            action = itemView.findViewById(R.id.notif_info);
             time = itemView.findViewById(R.id.notif_time);
             icon = itemView.findViewById(R.id.notif_icon);
         }

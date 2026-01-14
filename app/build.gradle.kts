@@ -49,7 +49,7 @@ dependencies {
 
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-database")
-
+    implementation("com.google.firebase:firebase-firestore:24.10.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.8.5")
     implementation("androidx.fragment:fragment-ktx:1.8.5")
