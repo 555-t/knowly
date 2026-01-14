@@ -95,16 +95,13 @@ public class ChooseInterestsActivity extends AppCompatActivity {
 
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        // Convert Set -> Map (Firebase-safe)
-        java.util.HashMap<String, Boolean> interestsMap = new java.util.HashMap<>();
-        for (String interest : selectedInterests) {
-            interestsMap.put(interest, true);
-        }
+        // Convert Set -> List
+        java.util.List<String> interestsList = new java.util.ArrayList<>(selectedInterests);
 
         FirebaseDatabase.getInstance().getReference("Users")
                 .child(uid)
                 .child("interests")
-                .setValue(interestsMap)
+                .setValue(interestsList) // <-- save as list of strings
                 .addOnSuccessListener(unused -> {
                     Toast.makeText(this, "Interests saved!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(this, HomePage.class));
@@ -116,4 +113,5 @@ public class ChooseInterestsActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                 });
     }
+
 }

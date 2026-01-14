@@ -8,6 +8,13 @@
     <color name="light_green">#F0FBF2</color>
     <color name="thin_light_green">#C2F4CE</color>
     <color name="dark_gray">#C7C7C7</color>
+    <!-- Chip Background -->
+    <color name="chip_cat_bg_unchecked">#DCDCDC</color>
+
+    <!-- Chip Text Colors -->
+    <color name="chip_cat_text_unchecked">#3A3A3A</color>
+    <color name="chip_cat_text_checked">#FFFFFF</color>
+
 
 
 </resources>

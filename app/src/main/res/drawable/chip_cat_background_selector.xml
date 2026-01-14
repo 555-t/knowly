@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Checked state: gradient background -->
+    <item android:state_checked="true">
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#00b9d7"
+                android:endColor="#79ce00"
+                android:angle="0" /> <!-- left to right -->
+            <corners android:radius="20dp"/>
+        </shape>
+    </item>
+
+    <!-- Unchecked state: solid color from colors.xml -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/chip_cat_bg_unchecked"/>
+            <corners android:radius="20dp"/>
+        </shape>
+    </item>
+
+</selector>
