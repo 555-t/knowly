@@ -23,15 +23,15 @@ import java.util.List;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private List<Post> postList;
 
+    public PostAdapter(List<Post> postList) {
+        this.postList = postList;
+    }
+
     private String getCurrentUserId() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             return FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
         return null;
-    }
-
-    public PostAdapter(List<Post> postList) {
-        this.postList = postList;
     }
 
     @NonNull
@@ -47,48 +47,55 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         String userId = getCurrentUserId();
         if (userId == null) return;
 
-        // 1. Set post content
+        // --- 1. Set post content ---
         holder.content.setText(post.getContent());
 
-        // 2. FETCH REAL USERNAME & SET PFP INITIAL
+        // --- 2. FETCH REAL USERNAME (FIXED FOR RECYCLING) ---
         String authorUid = post.getAuthor();
-        if (authorUid != null) {
-            holder.author.setText("Loading...");
-            holder.postInitial.setText("?");
 
+        // Use a tag to ensure the async result matches this specific ViewHolder
+        holder.author.setTag(authorUid);
+
+        // Reset to placeholder while loading
+        holder.author.setText("...");
+        holder.postInitial.setText("?");
+
+        if (authorUid != null) {
             FirebaseDatabase.getInstance().getReference("Users")
                     .child(authorUid)
                     .child("username")
                     .get()
                     .addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && task.getResult().exists()) {
-                            String name = String.valueOf(task.getResult().getValue());
-                            holder.author.setText(name);
-                            if (name != null && !name.isEmpty()) {
-                                holder.postInitial.setText(name.substring(0, 1).toUpperCase());
-                            }
-                        } else {
-                            holder.author.setText(authorUid);
-                            if (authorUid.length() > 0) {
-                                holder.postInitial.setText(authorUid.substring(0, 1).toUpperCase());
+                        // Check if the holder is still meant to show THIS author
+                        if (holder.author.getTag() != null && holder.author.getTag().equals(authorUid)) {
+                            if (task.isSuccessful() && task.getResult().exists()) {
+                                String name = String.valueOf(task.getResult().getValue());
+                                holder.author.setText(name);
+                                if (name != null && !name.isEmpty()) {
+                                    holder.postInitial.setText(name.substring(0, 1).toUpperCase());
+                                }
+                            } else {
+                                // Fallback to a shortened version of the UID if name is missing
+                                holder.author.setText("User " + authorUid.substring(0, 4));
+                                holder.postInitial.setText("U");
                             }
                         }
                     });
         }
 
-        // 3. TIMESTAMP LOGIC (NEW)
+        // --- 3. TIMESTAMP LOGIC ---
         if (post.getTimestamp() != 0) {
             holder.timeOfPost.setText(getTimeAgo(post.getTimestamp()));
         } else {
             holder.timeOfPost.setText("just now");
         }
 
-        // 4. Set the interaction numbers
+        // --- 4. Set the interaction numbers ---
         holder.upvoteNum.setText(String.valueOf(post.getUpvote_num()));
         holder.downvoteNum.setText(String.valueOf(post.getDownvote_num()));
         holder.commentNum.setText(String.valueOf(post.getComment_num()));
 
-        // 5. Category logic
+        // --- 5. Category logic ---
         if (post.getCategories() != null && !post.getCategories().isEmpty()) {
             holder.category.setText(post.getCategories().get(0));
             holder.category.setVisibility(View.VISIBLE);
@@ -96,10 +103,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             holder.category.setVisibility(View.GONE);
         }
 
-        // 6. Visual Feedback for Votes
+        // --- 6. UI & Interaction Logic ---
         updateVoteUI(holder, post, userId);
 
-        // 7. Voting Logic
         if (post.getPostId() != null) {
             DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("Posts").child(post.getPostId());
 
@@ -111,6 +117,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 } else {
                     upRef.setValue(true);
                     downRef.removeValue();
+                    // Type set to "comment" per your original code
                     NotificationUtils.sendNotification(post.getAuthor(), "comment", "upvoted your post");
                 }
             });
@@ -127,53 +134,42 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             });
         }
 
-        // 8. Navigation to Details
         holder.commentImg.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), PostDetailsActivity.class);
             intent.putExtra("POST_ID", post.getPostId());
             v.getContext().startActivity(intent);
         });
 
-        // 9. THREE DOT MENU (Delete/Report)
-        holder.moreBtn.setOnClickListener(v -> {
-            showPopupMenu(v, post, userId);
-        });
+        holder.moreBtn.setOnClickListener(v -> showPopupMenu(v, post, userId));
     }
 
-    // HELPER METHOD FOR TIMESTAMP
     private String getTimeAgo(long time) {
         long now = System.currentTimeMillis();
         if (time > now || time <= 0) return "just now";
 
         final long diff = now - time;
-        if (diff < 60000) {
-            return "just now";
-        } else if (diff < 3600000) {
-            return (diff / 60000) + "m ago";
-        } else if (diff < 86400000) {
-            return (diff / 3600000) + "h ago";
-        } else if (diff < 604800000) {
-            return (diff / 86400000) + "d ago";
-        } else {
-            return (diff / 604800000) + "w ago";
-        }
+        if (diff < 60000) return "just now";
+        if (diff < 3600000) return (diff / 60000) + "m ago";
+        if (diff < 86400000) return (diff / 3600000) + "h ago";
+        if (diff < 604800000) return (diff / 86400000) + "d ago";
+        return (diff / 604800000) + "w ago";
     }
 
     private void updateVoteUI(ViewHolder holder, Post post, String userId) {
+        int activeColor = Color.parseColor("#3498db"); // Blue
+        int downColor = Color.parseColor("#e74c3c");   // Red
+        int grayColor = Color.parseColor("#808080");   // Gray
+
         if (post.getUpvotes() != null && post.getUpvotes().containsKey(userId)) {
-            holder.upvoteImg.setSelected(true);
-            holder.upvoteImg.setColorFilter(Color.parseColor("#3498db"));
+            holder.upvoteImg.setColorFilter(activeColor);
         } else {
-            holder.upvoteImg.setSelected(false);
-            holder.upvoteImg.setColorFilter(Color.parseColor("#808080"));
+            holder.upvoteImg.setColorFilter(grayColor);
         }
 
         if (post.getDownvotes() != null && post.getDownvotes().containsKey(userId)) {
-            holder.downvoteImg.setSelected(true);
-            holder.downvoteImg.setColorFilter(Color.parseColor("#e74c3c"));
+            holder.downvoteImg.setColorFilter(downColor);
         } else {
-            holder.downvoteImg.setSelected(false);
-            holder.downvoteImg.setColorFilter(Color.parseColor("#808080"));
+            holder.downvoteImg.setColorFilter(grayColor);
         }
     }
 
@@ -223,7 +219,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             super(v);
             content = v.findViewById(R.id.post_content);
             author = v.findViewById(R.id.username);
-            timeOfPost = v.findViewById(R.id.time_of_post); // FIXED: Linked ID
+            timeOfPost = v.findViewById(R.id.time_of_post);
             category = v.findViewById(R.id.category_text);
             postInitial = v.findViewById(R.id.post_initial);
             upvoteNum = v.findViewById(R.id.upvote_num);

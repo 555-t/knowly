@@ -287,11 +287,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="tried fixing notif">
+    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="fixed comment notif hvnt tried follow notif bcs no follow">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/NotificationAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/NotificationAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/comment_notif.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/comment_notif.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/PostAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/PostAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -810,7 +810,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768417521854</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="fixed comment notif hvnt tried follow notif bcs no follow">
+      <option name="closed" value="true" />
+      <created>1768419822995</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1768419822995</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -837,7 +845,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added search page, item post, splash screen" />
     <MESSAGE value="added comment button, adjusted margins for posts" />
     <MESSAGE value="did something" />
     <MESSAGE value="added weekly feature page and choose interest" />
@@ -862,7 +869,8 @@
     <MESSAGE value="fixed the vote buttons" />
     <MESSAGE value="fixing timestamps for posts" />
     <MESSAGE value="tried fixing notif" />
-    <option name="LAST_COMMIT_MESSAGE" value="tried fixing notif" />
+    <MESSAGE value="fixed comment notif hvnt tried follow notif bcs no follow" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed comment notif hvnt tried follow notif bcs no follow" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
