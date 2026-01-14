@@ -297,13 +297,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="changes to othersprofileactivity">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/OthersProfileActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/OthersProfileActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/PostAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/PostAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/UserPageActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/UserPageActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_profile_view_other.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_profile_view_other.xml" afterDir="false" />
-    </list>
+    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="homepage tabs work, left is the bookmark function" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -861,7 +855,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768428595592</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="homepage tabs work, left is the bookmark function">
+      <option name="closed" value="true" />
+      <created>1768431509974</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1768431509974</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -888,7 +890,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fixing" />
     <MESSAGE value="added user page" />
     <MESSAGE value="misc.xml commit" />
     <MESSAGE value="changed bg of activity_interests.xml" />
@@ -913,7 +914,8 @@
     <MESSAGE value="the categories for posts can be shown more than 1 now, and fixed minor design details" />
     <MESSAGE value="changes to home page mainly" />
     <MESSAGE value="changes to othersprofileactivity" />
-    <option name="LAST_COMMIT_MESSAGE" value="changes to othersprofileactivity" />
+    <MESSAGE value="homepage tabs work, left is the bookmark function" />
+    <option name="LAST_COMMIT_MESSAGE" value="homepage tabs work, left is the bookmark function" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
