@@ -282,12 +282,8 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="Added EditProfileActivity.java to firebase">
+    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="fixed the userprofile in UserPageActivity.java and NavigationHelper.java">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/NavigationHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/NavigationHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/UserPageActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/UserPageActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/bottom_nav_bar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/bottom_nav_bar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -798,7 +794,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768417759363</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="fixed the userprofile in UserPageActivity.java and NavigationHelper.java">
+      <option name="closed" value="true" />
+      <created>1768418433559</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1768418433559</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -847,7 +851,8 @@
     <MESSAGE value="clicking on comment button opens postdetails page, and can comment now" />
     <MESSAGE value="can delete comment" />
     <MESSAGE value="Added EditProfileActivity.java to firebase" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added EditProfileActivity.java to firebase" />
+    <MESSAGE value="fixed the userprofile in UserPageActivity.java and NavigationHelper.java" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed the userprofile in UserPageActivity.java and NavigationHelper.java" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
