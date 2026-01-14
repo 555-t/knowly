@@ -1,12 +1,17 @@
 package com.example.knowly;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -49,7 +54,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         String authorUid = post.getAuthor();
         if (authorUid != null) {
             holder.author.setText("Loading...");
-            holder.postInitial.setText("?"); // Default placeholder
+            holder.postInitial.setText("?");
 
             FirebaseDatabase.getInstance().getReference("Users")
                     .child(authorUid)
@@ -59,13 +64,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                         if (task.isSuccessful() && task.getResult().exists()) {
                             String name = String.valueOf(task.getResult().getValue());
                             holder.author.setText(name);
-
-                            // Set the PFP initial (e.g., "C" for chihuahua)
                             if (name != null && !name.isEmpty()) {
                                 holder.postInitial.setText(name.substring(0, 1).toUpperCase());
                             }
                         } else {
-                            // If it's the old "student_user" or ID not found
                             holder.author.setText(authorUid);
                             if (authorUid.length() > 0) {
                                 holder.postInitial.setText(authorUid.substring(0, 1).toUpperCase());
@@ -87,18 +89,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             holder.category.setVisibility(View.GONE);
         }
 
-        // 5. Visual Feedback for Votes
-        if (post.getUpvotes() != null && post.getUpvotes().containsKey(userId)) {
-            holder.upvoteImg.setColorFilter(Color.parseColor("#3498db"));
-        } else {
-            holder.upvoteImg.setColorFilter(Color.GRAY);
-        }
-
-        if (post.getDownvotes() != null && post.getDownvotes().containsKey(userId)) {
-            holder.downvoteImg.setColorFilter(Color.parseColor("#e74c3c"));
-        } else {
-            holder.downvoteImg.setColorFilter(Color.GRAY);
-        }
+        // 5. Visual Feedback for Votes (Updated logic)
+        updateVoteUI(holder, post, userId);
 
         // 6. Voting Logic
         if (post.getPostId() != null) {
@@ -133,6 +125,64 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             intent.putExtra("POST_ID", post.getPostId());
             v.getContext().startActivity(intent);
         });
+
+        // 8. THREE DOT MENU (Delete/Report)
+        holder.moreBtn.setOnClickListener(v -> {
+            showPopupMenu(v, post, userId);
+        });
+    }
+
+    private void updateVoteUI(ViewHolder holder, Post post, String userId) {
+        // UPVOTE UI
+        if (post.getUpvotes() != null && post.getUpvotes().containsKey(userId)) {
+            holder.upvoteImg.setSelected(true); // Triggers 'vote_filled' in selector
+            holder.upvoteImg.setColorFilter(Color.parseColor("#3498db")); // Bright Blue
+        } else {
+            holder.upvoteImg.setSelected(false); // Triggers 'vote_unfilled' in selector
+            holder.upvoteImg.setColorFilter(Color.parseColor("#808080")); // Dark Gray
+        }
+
+        // DOWNVOTE UI
+        if (post.getDownvotes() != null && post.getDownvotes().containsKey(userId)) {
+            holder.downvoteImg.setSelected(true); // Triggers 'vote_filled' in selector
+            holder.downvoteImg.setColorFilter(Color.parseColor("#e74c3c")); // Bright Red
+        } else {
+            holder.downvoteImg.setSelected(false); // Triggers 'vote_unfilled' in selector
+            holder.downvoteImg.setColorFilter(Color.parseColor("#808080")); // Dark Gray
+        }
+    }
+
+    private void showPopupMenu(View view, Post post, String userId) {
+        PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
+
+        if (post.getAuthor() != null && post.getAuthor().equals(userId)) {
+            popupMenu.getMenu().add("Delete Post");
+        } else {
+            popupMenu.getMenu().add("Report Post");
+        }
+
+        popupMenu.setOnMenuItemClickListener(item -> {
+            if (item.getTitle().equals("Delete Post")) {
+                showDeleteConfirmation(view.getContext(), post.getPostId());
+            } else {
+                Toast.makeText(view.getContext(), "Post Reported", Toast.LENGTH_SHORT).show();
+            }
+            return true;
+        });
+        popupMenu.show();
+    }
+
+    private void showDeleteConfirmation(Context context, String postId) {
+        new AlertDialog.Builder(context)
+                .setTitle("Delete Post")
+                .setMessage("Are you sure you want to delete this post?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    FirebaseDatabase.getInstance().getReference("Posts")
+                            .child(postId).removeValue()
+                            .addOnSuccessListener(aVoid -> Toast.makeText(context, "Post removed", Toast.LENGTH_SHORT).show());
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     @Override
@@ -144,19 +194,21 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         TextView content, author, category, postInitial;
         TextView upvoteNum, downvoteNum, commentNum;
         ImageView upvoteImg, downvoteImg, commentImg;
+        ImageButton moreBtn;
 
         public ViewHolder(View v) {
             super(v);
             content = v.findViewById(R.id.post_content);
             author = v.findViewById(R.id.username);
             category = v.findViewById(R.id.category_text);
-            postInitial = v.findViewById(R.id.post_initial); // NEW: Matches your new XML
+            postInitial = v.findViewById(R.id.post_initial);
             upvoteNum = v.findViewById(R.id.upvote_num);
             downvoteNum = v.findViewById(R.id.downvote_num);
             commentNum = v.findViewById(R.id.comment_num);
             upvoteImg = v.findViewById(R.id.upvote_img);
             downvoteImg = v.findViewById(R.id.downvote_img);
             commentImg = v.findViewById(R.id.comment_img);
+            moreBtn = v.findViewById(R.id.imageButton);
         }
     }
 }
