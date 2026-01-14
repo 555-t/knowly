@@ -15,6 +15,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -50,13 +52,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         // --- 1. Set post content ---
         holder.content.setText(post.getContent());
 
-        // --- 2. FETCH REAL USERNAME (FIXED FOR RECYCLING) ---
+        // --- 2. FETCH REAL USERNAME ---
         String authorUid = post.getAuthor();
-
-        // Use a tag to ensure the async result matches this specific ViewHolder
         holder.author.setTag(authorUid);
-
-        // Reset to placeholder while loading
         holder.author.setText("...");
         holder.postInitial.setText("?");
 
@@ -66,7 +64,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     .child("username")
                     .get()
                     .addOnCompleteListener(task -> {
-                        // Check if the holder is still meant to show THIS author
                         if (holder.author.getTag() != null && holder.author.getTag().equals(authorUid)) {
                             if (task.isSuccessful() && task.getResult().exists()) {
                                 String name = String.valueOf(task.getResult().getValue());
@@ -75,7 +72,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                                     holder.postInitial.setText(name.substring(0, 1).toUpperCase());
                                 }
                             } else {
-                                // Fallback to a shortened version of the UID if name is missing
                                 holder.author.setText("User " + authorUid.substring(0, 4));
                                 holder.postInitial.setText("U");
                             }
@@ -95,12 +91,42 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         holder.downvoteNum.setText(String.valueOf(post.getDownvote_num()));
         holder.commentNum.setText(String.valueOf(post.getComment_num()));
 
-        // --- 5. Category logic ---
+        // --- 5. MULTIPLE CATEGORY LOGIC (RESTORED ORIGINAL DESIGN) ---
+        holder.categoryGroup.removeAllViews();
         if (post.getCategories() != null && !post.getCategories().isEmpty()) {
-            holder.category.setText(post.getCategories().get(0));
-            holder.category.setVisibility(View.VISIBLE);
+            holder.categoryGroup.setVisibility(View.VISIBLE);
+            for (String catName : post.getCategories()) {
+                // Create a TextView for the exact bubble look
+                TextView tv = new TextView(holder.itemView.getContext());
+                tv.setText(catName);
+
+                // Apply your exact gradient background
+                tv.setBackgroundResource(R.drawable.bg_category_gradient);
+
+                // Exact styling
+                tv.setTextColor(Color.parseColor("#2788A0"));
+                tv.setTextSize(12); // 12sp
+                tv.setAllCaps(false);
+                tv.setGravity(android.view.Gravity.CENTER);
+
+                // Convert 10dp and 4dp to pixels for padding
+                float scale = holder.itemView.getContext().getResources().getDisplayMetrics().density;
+                int padSide = (int) (10 * scale + 0.5f);
+                int padTopBottom = (int) (4 * scale + 0.5f);
+                tv.setPadding(padSide, padTopBottom, padSide, padTopBottom);
+
+                // Layout margins for spacing between the bubbles
+                com.google.android.material.chip.ChipGroup.LayoutParams params =
+                        new com.google.android.material.chip.ChipGroup.LayoutParams(
+                                ViewGroup.LayoutParams.WRAP_CONTENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.setMargins(0, 0, 6, 6);
+                tv.setLayoutParams(params);
+
+                holder.categoryGroup.addView(tv);
+            }
         } else {
-            holder.category.setVisibility(View.GONE);
+            holder.categoryGroup.setVisibility(View.GONE);
         }
 
         // --- 6. UI & Interaction Logic ---
@@ -117,7 +143,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 } else {
                     upRef.setValue(true);
                     downRef.removeValue();
-                    // Type set to "comment" per your original code
                     NotificationUtils.sendNotification(post.getAuthor(), "comment", "upvoted your post");
                 }
             });
@@ -130,6 +155,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 } else {
                     downRef.setValue(true);
                     upRef.removeValue();
+                }
+            });
+
+            // --- BOOKMARK LOGIC ---
+            holder.bookmarkBtn.setOnClickListener(v -> {
+                boolean isCurrentlySelected = holder.bookmarkBtn.isSelected();
+                holder.bookmarkBtn.setSelected(!isCurrentlySelected);
+
+                if (holder.bookmarkBtn.isSelected()) {
+                    Toast.makeText(v.getContext(), "Post Bookmarked", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -156,9 +191,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
     private void updateVoteUI(ViewHolder holder, Post post, String userId) {
-        int activeColor = Color.parseColor("#3498db"); // Blue
-        int downColor = Color.parseColor("#e74c3c");   // Red
-        int grayColor = Color.parseColor("#808080");   // Gray
+        int activeColor = Color.parseColor("#3498db");
+        int downColor = Color.parseColor("#e74c3c");
+        int grayColor = Color.parseColor("#808080");
 
         if (post.getUpvotes() != null && post.getUpvotes().containsKey(userId)) {
             holder.upvoteImg.setColorFilter(activeColor);
@@ -210,9 +245,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView content, author, category, postInitial, timeOfPost;
+        TextView content, author, postInitial, timeOfPost;
+        ChipGroup categoryGroup; // Updated from TextView to ChipGroup
         TextView upvoteNum, downvoteNum, commentNum;
-        ImageView upvoteImg, downvoteImg, commentImg;
+        ImageView upvoteImg, downvoteImg, commentImg, bookmarkBtn;
         ImageButton moreBtn;
 
         public ViewHolder(View v) {
@@ -220,7 +256,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             content = v.findViewById(R.id.post_content);
             author = v.findViewById(R.id.username);
             timeOfPost = v.findViewById(R.id.time_of_post);
-            category = v.findViewById(R.id.category_text);
+            categoryGroup = v.findViewById(R.id.category_chip_group); // Map the ChipGroup
             postInitial = v.findViewById(R.id.post_initial);
             upvoteNum = v.findViewById(R.id.upvote_num);
             downvoteNum = v.findViewById(R.id.downvote_num);
@@ -228,6 +264,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             upvoteImg = v.findViewById(R.id.upvote_img);
             downvoteImg = v.findViewById(R.id.downvote_img);
             commentImg = v.findViewById(R.id.comment_img);
+            bookmarkBtn = v.findViewById(R.id.bookmark_btn);
             moreBtn = v.findViewById(R.id.imageButton);
         }
     }
