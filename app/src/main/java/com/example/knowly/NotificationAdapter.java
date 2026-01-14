@@ -1,84 +1,101 @@
 package com.example.knowly;
 
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
-
-public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
+public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<NotificationItem> list;
+
+    // View Type constants for choosing layouts
+    private static final int TYPE_COMMENT = 1;
+    private static final int TYPE_FOLLOW = 2;
 
     public NotificationAdapter(List<NotificationItem> list) {
         this.list = list;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        // Uses the "type" field from NotificationItem to choose the XML
+        if ("follow".equals(list.get(position).getType())) {
+            return TYPE_FOLLOW;
+        }
+        return TYPE_COMMENT;
+    }
+
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // This connects to your item_notification.xml layout
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notification, parent, false);
-        return new ViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == TYPE_FOLLOW) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.following_notif, parent, false);
+            return new FollowViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_notif, parent, false);
+            return new CommentViewHolder(view);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         NotificationItem item = list.get(position);
 
-        holder.username.setText(item.getUsername());
-        holder.action.setText(item.getAction());
+        // Fix for the error in your image: Check against 0 instead of null
+        String timeAgo = (item.getTimestamp() != 0) ? getTimeAgo(item.getTimestamp()) : "Just now";
 
-        // --- UPDATED TIME LOGIC ---
-        if (item.getTimestamp() != null) {
-            long milliseconds = item.getTimestamp().toDate().getTime();
-            holder.time.setText(getTimeAgo(milliseconds));
-        } else {
-            holder.time.setText("Just now");
-        }
-
-        // --- ICON LOGIC ---
-        String iconName = item.getIconRes();
-        int resId = 0;
-        if (iconName != null && !iconName.isEmpty()) {
-            resId = holder.itemView.getContext().getResources().getIdentifier(
-                    iconName, "drawable", holder.itemView.getContext().getPackageName());
-        }
-
-        if (resId != 0) {
-            holder.icon.setImageResource(resId);
-        } else {
-            holder.icon.setImageResource(R.drawable.default_icon);
+        if (holder instanceof CommentViewHolder) {
+            CommentViewHolder h = (CommentViewHolder) holder;
+            h.username.setText(item.getUsername());
+            h.action.setText(item.getAction());
+            h.time.setText(timeAgo);
+        } else if (holder instanceof FollowViewHolder) {
+            FollowViewHolder h = (FollowViewHolder) holder;
+            h.username.setText(item.getUsername());
+            h.action.setText(item.getAction());
+            h.time.setText(timeAgo);
         }
     }
+
     @Override
     public int getItemCount() {
         return list.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    // --- ViewHolder for comment_notif.xml ---
+    public static class CommentViewHolder extends RecyclerView.ViewHolder {
         TextView username, action, time;
-        ImageView icon;
 
-        public ViewHolder(@NonNull View itemView) {
+        public CommentViewHolder(@NonNull View itemView) {
             super(itemView);
-            // These IDs must match your item_notification.xml exactly
             username = itemView.findViewById(R.id.user);
             action = itemView.findViewById(R.id.notif_info);
-            time = itemView.findViewById(R.id.notif_time);
-            icon = itemView.findViewById(R.id.notif_icon);
+            time = itemView.findViewById(R.id.time_commented);
+        }
+    }
+
+    // --- ViewHolder for following_notif.xml ---
+    public static class FollowViewHolder extends RecyclerView.ViewHolder {
+        TextView username, action, time;
+
+        public FollowViewHolder(@NonNull View itemView) {
+            super(itemView);
+            username = itemView.findViewById(R.id.user2);
+            action = itemView.findViewById(R.id.notif_info2);
+            time = itemView.findViewById(R.id.time_commented2);
         }
     }
 
     public String getTimeAgo(long time) {
-        return android.text.format.DateUtils.getRelativeTimeSpanString(
+        return DateUtils.getRelativeTimeSpanString(
                 time,
                 System.currentTimeMillis(),
-                android.text.format.DateUtils.MINUTE_IN_MILLIS
+                DateUtils.MINUTE_IN_MILLIS
         ).toString();
     }
 }
