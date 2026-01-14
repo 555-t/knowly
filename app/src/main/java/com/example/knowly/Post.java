@@ -13,6 +13,9 @@ public class Post {
     private Map<String, Boolean> upvotes;
     private Map<String, Boolean> downvotes;
     private int comment_num;
+    public void setPostId(String postId) {
+        this.postId = postId;
+    }
 
     public Post() {} // Required for Firebase
 

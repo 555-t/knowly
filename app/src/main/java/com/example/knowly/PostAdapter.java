@@ -1,5 +1,6 @@
 package com.example.knowly;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import java.util.List;
@@ -15,7 +18,12 @@ import java.util.List;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private List<Post> postList;
     // Temporary ID for testing. Later use FirebaseAuth.getInstance().getUid()
-    private String currentUserId = "test_user_777";
+    private String getCurrentUserId() {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            return FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }
+        return null;
+    }
 
     public PostAdapter(List<Post> postList) { this.postList = postList; }
 
@@ -29,6 +37,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Post post = postList.get(position);
+        String userId = getCurrentUserId();
+        if (userId == null) return;
 
         // 1. Set text views
         holder.content.setText(post.getContent());
@@ -47,15 +57,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             holder.category.setVisibility(View.GONE);
         }
 
-        // 4. Visual Feedback: Change arrow color if user has already voted
-        if (post.getUpvotes() != null && post.getUpvotes().containsKey(currentUserId)) {
-            holder.upvoteImg.setColorFilter(Color.parseColor("#3498db")); // Blue
+        // 4. Visual Feedback (USE 'userId' HERE)
+        if (post.getUpvotes() != null && post.getUpvotes().containsKey(userId)) {
+            holder.upvoteImg.setColorFilter(Color.parseColor("#3498db"));
         } else {
             holder.upvoteImg.setColorFilter(Color.GRAY);
         }
 
-        if (post.getDownvotes() != null && post.getDownvotes().containsKey(currentUserId)) {
-            holder.downvoteImg.setColorFilter(Color.parseColor("#e74c3c")); // Red
+        if (post.getDownvotes() != null && post.getDownvotes().containsKey(userId)) {
+            holder.downvoteImg.setColorFilter(Color.parseColor("#e74c3c"));
         } else {
             holder.downvoteImg.setColorFilter(Color.GRAY);
         }
@@ -64,40 +74,54 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         if (post.getPostId() != null) {
             DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("Posts").child(post.getPostId());
 
-            // UPVOTE CLICK
             holder.upvoteImg.setOnClickListener(v -> {
                 int currentPos = holder.getAdapterPosition();
                 if (currentPos == RecyclerView.NO_POSITION) return;
 
                 Post currentPost = postList.get(currentPos);
-                DatabaseReference upRef = postRef.child("upvotes").child(currentUserId);
-                DatabaseReference downRef = postRef.child("downvotes").child(currentUserId);
+                // USE 'userId' HERE TOO
+                DatabaseReference upRef = postRef.child("upvotes").child(userId);
+                DatabaseReference downRef = postRef.child("downvotes").child(userId);
 
-                if (currentPost.getUpvotes() != null && currentPost.getUpvotes().containsKey(currentUserId)) {
-                    upRef.removeValue(); // Already upvoted? Remove it (toggle off)
+                if (currentPost.getUpvotes() != null && currentPost.getUpvotes().containsKey(userId)) {
+                    upRef.removeValue();
                 } else {
-                    upRef.setValue(true); // Add upvote
-                    downRef.removeValue(); // Remove downvote if it exists
+                    upRef.setValue(true);
+                    downRef.removeValue();
                 }
             });
 
-            // DOWNVOTE CLICK
             holder.downvoteImg.setOnClickListener(v -> {
                 int currentPos = holder.getAdapterPosition();
                 if (currentPos == RecyclerView.NO_POSITION) return;
 
                 Post currentPost = postList.get(currentPos);
-                DatabaseReference upRef = postRef.child("upvotes").child(currentUserId);
-                DatabaseReference downRef = postRef.child("downvotes").child(currentUserId);
+                // AND HERE
+                DatabaseReference upRef = postRef.child("upvotes").child(userId);
+                DatabaseReference downRef = postRef.child("downvotes").child(userId);
 
-                if (currentPost.getDownvotes() != null && currentPost.getDownvotes().containsKey(currentUserId)) {
-                    downRef.removeValue(); // Toggle off
+                if (currentPost.getDownvotes() != null && currentPost.getDownvotes().containsKey(userId)) {
+                    downRef.removeValue();
                 } else {
-                    downRef.setValue(true); // Add downvote
-                    upRef.removeValue(); // Remove upvote if it exists
+                    downRef.setValue(true);
+                    upRef.removeValue();
                 }
             });
         }
+
+        holder.itemView.findViewById(R.id.comment_img).setOnClickListener(v -> {
+            int currentPos = holder.getAdapterPosition();
+            if (currentPos == RecyclerView.NO_POSITION) return;
+
+            // 1. Create the Intent to move to PostDetailsActivity
+            Intent intent = new Intent(v.getContext(), PostDetailsActivity.class);
+
+            // 2. Pass the Post ID so the new activity knows WHICH post to load
+            intent.putExtra("POST_ID", post.getPostId());
+
+            // 3. Start the activity
+            v.getContext().startActivity(intent);
+        });
     }
 
     @Override
@@ -116,6 +140,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             upvoteNum = v.findViewById(R.id.upvote_num);
             downvoteNum = v.findViewById(R.id.downvote_num);
             commentNum = v.findViewById(R.id.comment_num);
+
+
 
             // Find the image views for colors and clicks
             upvoteImg = v.findViewById(R.id.upvote_img);
