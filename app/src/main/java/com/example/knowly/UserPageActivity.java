@@ -16,31 +16,39 @@ public class UserPageActivity extends AppCompatActivity {
 
     private MaterialCardView btnMenuContainer;
     private CardView logoutMenu;
+    private CardView btnEditProfile; // <--- NEW: Added this variable
 
     private TextView menuLogout, menuDelete;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toast.makeText(this, "UserPageActivity LOADED", Toast.LENGTH_SHORT).show();
         setContentView(R.layout.activity_userpage);
 
         // bottom nav
         NavigationHelper.setupNavigation(this);
 
+        // Initialize Views
         btnMenuContainer = findViewById(R.id.btnMenuContainer);
         logoutMenu = findViewById(R.id.logoutMenu);
+        btnEditProfile = findViewById(R.id.btnEditProfile); // <--- NEW: Initialize it
 
-        // menu items from included menu_setting.xml
+        // menu items
         menuLogout = findViewById(R.id.menu_logout);
         menuDelete = findViewById(R.id.menu_delete);
 
         // force menu button above other views
         btnMenuContainer.bringToFront();
 
+        // --- NEW: Edit Profile Click Listener ---
+        btnEditProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(UserPageActivity.this, EditProfileActivity.class);
+            startActivity(intent);
+        });
+        // ----------------------------------------
+
         btnMenuContainer.setOnClickListener(v -> {
-            Toast.makeText(this, "Menu clicked", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, "Menu clicked", Toast.LENGTH_SHORT).show();
             toggleMenu();
         });
 

@@ -62,16 +62,19 @@
 
         <activity android:name=".CreatePostActivity" />
 
-        <activity android:name=".CreatePostActivity" />
-
         <activity android:name=".PostDetailsActivity"
             android:exported="false" />
 
+        <activity android:name=".EditProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".EditInterestsActivity"
+            android:exported="false" />
 
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
 </manifest>
