@@ -23,22 +23,7 @@
           <theme>@style/Theme.Knowly</theme>
         </config>
       </layout>
-      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/card_interest_default.xml">
-        <config>
-          <theme>@style/Theme.Knowly</theme>
-        </config>
-      </layout>
-      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/card_interest_selector.xml">
-        <config>
-          <theme>@style/Theme.Knowly</theme>
-        </config>
-      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/comment.xml">
-        <config>
-          <theme>@style/Theme.Knowly</theme>
-        </config>
-      </layout>
-      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_home_filled.xml">
         <config>
           <theme>@style/Theme.Knowly</theme>
         </config>
@@ -49,16 +34,6 @@
         </config>
       </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/more_vert_post.xml">
-        <config>
-          <theme>@style/Theme.Knowly</theme>
-        </config>
-      </layout>
-      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/nav_home_selector.xml">
-        <config>
-          <theme>@style/Theme.Knowly</theme>
-        </config>
-      </layout>
-      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/nav_weekly_selector.xml">
         <config>
           <theme>@style/Theme.Knowly</theme>
         </config>
@@ -149,11 +124,6 @@
         </config>
       </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_userpage.xml">
-        <config>
-          <theme>@style/Theme.Knowly</theme>
-        </config>
-      </layout>
-      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/bottom_nav_bar.xml">
         <config>
           <theme>@style/Theme.Knowly</theme>
         </config>
@@ -271,7 +241,7 @@
   <component name="ChangeListManager">
     <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="fixed ChooseInterestsActivity buttons,">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -288,7 +258,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\60193\.android\avd\Medium_Phone.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\Malak\.android\avd\MyPhone.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -340,12 +310,12 @@
     &quot;assignee&quot;: &quot;kamtrbl&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/555-t/knowly.git&quot;,
-    &quot;accountId&quot;: &quot;bcb2c10b-2723-4fbf-af99-ea2b88f66de9&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/555-t/knowly.git",
+    "accountId": "7eb6e738-c634-4f9f-9c5c-0ed0cbe6f161"
   }
-}</component>
+}]]></component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
