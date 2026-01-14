@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.cardview)
     implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.firebase.firestore)
 
 
     testImplementation(libs.junit)
