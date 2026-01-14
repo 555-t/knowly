@@ -269,17 +269,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="connected home_page to fragment_weeklyfeatured.xml">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/HomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/HomePage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/UserPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/UserPageActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/WeeklyFeaturedActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/WeeklyFeaturedActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/bottom_nav_bar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/bottom_nav_bar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_search.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_search.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/notifications_activity.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/notifications_activity.xml" afterDir="false" />
-    </list>
+    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="connected navigation bar to all other pages" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -724,7 +714,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768396324681</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="connected navigation bar to all other pages">
+      <option name="closed" value="true" />
+      <created>1768400971940</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1768400971940</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -768,7 +766,8 @@
     <MESSAGE value="fixed pages with bottom nav bar" />
     <MESSAGE value="commit workspace and misc" />
     <MESSAGE value="connected home_page to fragment_weeklyfeatured.xml" />
-    <option name="LAST_COMMIT_MESSAGE" value="connected home_page to fragment_weeklyfeatured.xml" />
+    <MESSAGE value="connected navigation bar to all other pages" />
+    <option name="LAST_COMMIT_MESSAGE" value="connected navigation bar to all other pages" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
