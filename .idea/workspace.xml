@@ -265,9 +265,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="connected home_page to fragment_weeklyfeatured.xml&#10;&#10;(cherry picked from commit 3d7ae9f3670603df581996187d8370d16cfbac25)">
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/Post.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/PostAdapter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -811,7 +811,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768399486735</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="connected home_page to fragment_weeklyfeatured.xml&#10;&#10;(cherry picked from commit 3d7ae9f3670603df581996187d8370d16cfbac25)">
+      <option name="closed" value="true" />
+      <created>1768402068702</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1768402068702</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -856,6 +864,18 @@
     <MESSAGE value="commit workspace and misc" />
     <MESSAGE value="connected home_page to fragment_weeklyfeatured.xml&#10;&#10;(cherry picked from commit 3d7ae9f3670603df581996187d8370d16cfbac25)" />
     <option name="LAST_COMMIT_MESSAGE" value="connected home_page to fragment_weeklyfeatured.xml&#10;&#10;(cherry picked from commit 3d7ae9f3670603df581996187d8370d16cfbac25)" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-field">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/example/knowly/HomePage.java</url>
+          <line>29</line>
+          <properties field="postAdapter" class="com.example.knowly.HomePage" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

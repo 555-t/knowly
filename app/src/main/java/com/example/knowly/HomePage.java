@@ -60,7 +60,7 @@ public class HomePage extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Posts");
 
         // 2. Setup RecyclerView (The Feed)
-        recyclerView = findViewById(R.id.recyclerViewPosts);
+        recyclerView = findViewById(R.id.rvFeed);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
