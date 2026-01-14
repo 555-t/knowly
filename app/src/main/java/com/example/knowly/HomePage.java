@@ -28,7 +28,7 @@ public class HomePage extends AppCompatActivity {
     // --- Feed / Firebase ---
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
-    private List<Post> postList;
+    private List <Post> postList;
     private DatabaseReference mDatabase;
 
     // --- Tabs (For You / Following) ---
