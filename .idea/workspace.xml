@@ -294,10 +294,8 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="updated notification">
+    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="updated profile bio and credentials and username changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/EditProfileActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/EditProfileActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/SearchActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/SearchActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/UserPageActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/UserPageActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_userpage.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_userpage.xml" afterDir="false" />
     </list>
@@ -863,7 +861,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768421440411</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="updated profile bio and credentials and username changes">
+      <option name="closed" value="true" />
+      <created>1768424616733</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1768424616733</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -910,7 +916,8 @@
     <MESSAGE value="connected navigation bar to all other pages" />
     <MESSAGE value="added notification" />
     <MESSAGE value="updated notification" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated notification" />
+    <MESSAGE value="updated profile bio and credentials and username changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated profile bio and credentials and username changes" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

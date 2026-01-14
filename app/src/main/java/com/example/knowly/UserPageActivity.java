@@ -6,16 +6,25 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class UserPageActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
 
+public class UserPageActivity extends AppCompatActivity {
+    // Add these variables at the top
+    private RecyclerView rvUserPosts;
+    private PostAdapter postAdapter; // Or whatever your adapter name is
+    private List<Post> userPostsList; // Your post model list
     private MaterialCardView btnMenuContainer;
     private CardView logoutMenu;
     private CardView btnEditProfile;
@@ -36,6 +45,11 @@ public class UserPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userpage);
 
+        userPostsList = new ArrayList<>();
+        // Initialize adapter immediately
+        postAdapter = new PostAdapter(userPostsList);
+        rvUserPosts.setAdapter(postAdapter);
+
         // 1. Initialize Firebase
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -52,7 +66,9 @@ public class UserPageActivity extends AppCompatActivity {
         tvName = findViewById(R.id.tvName);
         tvEmail = findViewById(R.id.tvEmail); // Note: If you removed this from XML, remove this line
         tvFollowers = findViewById(R.id.tvFollowers);
-
+        rvUserPosts = findViewById(R.id.rvUserPosts);
+        rvUserPosts.setLayoutManager(new LinearLayoutManager(this));
+        userPostsList = new ArrayList<>();
         // --- NEW: Find the ID you added to the XML ---
         tvAvatarText = findViewById(R.id.tvAvatarText);
 
@@ -71,6 +87,7 @@ public class UserPageActivity extends AppCompatActivity {
             Intent intent = new Intent(UserPageActivity.this, EditProfileActivity.class);
             startActivity(intent);
         });
+
 
         btnMenuContainer.setOnClickListener(v -> toggleMenu());
 
@@ -94,14 +111,15 @@ public class UserPageActivity extends AppCompatActivity {
 
         // 3. Load Data immediately
         loadUserProfile();
+        fetchUserPosts();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         loadUserProfile();
+        fetchUserPosts();
     }
-
     private void loadUserProfile() {
         FirebaseUser user = mAuth.getCurrentUser();
 
@@ -149,6 +167,41 @@ public class UserPageActivity extends AppCompatActivity {
             logoutMenu.setVisibility(View.VISIBLE);
             logoutMenu.bringToFront();
         }
+    }
+
+    // 1. Add this method to fetch posts
+    private void fetchUserPosts() {
+        String currentUid = mAuth.getCurrentUser().getUid();
+
+        // Point to your Realtime Database "Posts" node
+        com.google.firebase.database.FirebaseDatabase.getInstance().getReference("Posts")
+                .addValueEventListener(new com.google.firebase.database.ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot snapshot) {
+                        userPostsList.clear();
+                        for (com.google.firebase.database.DataSnapshot postSnapshot : snapshot.getChildren()) {
+                            Post post = postSnapshot.getValue(Post.class);
+
+                            // ONLY add the post if the author ID matches the current user
+                            if (post != null && currentUid.equals(post.getAuthor())) {
+                                userPostsList.add(post);
+                            }
+                        }
+
+                        // Update the adapter
+                        if (postAdapter == null) {
+                            postAdapter = new PostAdapter(userPostsList);
+                            rvUserPosts.setAdapter(postAdapter);
+                        } else {
+                            postAdapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull com.google.firebase.database.DatabaseError error) {
+                        Toast.makeText(UserPageActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
 
