@@ -20,6 +20,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
+// IMPORTANT: Added Firestore imports for Notifications
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +31,7 @@ import java.util.List;
 public class PostDetailsActivity extends AppCompatActivity {
 
     private String postId;
+    private String postOwnerId; // To store who we are notifying
     private DatabaseReference postRef;
     private EditText commentInput;
     private TextView postContent, postAuthor, upvoteNum, downvoteNum, commentNum, categoryText, postInitial;
@@ -66,19 +71,14 @@ public class PostDetailsActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        // Find the included card first
         View postCard = findViewById(R.id.includedPostCard);
-
-        // Find views INSIDE that card
         postContent = postCard.findViewById(R.id.post_content);
         postAuthor = postCard.findViewById(R.id.username);
-        postInitial = postCard.findViewById(R.id.post_initial); // NEW: Matches item_post.xml
+        postInitial = postCard.findViewById(R.id.post_initial);
         upvoteNum = postCard.findViewById(R.id.upvote_num);
         downvoteNum = postCard.findViewById(R.id.downvote_num);
         commentNum = postCard.findViewById(R.id.comment_num);
         categoryText = postCard.findViewById(R.id.category_text);
-
-        // Find views in the activity layout
         commentInput = findViewById(R.id.CommentInput);
     }
 
@@ -88,29 +88,22 @@ public class PostDetailsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Post post = snapshot.getValue(Post.class);
                 if (post != null) {
+                    // STORE THE OWNER ID HERE
+                    postOwnerId = post.getAuthor();
+
                     postContent.setText(post.getContent());
 
-                    // Fetch Username and set PFP Initial
-                    String authorUid = post.getAuthor();
-                    if (authorUid != null) {
+                    if (postOwnerId != null) {
                         FirebaseDatabase.getInstance().getReference("Users")
-                                .child(authorUid)
+                                .child(postOwnerId)
                                 .child("username")
                                 .get()
                                 .addOnCompleteListener(task -> {
                                     if (task.isSuccessful() && task.getResult().exists()) {
                                         String name = String.valueOf(task.getResult().getValue());
                                         postAuthor.setText(name);
-
-                                        // Set the "C" for chihuahua etc.
                                         if (name != null && !name.isEmpty()) {
                                             postInitial.setText(name.substring(0, 1).toUpperCase());
-                                        }
-                                    } else {
-                                        // Fallback for student_user
-                                        postAuthor.setText(authorUid);
-                                        if (authorUid.length() > 0) {
-                                            postInitial.setText(authorUid.substring(0, 1).toUpperCase());
                                         }
                                     }
                                 });
@@ -140,23 +133,54 @@ public class PostDetailsActivity extends AppCompatActivity {
         String commentText = commentInput.getText().toString().trim();
         if (commentText.isEmpty()) return;
 
-        String userId = FirebaseAuth.getInstance().getUid();
-        if (userId == null) return;
+        String currentUserId = FirebaseAuth.getInstance().getUid();
+        if (currentUserId == null) return;
 
         DatabaseReference commentsRef = postRef.child("comments");
         String commentId = commentsRef.push().getKey();
 
         HashMap<String, Object> commentMap = new HashMap<>();
         commentMap.put("text", commentText);
-        commentMap.put("authorId", userId);
+        commentMap.put("authorId", currentUserId);
         commentMap.put("timestamp", ServerValue.TIMESTAMP);
 
         if (commentId != null) {
             commentsRef.child(commentId).setValue(commentMap).addOnSuccessListener(aVoid -> {
+                // 1. TRIGGER THE NOTIFICATION
+                if (postOwnerId != null && !postOwnerId.equals(currentUserId)) {
+                    sendNotificationToOwner(postOwnerId, commentText);
+                }
+
+                // 2. Clear UI and update count
                 commentInput.setText("");
                 updateCommentCount(true);
             });
         }
+    }
+
+    private void sendNotificationToOwner(String ownerUid, String commentText) {
+        String currentUid = FirebaseAuth.getInstance().getUid();
+
+        // Get the commenter's name to show in the notification
+        FirebaseDatabase.getInstance().getReference("Users").child(currentUid).child("username")
+                .get().addOnSuccessListener(snapshot -> {
+                    String commenterName = snapshot.exists() ? snapshot.getValue().toString() : "Someone";
+
+                    // Prepare the Firestore Notification Document
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    HashMap<String, Object> notification = new HashMap<>();
+                    notification.put("username", commenterName);
+                    notification.put("action", "commented: " + commentText);
+                    notification.put("time", "Just now"); // Simple placeholder
+                    notification.put("iconRes", "stat_notify_chat"); // Matches item_notification icon logic
+                    notification.put("timestamp", FieldValue.serverTimestamp());
+
+                    // Save to User B's sub-collection
+                    db.collection("users").document(ownerUid)
+                            .collection("notifications")
+                            .add(notification)
+                            .addOnSuccessListener(doc -> Log.d("KNOWLY_NOTIF", "Notif sent successfully"));
+                });
     }
 
     private void updateCommentCount(boolean increment) {
