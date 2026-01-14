@@ -101,13 +101,15 @@ public class UserPageActivity extends AppCompatActivity {
     private void loadUserProfile() {
         FirebaseUser user = mAuth.getCurrentUser();
 
+        // 1. Find the NAV bar text view
+        // Since the layout is <include>d, we can find it directly by ID
+        TextView tvNavAvatarText = findViewById(R.id.tvNavAvatarText);
+
         if (user != null) {
-            // Set Email safely (check if the view exists first)
             if (tvEmail != null) {
                 tvEmail.setText(user.getEmail());
             }
 
-            // Fetch Username from Firestore
             db.collection("users").document(user.getUid())
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
@@ -115,21 +117,25 @@ public class UserPageActivity extends AppCompatActivity {
                             String username = documentSnapshot.getString("username");
 
                             if (username != null && !username.isEmpty()) {
-                                // 1. Set the Name
                                 tvName.setText(username);
 
-                                // 2. Set the Avatar Initial (PFP)
-                                // Takes first char, uppercases it
+                                // --- CALCULATE INITIAL ---
+                                String initial = String.valueOf(username.charAt(0)).toUpperCase();
+
+                                // 2. Update MAIN Profile Avatar
                                 if (tvAvatarText != null) {
-                                    String initial = String.valueOf(username.charAt(0)).toUpperCase();
                                     tvAvatarText.setText(initial);
                                 }
-                            } else {
-                                // Default fallback if no username set
-                                tvName.setText("User");
-                                if (tvAvatarText != null) {
-                                    tvAvatarText.setText("U");
+
+                                // 3. Update NAVIGATION Avatar
+                                if (tvNavAvatarText != null) {
+                                    tvNavAvatarText.setText(initial);
                                 }
+
+                            } else {
+                                tvName.setText("User");
+                                if (tvAvatarText != null) tvAvatarText.setText("U");
+                                if (tvNavAvatarText != null) tvNavAvatarText.setText("U");
                             }
                         }
                     })
