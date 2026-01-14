@@ -62,6 +62,11 @@
 
         <activity android:name=".CreatePostActivity" />
 
+        <activity android:name=".CreatePostActivity" />
+
+        <activity android:name=".PostDetailsActivity"
+            android:exported="false" />
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

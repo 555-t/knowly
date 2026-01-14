@@ -129,6 +129,7 @@ public class HomePage extends AppCompatActivity {
                     Post post = dataSnapshot.getValue(Post.class);
                     if (post != null) {
                         // Adds newest post to the top of the list
+                        post.setPostId(dataSnapshot.getKey());
                         postList.add(0, post);
                     }
                 }
