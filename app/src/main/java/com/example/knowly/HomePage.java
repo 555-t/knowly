@@ -2,60 +2,84 @@ package com.example.knowly;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View;
 import android.widget.ImageView;
-import android.view.View;
-import android.widget.ImageView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomePage extends AppCompatActivity {
+
+    private RecyclerView recyclerView;
+    private PostAdapter postAdapter;
+    private List<Post> postList;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
 
-        // Connect the button to the code
+        // 1. Initialize Firebase Reference
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Posts");
+
+        // 2. Setup RecyclerView (The Feed)
+        recyclerView = findViewById(R.id.recyclerViewPosts);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        postList = new ArrayList<>();
+        postAdapter = new PostAdapter(postList);
+        recyclerView.setAdapter(postAdapter);
+
+        // 3. Setup Navigation: Create Post Button
         MaterialCardView createPostBtn = findViewById(R.id.createpostbutton);
-
-        createPostBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // This starts the transition to the new page
-                Intent intent = new Intent(HomePage.this, CreatePostActivity.class);
-                startActivity(intent);
-            }
+        createPostBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(HomePage.this, CreatePostActivity.class);
+            startActivity(intent);
         });
-        setContentView(R.layout.home_page);
 
-        // 1. Find the navWeekly view inside the included bottom_nav_bar
-        // Since it's included, it's part of the main view hierarchy
+        // 4. Setup Navigation: Weekly Featured (Bottom Nav)
         ImageView navWeekly = findViewById(R.id.navWeekly);
-
-        // 2. Set the click listener
-        navWeekly.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 3. Create an Intent to start the Weekly Featured activity
-                Intent intent = new Intent(HomePage.this, WeeklyFeaturedActivity.class);
-                startActivity(intent);
-            }
+        navWeekly.setOnClickListener(v -> {
+            Intent intent = new Intent(HomePage.this, WeeklyFeaturedActivity.class);
+            startActivity(intent);
         });
-        setContentView(R.layout.home_page);
 
-        // 1. Find the navWeekly view inside the included bottom_nav_bar
-        // Since it's included, it's part of the main view hierarchy
-        ImageView navWeekly = findViewById(R.id.navWeekly);
+        // 5. Load Posts from Firebase
+        fetchPostsFromFirebase();
+    }
 
-        // 2. Set the click listener
-        navWeekly.setOnClickListener(new View.OnClickListener() {
+    private void fetchPostsFromFirebase() {
+        mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                // 3. Create an Intent to start the Weekly Featured activity
-                Intent intent = new Intent(HomePage.this, WeeklyFeaturedActivity.class);
-                startActivity(intent);
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                postList.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Post post = dataSnapshot.getValue(Post.class);
+                    if (post != null) {
+                        // Adds newest post to the top of the list
+                        postList.add(0, post);
+                    }
+                }
+                postAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(HomePage.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
