@@ -127,6 +127,11 @@ public class CreatePostActivity extends AppCompatActivity {
                 Toast.makeText(this, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             });
         }
+
+        postMap.put("postId", postId);
+        postMap.put("upvote_num", 0);
+        postMap.put("downvote_num", 0);
+        postMap.put("comment_num", 0);
     }
 
     private void loadCategoriesFromFirestore() {
