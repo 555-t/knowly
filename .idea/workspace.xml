@@ -287,15 +287,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="fixing timestamps for posts">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/NotificationUtils.java" afterDir="false" />
+    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="tried fixing notif">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/NotificationActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/NotificationActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/NotificationAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/NotificationAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/NotificationItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/NotificationItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/PostAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/PostAdapter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/comment_notif.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/comment_notif.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -806,7 +802,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768415756394</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="tried fixing notif">
+      <option name="closed" value="true" />
+      <created>1768417521854</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1768417521854</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -857,7 +861,8 @@
     <MESSAGE value="can load username and pfp for some" />
     <MESSAGE value="fixed the vote buttons" />
     <MESSAGE value="fixing timestamps for posts" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixing timestamps for posts" />
+    <MESSAGE value="tried fixing notif" />
+    <option name="LAST_COMMIT_MESSAGE" value="tried fixing notif" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

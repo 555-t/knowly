@@ -23,8 +23,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemViewType(int position) {
-        // Uses the "type" field from NotificationItem to choose the XML
-        if ("follow".equals(list.get(position).getType())) {
+        // Decide layout based on the "type" field
+        if (list.get(position).getType() != null && list.get(position).getType().equals("follow")) {
             return TYPE_FOLLOW;
         }
         return TYPE_COMMENT;
@@ -46,8 +46,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         NotificationItem item = list.get(position);
 
-        // Fix for the error in your image: Check against 0 instead of null
-        String timeAgo = (item.getTimestamp() != 0) ? getTimeAgo(item.getTimestamp()) : "Just now";
+        // FIX: Compare long to 0, not null. Remove .toDate() as it is now a direct millisecond value.
+        String timeAgo;
+        if (item.getTimestamp() != 0) {
+            timeAgo = getTimeAgo(item.getTimestamp());
+        } else {
+            timeAgo = "Just now";
+        }
 
         if (holder instanceof CommentViewHolder) {
             CommentViewHolder h = (CommentViewHolder) holder;
