@@ -20,10 +20,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
-// IMPORTANT: Added Firestore imports for Notifications
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +27,7 @@ import java.util.List;
 public class PostDetailsActivity extends AppCompatActivity {
 
     private String postId;
-    private String postOwnerId; // To store who we are notifying
+    private String postOwnerId;
     private DatabaseReference postRef;
     private EditText commentInput;
     private TextView postContent, postAuthor, upvoteNum, downvoteNum, commentNum, categoryText, postInitial;
@@ -88,9 +84,7 @@ public class PostDetailsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Post post = snapshot.getValue(Post.class);
                 if (post != null) {
-                    // STORE THE OWNER ID HERE
                     postOwnerId = post.getAuthor();
-
                     postContent.setText(post.getContent());
 
                     if (postOwnerId != null) {
@@ -146,41 +140,17 @@ public class PostDetailsActivity extends AppCompatActivity {
 
         if (commentId != null) {
             commentsRef.child(commentId).setValue(commentMap).addOnSuccessListener(aVoid -> {
-                // 1. TRIGGER THE NOTIFICATION
+
+                // --- UPDATED NOTIFICATION LOGIC ---
+                // Uses the new NotificationUtils and excludes notifying yourself
                 if (postOwnerId != null && !postOwnerId.equals(currentUserId)) {
-                    sendNotificationToOwner(postOwnerId, commentText);
+                    NotificationUtils.sendNotification(postOwnerId, "comment", "commented on your post");
                 }
 
-                // 2. Clear UI and update count
                 commentInput.setText("");
                 updateCommentCount(true);
             });
         }
-    }
-
-    private void sendNotificationToOwner(String ownerUid, String commentText) {
-        String currentUid = FirebaseAuth.getInstance().getUid();
-
-        // Get the commenter's name to show in the notification
-        FirebaseDatabase.getInstance().getReference("Users").child(currentUid).child("username")
-                .get().addOnSuccessListener(snapshot -> {
-                    String commenterName = snapshot.exists() ? snapshot.getValue().toString() : "Someone";
-
-                    // Prepare the Firestore Notification Document
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    HashMap<String, Object> notification = new HashMap<>();
-                    notification.put("username", commenterName);
-                    notification.put("action", "commented: " + commentText);
-                    notification.put("time", "Just now"); // Simple placeholder
-                    notification.put("iconRes", "stat_notify_chat"); // Matches item_notification icon logic
-                    notification.put("timestamp", FieldValue.serverTimestamp());
-
-                    // Save to User B's sub-collection
-                    db.collection("users").document(ownerUid)
-                            .collection("notifications")
-                            .add(notification)
-                            .addOnSuccessListener(doc -> Log.d("KNOWLY_NOTIF", "Notif sent successfully"));
-                });
     }
 
     private void updateCommentCount(boolean increment) {
@@ -188,7 +158,8 @@ public class PostDetailsActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 long currentCount = 0;
                 if (task.getResult().exists()) {
-                    currentCount = (long) task.getResult().getValue();
+                    Object val = task.getResult().getValue();
+                    if (val instanceof Long) currentCount = (Long) val;
                 }
                 long newCount = increment ? currentCount + 1 : Math.max(0, currentCount - 1);
                 postRef.child("comment_num").setValue(newCount);
