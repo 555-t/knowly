@@ -32,29 +32,29 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         holder.username.setText(item.getUsername());
         holder.action.setText(item.getAction());
-        holder.time.setText(item.getTime());
 
-        // --- IMPROVED ICON LOGIC ---
-        String iconName = item.getIconRes();
-        int resId = 0;
-
-        if (iconName != null && !iconName.isEmpty()) {
-            // Find the image ID by its string name
-            resId = holder.itemView.getContext().getResources().getIdentifier(
-                    iconName,
-                    "drawable",
-                    holder.itemView.getContext().getPackageName()
-            );
+        // --- UPDATED TIME LOGIC ---
+        if (item.getTimestamp() != null) {
+            long milliseconds = item.getTimestamp().toDate().getTime();
+            holder.time.setText(getTimeAgo(milliseconds));
+        } else {
+            holder.time.setText("Just now");
         }
 
-        // Use the icon from Firebase if found, otherwise use your new default_icon.xml
+        // --- ICON LOGIC ---
+        String iconName = item.getIconRes();
+        int resId = 0;
+        if (iconName != null && !iconName.isEmpty()) {
+            resId = holder.itemView.getContext().getResources().getIdentifier(
+                    iconName, "drawable", holder.itemView.getContext().getPackageName());
+        }
+
         if (resId != 0) {
             holder.icon.setImageResource(resId);
         } else {
             holder.icon.setImageResource(R.drawable.default_icon);
         }
     }
-
     @Override
     public int getItemCount() {
         return list.size();
@@ -72,5 +72,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             time = itemView.findViewById(R.id.notif_time);
             icon = itemView.findViewById(R.id.notif_icon);
         }
+    }
+
+    public String getTimeAgo(long time) {
+        return android.text.format.DateUtils.getRelativeTimeSpanString(
+                time,
+                System.currentTimeMillis(),
+                android.text.format.DateUtils.MINUTE_IN_MILLIS
+        ).toString();
     }
 }

@@ -3,6 +3,7 @@ package com.example.knowly;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,7 +48,12 @@ public class NotificationActivity extends AppCompatActivity {
         // 2. System Setup (Permissions/Channels)
         createNotificationChannel();
         checkNotificationPermission();
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 101);
+            }
+        }
         // 3. Firebase Initialization & Safety Check
         db = FirebaseFirestore.getInstance();
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -104,9 +110,18 @@ public class NotificationActivity extends AppCompatActivity {
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("KNOWLY_CHANNEL", "User Alerts", NotificationManager.IMPORTANCE_HIGH);
+            // Importance must be HIGH for the popup to appear
+            NotificationChannel channel = new NotificationChannel(
+                    "KNOWLY_CHANNEL",
+                    "User Alerts",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            channel.setDescription("Notifications for post comments and interactions");
+
             NotificationManager manager = getSystemService(NotificationManager.class);
-            if (manager != null) manager.createNotificationChannel(channel);
+            if (manager != null) {
+                manager.createNotificationChannel(channel);
+            }
         }
     }
 
