@@ -4,7 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="100dp" android:clipChildren="false"
-    android:clipToPadding="false">
+    android:clipToPadding="false"
+    android:paddingTop="20dp"
+    >
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
@@ -26,7 +28,17 @@
             android:clipChildren="false">
 
             <ImageView android:layout_width="0dp" android:layout_height="24dp" android:layout_weight="1" android:src="@drawable/nav_home_selector" />
-            <ImageView android:layout_width="0dp" android:layout_height="24dp" android:layout_weight="1" android:src="@drawable/nav_weekly_selector" />
+
+            <ImageView
+                android:id="@+id/navWeekly"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_weight="1"
+                android:src="@drawable/nav_weekly_selector"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
+
 
             <FrameLayout
                 android:layout_width="0dp"
@@ -41,7 +53,9 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="18dp" app:cardCornerRadius="30dp"
                     app:cardElevation="8dp"
-                    app:strokeWidth="0dp">
+                    app:strokeWidth="0dp"
+
+                    >
 
                     <TextView
                         android:layout_width="match_parent"
