@@ -1,9 +1,7 @@
 package com.example.knowly;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,235 +11,167 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OthersProfileActivity extends AppCompatActivity {
 
-    // UI Elements
-    private TextView tvUsername, tvFollowerCount, btnFollowText;
+    private String otherUserId, currentUserId;
+    private TextView tvName, tvFollowerCount, tvFollowingCount;
     private CardView btnFollow;
+    private TextView btnFollowTextView;
     private ImageButton backButton;
-    private ImageView profileImageView;
-    private RecyclerView rvOtherUserPosts;
 
-    // Stats Elements
-    private TextView tvPostsCount, tvUpvotesCount, tvCommentsCount;
-
-    // Firebase & Data
-    private String targetUserId, currentUserId;
-    private PostAdapter postAdapter;
-    private List<Post> otherUserPosts;
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+    private ListenerRegistration profileListener;
     private boolean isFollowing = false;
+
+    private RecyclerView rvOtherUserPosts;
+    private PostAdapter postAdapter;
+    private List<Post> userPostsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_view_other);
 
-        // 1. Get Data from Intent
-        targetUserId = getIntent().getStringExtra("ownerId");
-        currentUserId = FirebaseAuth.getInstance().getUid();
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        currentUserId = mAuth.getUid();
 
-        if (targetUserId == null) {
-            Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show();
+        otherUserId = getIntent().getStringExtra("USER_ID");
+
+        if (otherUserId == null || currentUserId == null) {
+            Toast.makeText(this, "Error loading profile", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        // 2. Initialize Views
-        tvUsername = findViewById(R.id.other_username_text);
-        tvFollowerCount = findViewById(R.id.tvFollowers);
-        btnFollow = findViewById(R.id.btnFollow);
-        btnFollowText = findViewById(R.id.btnFollowTextView);
+        // 1. Link Views
+        tvName = findViewById(R.id.other_username_text);
+        tvFollowerCount = findViewById(R.id.tvFollowerCount);
+        tvFollowingCount = findViewById(R.id.tvFollowingCount);
+        btnFollow = findViewById(R.id.btnFollow); // The CardView button
+        btnFollowTextView = findViewById(R.id.btnFollowTextView); // The text inside
         backButton = findViewById(R.id.backButton_APV);
-        profileImageView = findViewById(R.id.pfp_APV); // Fixed PFP ID
+
+        // 2. Setup RecyclerView
         rvOtherUserPosts = findViewById(R.id.rvOtherUserPosts);
+        userPostsList = new ArrayList<>();
+        postAdapter = new PostAdapter(userPostsList);
+        if (rvOtherUserPosts != null) {
+            rvOtherUserPosts.setLayoutManager(new LinearLayoutManager(this));
+            rvOtherUserPosts.setAdapter(postAdapter);
+        }
 
-        tvPostsCount = findViewById(R.id.tv_posts_count);
-        tvUpvotesCount = findViewById(R.id.tv_upvotes_count);
-        tvCommentsCount = findViewById(R.id.tv_comments_count);
+        // 3. Listeners
+        if (backButton != null) backButton.setOnClickListener(v -> finish());
 
-        // 3. Setup RecyclerView
-        rvOtherUserPosts.setLayoutManager(new LinearLayoutManager(this));
-        otherUserPosts = new ArrayList<>();
-        postAdapter = new PostAdapter(otherUserPosts);
-        rvOtherUserPosts.setAdapter(postAdapter);
-
-        // 4. Load Data & Listeners
-        loadTargetUserInfo();
-        loadTargetUserPosts();
-        checkFollowStatus();
-        loadUserStats();
-
-        // 5. Click Listeners
+        checkFollowStatus(); // Initial check to see if we follow them
         btnFollow.setOnClickListener(v -> toggleFollow());
-        backButton.setOnClickListener(v -> finish());
+
+        loadOtherUserData();
+        fetchOtherUserPosts();
     }
 
-    private void loadTargetUserInfo() {
-        FirebaseDatabase.getInstance().getReference("Users").child(targetUserId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            // Load Username
-                            String username = snapshot.child("username").getValue(String.class);
-                            tvUsername.setText(username);
-                            TextView headerTitle = findViewById(R.id.username_text_APV);
-                            if (headerTitle != null) headerTitle.setText(username);
-
-                            // LOAD PROFILE PICTURE
-                            String pfpUrl = snapshot.child("profileImageUrl").getValue(String.class);
-                            if (pfpUrl != null && !pfpUrl.isEmpty()) {
-                                Glide.with(OthersProfileActivity.this)
-                                        .load(pfpUrl)
-                                        .placeholder(R.drawable.back_arrow) // Use a better placeholder if you have one
-                                        .circleCrop()
-                                        .into(profileImageView);
-                            }
-                        }
+    private void checkFollowStatus() {
+        // Check if current user is in other user's followers sub-collection
+        db.collection("users").document(otherUserId)
+                .collection("followers").document(currentUserId)
+                .addSnapshotListener((snapshot, e) -> {
+                    if (snapshot != null && snapshot.exists()) {
+                        isFollowing = true;
+                        btnFollowTextView.setText("Unfollow");
+                        btnFollow.setCardBackgroundColor(0xFFBDBDBD); // Grey
+                    } else {
+                        isFollowing = false;
+                        btnFollowTextView.setText("Follow");
+                        btnFollow.setCardBackgroundColor(0xFF00ACC1); // Original Blue/Green
                     }
-                    @Override public void onCancelled(@NonNull DatabaseError error) {}
                 });
     }
 
-    private void loadUserStats() {
-        // --- LIVE FOLLOWER / FOLLOWING COUNT ---
-        FirebaseDatabase.getInstance().getReference("Users")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        int followers = 0;
-                        for (DataSnapshot user : snapshot.getChildren()) {
-                            DataSnapshot followingList = user.child("following");
-                            if (followingList.exists()) {
-                                for (DataSnapshot followEntry : followingList.getChildren()) {
-                                    // Make sure this matches the targetUserId we are viewing
-                                    if (targetUserId.equals(followEntry.getValue(String.class))) {
-                                        followers++;
-                                    }
-                                }
-                            }
-                        }
+    private void toggleFollow() {
+        DocumentReference otherUserRef = db.collection("users").document(otherUserId);
+        DocumentReference currentUserRef = db.collection("users").document(currentUserId);
 
-                        long following = snapshot.child(targetUserId).child("following").getChildrenCount();
-                        tvFollowerCount.setText(followers + " Followers   " + following + " Following");
+        if (isFollowing) {
+            // UNFOLLOW LOGIC
+            // Remove from sub-collections
+            otherUserRef.collection("followers").document(currentUserId).delete();
+            currentUserRef.collection("following").document(otherUserId).delete();
+
+            // Decrease counts
+            otherUserRef.update("followerCount", FieldValue.increment(-1));
+            currentUserRef.update("followingCount", FieldValue.increment(-1));
+
+            Toast.makeText(this, "Unfollowed", Toast.LENGTH_SHORT).show();
+        } else {
+            // FOLLOW LOGIC
+            Map<String, Object> data = new HashMap<>();
+            data.put("timestamp", FieldValue.serverTimestamp());
+
+            // Add to sub-collections
+            otherUserRef.collection("followers").document(currentUserId).set(data);
+            currentUserRef.collection("following").document(otherUserId).set(data);
+
+            // Increase counts
+            otherUserRef.update("followerCount", FieldValue.increment(1));
+            currentUserRef.update("followingCount", FieldValue.increment(1));
+
+            Toast.makeText(this, "Following", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadOtherUserData() {
+        profileListener = db.collection("users").document(otherUserId)
+                .addSnapshotListener((documentSnapshot, error) -> {
+                    if (documentSnapshot != null && documentSnapshot.exists()) {
+                        String name = documentSnapshot.getString("username");
+                        Long followers = documentSnapshot.getLong("followerCount");
+                        Long following = documentSnapshot.getLong("followingCount");
+
+                        if (tvName != null) tvName.setText(name);
+                        if (tvFollowerCount != null) tvFollowerCount.setText(String.valueOf(followers != null ? followers : 0));
+                        if (tvFollowingCount != null) tvFollowingCount.setText(String.valueOf(following != null ? following : 0));
                     }
-                    @Override public void onCancelled(@NonNull DatabaseError error) {}
                 });
+    }
 
-        // --- LIVE UPVOTES / COMMENTS COUNT ---
+    private void fetchOtherUserPosts() {
         FirebaseDatabase.getInstance().getReference("Posts")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        int totalUpvotes = 0;
-                        int totalComments = 0;
-                        for (DataSnapshot postSnap : snapshot.getChildren()) {
-                            Post post = postSnap.getValue(Post.class);
-                            if (post != null && targetUserId.equals(post.getAuthor())) {
-                                if (postSnap.hasChild("upvotes")) {
-                                    totalUpvotes += postSnap.child("upvotes").getChildrenCount();
-                                }
-                                if (postSnap.hasChild("comments")) {
-                                    totalComments += postSnap.child("comments").getChildrenCount();
-                                }
+                        userPostsList.clear();
+                        for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                            Post post = postSnapshot.getValue(Post.class);
+                            if (post != null && otherUserId.equals(post.getAuthor())) {
+                                userPostsList.add(0, post);
                             }
                         }
-                        tvUpvotesCount.setText(String.valueOf(totalUpvotes));
-                        tvCommentsCount.setText(String.valueOf(totalComments));
-                    }
-                    @Override public void onCancelled(@NonNull DatabaseError error) {}
-                });
-    }
-
-    private void loadTargetUserPosts() {
-        FirebaseDatabase.getInstance().getReference("Posts")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        otherUserPosts.clear();
-                        int postCount = 0;
-                        for (DataSnapshot ds : snapshot.getChildren()) {
-                            Post post = ds.getValue(Post.class);
-                            if (post != null && targetUserId.equals(post.getAuthor())) {
-                                post.setPostId(ds.getKey());
-                                otherUserPosts.add(0, post);
-                                postCount++;
-                            }
-                        }
-                        tvPostsCount.setText(String.valueOf(postCount));
                         postAdapter.notifyDataSetChanged();
                     }
                     @Override public void onCancelled(@NonNull DatabaseError error) {}
                 });
     }
 
-    private void checkFollowStatus() {
-        if (currentUserId == null) return;
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(currentUserId).child("following")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        isFollowing = false;
-                        for (DataSnapshot ds : snapshot.getChildren()) {
-                            if (targetUserId.equals(ds.getValue(String.class))) {
-                                isFollowing = true;
-                                break;
-                            }
-                        }
-                        updateFollowButtonUI();
-                    }
-                    @Override public void onCancelled(@NonNull DatabaseError error) {}
-                });
-    }
-
-    private void updateFollowButtonUI() {
-        if (btnFollowText == null) return;
-        if (isFollowing) {
-            btnFollowText.setText("Unfollow");
-            btnFollowText.setBackground(null);
-            btnFollow.setCardBackgroundColor(Color.parseColor("#BDBDBD"));
-        } else {
-            btnFollowText.setText("Follow");
-            btnFollowText.setBackgroundResource(R.drawable.button_gradient);
-            btnFollow.setCardBackgroundColor(Color.TRANSPARENT);
-        }
-    }
-
-    private void toggleFollow() {
-        if (currentUserId == null) return;
-        if (currentUserId.equals(targetUserId)) {
-            Toast.makeText(this, "You cannot follow yourself", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        DatabaseReference myFollowingRef = FirebaseDatabase.getInstance().getReference("Users")
-                .child(currentUserId).child("following");
-
-        if (isFollowing) {
-            myFollowingRef.orderByValue().equalTo(targetUserId)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            for (DataSnapshot ds : snapshot.getChildren()) {
-                                ds.getRef().removeValue();
-                            }
-                        }
-                        @Override public void onCancelled(@NonNull DatabaseError error) {}
-                    });
-        } else {
-            myFollowingRef.push().setValue(targetUserId);
-        }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (profileListener != null) profileListener.remove();
     }
 }

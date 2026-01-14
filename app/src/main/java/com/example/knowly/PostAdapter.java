@@ -1,7 +1,5 @@
 package com.example.knowly;
 
-import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -11,11 +9,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.chip.Chip;
+import com.bumptech.glide.Glide;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -30,10 +27,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
     private String getCurrentUserId() {
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            return FirebaseAuth.getInstance().getCurrentUser().getUid();
-        }
-        return null;
+        return (FirebaseAuth.getInstance().getCurrentUser() != null)
+                ? FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
     }
 
     @NonNull
@@ -47,214 +42,145 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Post post = postList.get(position);
         String userId = getCurrentUserId();
-        if (userId == null) return;
 
-        // --- 1. Set post content ---
+        // Safety check to prevent crash if data is missing
+        if (post == null || userId == null) return;
+
+        // 1. Set Content
         holder.content.setText(post.getContent());
 
-        // --- 2. FETCH REAL USERNAME & NAVIGATION ---
+        // 2. Profile & Navigation Logic (The Fix)
         String authorUid = post.getAuthor();
         holder.author.setTag(authorUid);
-        holder.author.setText("...");
-        holder.postInitial.setText("?");
 
-        if (authorUid != null) {
-            // Navigation logic for Profile
-            View.OnClickListener profileClickListener = v -> {
+        // Reset UI for recycled views to avoid showing wrong user info
+        holder.author.setText("...");
+        holder.postInitial.setVisibility(View.VISIBLE);
+        holder.profilePic.setImageResource(R.drawable.chip_cat_gradient_checked);
+
+        if (authorUid != null && !authorUid.isEmpty()) {
+            View.OnClickListener toProfile = v -> {
+                Intent intent;
+                // Check if the author is the current logged-in user
                 if (authorUid.equals(userId)) {
-                    // Logic for clicking your own profile (optional)
-                    // v.getContext().startActivity(new Intent(v.getContext(), MyProfileActivity.class));
+                    intent = new Intent(v.getContext(), UserPageActivity.class);
                 } else {
-                    Intent intent = new Intent(v.getContext(), OthersProfileActivity.class);
-                    intent.putExtra("ownerId", authorUid);
-                    v.getContext().startActivity(intent);
+                    // It's someone else, go to OthersProfileActivity
+                    intent = new Intent(v.getContext(), OthersProfileActivity.class);
+                    // MANDATORY: Use "USER_ID" to match OthersProfileActivity's getIntent()
+                    intent.putExtra("USER_ID", authorUid);
                 }
+                v.getContext().startActivity(intent);
             };
 
-            // Set listeners to both username and the profile initial circle
-            holder.author.setOnClickListener(profileClickListener);
-            holder.postInitial.setOnClickListener(profileClickListener);
+            // Set clicks for all profile parts
+            holder.author.setOnClickListener(toProfile);
+            holder.profilePic.setOnClickListener(toProfile);
+            holder.postInitial.setOnClickListener(toProfile);
 
-            FirebaseDatabase.getInstance().getReference("Users")
-                    .child(authorUid)
-                    .child("username")
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (holder.author.getTag() != null && holder.author.getTag().equals(authorUid)) {
-                            if (task.isSuccessful() && task.getResult().exists()) {
-                                String name = String.valueOf(task.getResult().getValue());
-                                holder.author.setText(name);
-                                if (name != null && !name.isEmpty()) {
+            // Fetch Username/PFP from Realtime Database
+            FirebaseDatabase.getInstance().getReference("Users").child(authorUid)
+                    .get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
+                            // Only update if the holder is still showing the same author (safe scroll)
+                            if (authorUid.equals(holder.author.getTag())) {
+                                String name = task.getResult().child("username").getValue(String.class);
+                                String pfpUrl = task.getResult().child("profileImageUrl").getValue(String.class);
+
+                                holder.author.setText(name != null ? name : "User");
+
+                                if (pfpUrl != null && !pfpUrl.isEmpty()) {
+                                    holder.postInitial.setVisibility(View.GONE);
+                                    Glide.with(holder.itemView.getContext())
+                                            .load(pfpUrl)
+                                            .circleCrop()
+                                            .into(holder.profilePic);
+                                } else if (name != null && !name.isEmpty()) {
                                     holder.postInitial.setText(name.substring(0, 1).toUpperCase());
                                 }
-                            } else {
-                                holder.author.setText("User " + authorUid.substring(0, 4));
-                                holder.postInitial.setText("U");
                             }
                         }
                     });
         }
 
-        // --- 3. TIMESTAMP LOGIC ---
-        if (post.getTimestamp() != 0) {
-            holder.timeOfPost.setText(getTimeAgo(post.getTimestamp()));
-        } else {
-            holder.timeOfPost.setText("just now");
-        }
-
-        // --- 4. Set the interaction numbers ---
+        // 3. Stats & Metadata
+        holder.timeOfPost.setText(getTimeAgo(post.getTimestamp()));
         holder.upvoteNum.setText(String.valueOf(post.getUpvote_num()));
         holder.downvoteNum.setText(String.valueOf(post.getDownvote_num()));
         holder.commentNum.setText(String.valueOf(post.getComment_num()));
 
-        // --- 5. CATEGORY LOGIC ---
+        // 4. Categories
         holder.categoryGroup.removeAllViews();
-        if (post.getCategories() != null && !post.getCategories().isEmpty()) {
-            holder.categoryGroup.setVisibility(View.VISIBLE);
-            for (String catName : post.getCategories()) {
+        if (post.getCategories() != null) {
+            for (String cat : post.getCategories()) {
                 TextView tv = new TextView(holder.itemView.getContext());
-                tv.setText(catName);
+                tv.setText(cat);
                 tv.setBackgroundResource(R.drawable.bg_category_gradient);
                 tv.setTextColor(Color.parseColor("#2788A0"));
-                tv.setTextSize(12);
-                tv.setAllCaps(false);
-                tv.setGravity(android.view.Gravity.CENTER);
-
-                float scale = holder.itemView.getContext().getResources().getDisplayMetrics().density;
-                int padSide = (int) (10 * scale + 0.5f);
-                int padTopBottom = (int) (4 * scale + 0.5f);
-                tv.setPadding(padSide, padTopBottom, padSide, padTopBottom);
-
-                com.google.android.material.chip.ChipGroup.LayoutParams params =
-                        new com.google.android.material.chip.ChipGroup.LayoutParams(
-                                ViewGroup.LayoutParams.WRAP_CONTENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(0, 0, 6, 6);
-                tv.setLayoutParams(params);
-
+                tv.setPadding(20, 10, 20, 10);
                 holder.categoryGroup.addView(tv);
             }
-        } else {
-            holder.categoryGroup.setVisibility(View.GONE);
         }
 
-        // --- 6. UI & Interaction Logic ---
+        // 5. Interaction Listeners
         updateVoteUI(holder, post, userId);
-
         if (post.getPostId() != null) {
             DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("Posts").child(post.getPostId());
-
-            holder.upvoteImg.setOnClickListener(v -> {
-                DatabaseReference upRef = postRef.child("upvotes").child(userId);
-                DatabaseReference downRef = postRef.child("downvotes").child(userId);
-                if (post.getUpvotes() != null && post.getUpvotes().containsKey(userId)) {
-                    upRef.removeValue();
-                } else {
-                    upRef.setValue(true);
-                    downRef.removeValue();
-                    NotificationUtils.sendNotification(post.getAuthor(), "comment", "upvoted your post");
-                }
-            });
-
-            holder.downvoteImg.setOnClickListener(v -> {
-                DatabaseReference upRef = postRef.child("upvotes").child(userId);
-                DatabaseReference downRef = postRef.child("downvotes").child(userId);
-                if (post.getDownvotes() != null && post.getDownvotes().containsKey(userId)) {
-                    downRef.removeValue();
-                } else {
-                    downRef.setValue(true);
-                    upRef.removeValue();
-                }
-            });
-
-            holder.bookmarkBtn.setOnClickListener(v -> {
-                boolean isCurrentlySelected = holder.bookmarkBtn.isSelected();
-                holder.bookmarkBtn.setSelected(!isCurrentlySelected);
-                if (holder.bookmarkBtn.isSelected()) {
-                    Toast.makeText(v.getContext(), "Post Bookmarked", Toast.LENGTH_SHORT).show();
-                }
-            });
+            holder.upvoteImg.setOnClickListener(v -> toggleVote(postRef, "upvotes", "downvotes", userId, post));
+            holder.downvoteImg.setOnClickListener(v -> toggleVote(postRef, "downvotes", "upvotes", userId, post));
         }
 
         holder.commentImg.setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), PostDetailsActivity.class);
-            intent.putExtra("POST_ID", post.getPostId());
-            v.getContext().startActivity(intent);
+            Intent i = new Intent(v.getContext(), PostDetailsActivity.class);
+            i.putExtra("POST_ID", post.getPostId());
+            v.getContext().startActivity(i);
         });
 
-        holder.moreBtn.setOnClickListener(v -> showPopupMenu(v, post, userId));
+        holder.moreBtn.setOnClickListener(v -> showPopup(v, post, userId));
+    }
+
+    // --- Helper Methods ---
+
+    private void toggleVote(DatabaseReference ref, String node, String otherNode, String uid, Post post) {
+        if (node.equals("upvotes") && post.getUpvotes() != null && post.getUpvotes().containsKey(uid)) {
+            ref.child(node).child(uid).removeValue();
+        } else if (node.equals("downvotes") && post.getDownvotes() != null && post.getDownvotes().containsKey(uid)) {
+            ref.child(node).child(uid).removeValue();
+        } else {
+            ref.child(node).child(uid).setValue(true);
+            ref.child(otherNode).child(uid).removeValue();
+        }
     }
 
     private String getTimeAgo(long time) {
-        long now = System.currentTimeMillis();
-        if (time > now || time <= 0) return "just now";
-        final long diff = now - time;
+        long diff = System.currentTimeMillis() - time;
         if (diff < 60000) return "just now";
         if (diff < 3600000) return (diff / 60000) + "m ago";
         if (diff < 86400000) return (diff / 3600000) + "h ago";
-        if (diff < 604800000) return (diff / 86400000) + "d ago";
-        return (diff / 604800000) + "w ago";
+        return (diff / 86400000) + "d ago";
     }
 
-    private void updateVoteUI(ViewHolder holder, Post post, String userId) {
-        int activeColor = Color.parseColor("#3498db");
-        int downColor = Color.parseColor("#e74c3c");
-        int grayColor = Color.parseColor("#808080");
-
-        if (post.getUpvotes() != null && post.getUpvotes().containsKey(userId)) {
-            holder.upvoteImg.setColorFilter(activeColor);
-        } else {
-            holder.upvoteImg.setColorFilter(grayColor);
-        }
-
-        if (post.getDownvotes() != null && post.getDownvotes().containsKey(userId)) {
-            holder.downvoteImg.setColorFilter(downColor);
-        } else {
-            holder.downvoteImg.setColorFilter(grayColor);
-        }
+    private void updateVoteUI(ViewHolder h, Post p, String id) {
+        int active = Color.parseColor("#3498db");
+        int gray = Color.parseColor("#808080");
+        h.upvoteImg.setColorFilter(p.getUpvotes() != null && p.getUpvotes().containsKey(id) ? active : gray);
+        h.downvoteImg.setColorFilter(p.getDownvotes() != null && p.getDownvotes().containsKey(id) ? Color.RED : gray);
     }
 
-    private void showPopupMenu(View view, Post post, String userId) {
-        PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
-        if (post.getAuthor() != null && post.getAuthor().equals(userId)) {
-            popupMenu.getMenu().add("Delete Post");
-        } else {
-            popupMenu.getMenu().add("Report Post");
-        }
-        popupMenu.setOnMenuItemClickListener(item -> {
-            if (item.getTitle().equals("Delete Post")) {
-                showDeleteConfirmation(view.getContext(), post.getPostId());
-            } else {
-                Toast.makeText(view.getContext(), "Post Reported", Toast.LENGTH_SHORT).show();
-            }
-            return true;
-        });
-        popupMenu.show();
-    }
-
-    private void showDeleteConfirmation(Context context, String postId) {
-        new AlertDialog.Builder(context)
-                .setTitle("Delete Post")
-                .setMessage("Are you sure you want to delete this post?")
-                .setPositiveButton("Delete", (dialog, which) -> {
-                    FirebaseDatabase.getInstance().getReference("Posts")
-                            .child(postId).removeValue()
-                            .addOnSuccessListener(aVoid -> Toast.makeText(context, "Post removed", Toast.LENGTH_SHORT).show());
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
+    private void showPopup(View v, Post p, String id) {
+        PopupMenu popup = new PopupMenu(v.getContext(), v);
+        if (p.getAuthor() != null && p.getAuthor().equals(id)) popup.getMenu().add("Delete");
+        else popup.getMenu().add("Report");
+        popup.show();
     }
 
     @Override
-    public int getItemCount() {
-        return postList.size();
-    }
+    public int getItemCount() { return postList.size(); }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView content, author, postInitial, timeOfPost;
+        TextView content, author, postInitial, timeOfPost, upvoteNum, downvoteNum, commentNum;
+        ImageView upvoteImg, downvoteImg, commentImg, bookmarkBtn, profilePic;
         ChipGroup categoryGroup;
-        TextView upvoteNum, downvoteNum, commentNum;
-        ImageView upvoteImg, downvoteImg, commentImg, bookmarkBtn;
         ImageButton moreBtn;
 
         public ViewHolder(View v) {
@@ -264,6 +190,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             timeOfPost = v.findViewById(R.id.time_of_post);
             categoryGroup = v.findViewById(R.id.category_chip_group);
             postInitial = v.findViewById(R.id.post_initial);
+            profilePic = v.findViewById(R.id.profile_pic);
             upvoteNum = v.findViewById(R.id.upvote_num);
             downvoteNum = v.findViewById(R.id.downvote_num);
             commentNum = v.findViewById(R.id.comment_num);

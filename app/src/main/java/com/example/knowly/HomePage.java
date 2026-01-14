@@ -21,6 +21,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,10 +71,9 @@ public class HomePage extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Posts");
         currentUserId = FirebaseAuth.getInstance().getUid();
 
-        // 4. Load Data (Parallel Loading)
-        // We fetch posts IMMEDIATELY so the page isn't stuck
-        fetchPostsFromFirebase();
+        // 4. Load Data
         loadUserPreferences();
+        fetchPostsFromFirebase();
 
         // 5. Tab Click Listeners
         cardForYou.setOnClickListener(v -> setSelectedTab(true));
@@ -80,41 +81,52 @@ public class HomePage extends AppCompatActivity {
 
         // 6. Navigation Buttons
         MaterialCardView createPostBtn = findViewById(R.id.createpostbutton);
-        createPostBtn.setOnClickListener(v -> {
-            startActivity(new Intent(HomePage.this, CreatePostActivity.class));
-        });
+        if (createPostBtn != null) {
+            createPostBtn.setOnClickListener(v -> {
+                startActivity(new Intent(HomePage.this, CreatePostActivity.class));
+            });
+        }
 
         ImageView navWeekly = findViewById(R.id.navWeekly);
-        navWeekly.setOnClickListener(v -> {
-            startActivity(new Intent(HomePage.this, WeeklyFeaturedActivity.class));
-        });
+        if (navWeekly != null) {
+            navWeekly.setOnClickListener(v -> {
+                startActivity(new Intent(HomePage.this, WeeklyFeaturedActivity.class));
+            });
+        }
     }
 
     private void loadUserPreferences() {
         if (currentUserId == null) return;
 
-        FirebaseDatabase.getInstance().getReference("Users").child(currentUserId)
-                .addValueEventListener(new ValueEventListener() { // Use addValueEventListener for live updates
+        // --- SYNC WITH FIRESTORE (Following List) ---
+        // This listens to the same place your Unfollow button deletes from
+        FirebaseFirestore.getInstance().collection("users").document(currentUserId)
+                .collection("following")
+                .addSnapshotListener((snapshot, e) -> {
+                    if (e != null) return;
+
+                    if (snapshot != null) {
+                        currentUserFollowing.clear();
+                        for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                            // The document ID is the UID of the user you follow
+                            currentUserFollowing.add(doc.getId());
+                        }
+                        // Refresh the feed immediately when follow list changes
+                        fetchPostsFromFirebase();
+                    }
+                });
+
+        // --- SYNC WITH REALTIME DB (Interests) ---
+        FirebaseDatabase.getInstance().getReference("Users").child(currentUserId).child("interests")
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         currentUserInterests.clear();
-                        currentUserFollowing.clear();
-
                         if (snapshot.exists()) {
-                            // Get Interests
-                            if (snapshot.hasChild("interests")) {
-                                for (DataSnapshot ds : snapshot.child("interests").getChildren()) {
-                                    currentUserInterests.add(ds.getValue(String.class));
-                                }
-                            }
-                            // Get Following
-                            if (snapshot.hasChild("following")) {
-                                for (DataSnapshot ds : snapshot.child("following").getChildren()) {
-                                    currentUserFollowing.add(ds.getValue(String.class));
-                                }
+                            for (DataSnapshot ds : snapshot.getChildren()) {
+                                currentUserInterests.add(ds.getValue(String.class));
                             }
                         }
-                        // After preferences load, refresh the feed with filters
                         fetchPostsFromFirebase();
                     }
 
@@ -152,7 +164,7 @@ public class HomePage extends AppCompatActivity {
                         post.setPostId(dataSnapshot.getKey());
 
                         if (isForYouSelected) {
-                            // FOR YOU: If no interests are loaded yet, show ALL posts (Avoids blank screen)
+                            // FOR YOU: Show posts matching interests OR all if none selected
                             if (currentUserInterests.isEmpty()) {
                                 postList.add(0, post);
                             } else if (post.getCategories() != null) {
@@ -164,7 +176,7 @@ public class HomePage extends AppCompatActivity {
                                 }
                             }
                         } else {
-                            // FOLLOWING: Only show posts from users in the following list
+                            // FOLLOWING: ONLY show posts if author is in the currentUserFollowing list
                             if (currentUserFollowing.contains(post.getAuthor())) {
                                 postList.add(0, post);
                             }

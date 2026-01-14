@@ -106,17 +106,52 @@
                         app:layout_constraintTop_toTopOf="@+id/pfp_APV"
                         tools:text="student_name" />
 
-                    <TextView
-                        android:id="@+id/tvFollowers"
+                    <LinearLayout
+                        android:id="@+id/follower_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:fontFamily="@font/inter_medium"
-                        android:text="0 Followers   0 Following"
-                        android:textColor="#424242"
-                        android:textSize="13sp"
+                        android:orientation="horizontal"
                         app:layout_constraintStart_toStartOf="@+id/other_username_text"
-                        app:layout_constraintTop_toBottomOf="@+id/other_username_text" />
+                        app:layout_constraintTop_toBottomOf="@+id/other_username_text">
+
+                        <TextView
+                            android:id="@+id/tvFollowerCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_bold"
+                            android:text="0"
+                            android:textColor="#000000"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:fontFamily="@font/inter_medium"
+                            android:text="Followers"
+                            android:textColor="#424242"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/tvFollowingCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:fontFamily="@font/inter_bold"
+                            android:text="0"
+                            android:textColor="#000000"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:fontFamily="@font/inter_medium"
+                            android:text="Following"
+                            android:textColor="#424242"
+                            android:textSize="13sp" />
+                    </LinearLayout>
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/btnFollow"
@@ -257,8 +292,6 @@
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
