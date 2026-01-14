@@ -125,6 +125,18 @@
                         app:layout_constraintTop_toTopOf="@+id/cvAvatar" />
 
                     <TextView
+                        android:id="@+id/tvCredentials"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_light"
+                        android:text="Credentials loading..."
+                        android:textColor="#757575"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/tvName"
+                        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+
+                    <TextView
                         android:id="@+id/tvEmail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -133,13 +145,13 @@
                         android:textColor="#757575"
                         android:textSize="14sp"
                         app:layout_constraintStart_toStartOf="@+id/tvName"
-                        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+                        app:layout_constraintTop_toBottomOf="@+id/tvCredentials" />
 
                     <TextView
                         android:id="@+id/tvFollowers"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="4dp"
                         android:fontFamily="@font/inter_light"
                         android:text="0 Followers   0 Following"
                         android:textColor="#424242"
@@ -148,17 +160,32 @@
                         app:layout_constraintStart_toStartOf="@+id/tvName"
                         app:layout_constraintTop_toBottomOf="@+id/tvEmail" />
 
+                    <TextView
+                        android:id="@+id/tvBio"
+                        android:layout_width="165dp"
+                        android:layout_height="26dp"
+                        android:layout_marginTop="16dp"
+                        android:fontFamily="@font/inter_light"
+                        android:lineSpacingExtra="2dp"
+                        android:text="Bio loading..."
+                        android:textColor="#616161"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/cvAvatar"
+                        app:layout_constraintTop_toBottomOf="@+id/tvFollowers" />
+
                     <androidx.cardview.widget.CardView
                         android:id="@+id/btnEditProfile"
                         android:layout_width="0dp"
                         android:layout_height="45dp"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="20dp"
                         app:cardBackgroundColor="#64DD17"
                         app:cardCornerRadius="18dp"
                         app:cardElevation="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/cvAvatar">
+                        app:layout_constraintTop_toBottomOf="@+id/tvBio">
 
                         <TextView
                             android:layout_width="match_parent"
@@ -248,12 +275,13 @@
         </LinearLayout>
     </ScrollView>
 
+
     <androidx.cardview.widget.CardView
         android:id="@+id/logoutMenu"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="30dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="28dp"
         android:visibility="gone"
         app:cardBackgroundColor="#FFFFFF"
         app:cardCornerRadius="8dp"
@@ -262,10 +290,8 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
 
-        <include layout="@layout/menu_setting"/>
+        <include layout="@layout/menu_setting" />
     </androidx.cardview.widget.CardView>
-
-
 
     <include
         android:id="@+id/included_nav"

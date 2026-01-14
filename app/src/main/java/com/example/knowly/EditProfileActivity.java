@@ -127,44 +127,36 @@ public class EditProfileActivity extends AppCompatActivity {
 
         String uid = currentUser.getUid();
 
-        String username = "";
-        if (inputUsername.getEditText() != null) {
-            username = inputUsername.getEditText().getText().toString().trim();
-        }
+        // --- ADD THESE LINES TO EXTRACT THE TEXT ---
+        String username = inputUsername.getEditText() != null ? inputUsername.getEditText().getText().toString().trim() : "";
+        String bioString = inputBio.getEditText() != null ? inputBio.getEditText().getText().toString().trim() : "";
+        String credsString = inputCredentials.getEditText() != null ? inputCredentials.getEditText().getText().toString().trim() : "";
 
-        String bio = "";
-        if (inputBio.getEditText() != null) {
-            bio = inputBio.getEditText().getText().toString().trim();
-        }
-
-        String credentials = "";
-        if (inputCredentials.getEditText() != null) {
-            credentials = inputCredentials.getEditText().getText().toString().trim();
-        }
-
-        ArrayList<String> interestsList = new ArrayList<>();
-        for (int i = 0; i < chipGroup.getChildCount(); i++) {
-            Chip chip = (Chip) chipGroup.getChildAt(i);
-            interestsList.add(chip.getText().toString());
-        }
-
+        // 1. Prepare Firestore Data
         Map<String, Object> userProfile = new HashMap<>();
         userProfile.put("username", username);
-        userProfile.put("bio", bio);
-        userProfile.put("credentials", credentials);
-        userProfile.put("interests", interestsList);
+        userProfile.put("bio", bioString);           // Matches UserPageActivity fetch
+        userProfile.put("credentials", credsString); // Matches UserPageActivity fetch
 
+        // 2. Update Firestore
         db.collection("users").document(uid)
                 .set(userProfile, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Profile Saved!", Toast.LENGTH_SHORT).show();
-                    finish();
+                    // Update Realtime Database for global sync
+                    com.google.firebase.database.FirebaseDatabase.getInstance()
+                            .getReference("Users")
+                            .child(uid)
+                            .child("username")
+                            .setValue(username)
+                            .addOnSuccessListener(unused -> {
+                                Toast.makeText(this, "Profile Saved!", Toast.LENGTH_SHORT).show();
+                                finish(); // Returns to UserPageActivity
+                            });
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Save Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
     }
-
     private void updateInterestsDisplay(ArrayList<String> interests) {
         chipGroup.removeAllViews();
         for (String interest : interests) {

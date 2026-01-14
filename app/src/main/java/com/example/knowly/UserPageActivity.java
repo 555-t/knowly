@@ -29,6 +29,7 @@ public class UserPageActivity extends AppCompatActivity {
     // Firebase
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private TextView tvBio, tvCredentials;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,9 @@ public class UserPageActivity extends AppCompatActivity {
         // Menu items
         menuLogout = findViewById(R.id.menu_logout);
         menuDelete = findViewById(R.id.menu_delete);
+
+        tvBio = findViewById(R.id.tvBio);
+        tvCredentials = findViewById(R.id.tvCredentials);
 
         // Force menu button above other views
         btnMenuContainer.bringToFront();
@@ -115,32 +119,25 @@ public class UserPageActivity extends AppCompatActivity {
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
                             String username = documentSnapshot.getString("username");
+                            String bio = documentSnapshot.getString("bio");
+                            String credentials = documentSnapshot.getString("credentials");
 
-                            if (username != null && !username.isEmpty()) {
+                            // Update Username & Avatar
+                            if (username != null) {
                                 tvName.setText(username);
+                                tvAvatarText.setText(String.valueOf(username.charAt(0)).toUpperCase());
+                            }
 
-                                // --- CALCULATE INITIAL ---
-                                String initial = String.valueOf(username.charAt(0)).toUpperCase();
+                            // Update Credentials
+                            if (tvCredentials != null) {
+                                tvCredentials.setText(credentials != null ? credentials : "No credentials added");
+                            }
 
-                                // 2. Update MAIN Profile Avatar
-                                if (tvAvatarText != null) {
-                                    tvAvatarText.setText(initial);
-                                }
-
-                                // 3. Update NAVIGATION Avatar
-                                if (tvNavAvatarText != null) {
-                                    tvNavAvatarText.setText(initial);
-                                }
-
-                            } else {
-                                tvName.setText("User");
-                                if (tvAvatarText != null) tvAvatarText.setText("U");
-                                if (tvNavAvatarText != null) tvNavAvatarText.setText("U");
+                            // Update Bio
+                            if (tvBio != null) {
+                                tvBio.setText(bio != null ? bio : "Tell us about yourself...");
                             }
                         }
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Failed to load profile", Toast.LENGTH_SHORT).show();
                     });
         }
     }
