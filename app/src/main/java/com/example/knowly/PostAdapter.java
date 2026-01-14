@@ -111,6 +111,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 } else {
                     upRef.setValue(true);
                     downRef.removeValue();
+                    NotificationUtils.sendNotification(post.getAuthor(), "comment", "upvoted your post");
                 }
             });
 
