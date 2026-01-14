@@ -2,6 +2,7 @@ package com.example.knowly;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import android.content.Intent;
 import android.net.Uri;
@@ -106,6 +107,11 @@ public class CreatePostActivity extends AppCompatActivity {
             return;
         }
 
+        String currentUserName = "student_user";
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            currentUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        }
+
         String postId = mDatabase.push().getKey();
         HashMap<String, Object> postMap = new HashMap<>();
         postMap.put("postId", postId);
@@ -132,6 +138,21 @@ public class CreatePostActivity extends AppCompatActivity {
         postMap.put("upvote_num", 0);
         postMap.put("downvote_num", 0);
         postMap.put("comment_num", 0);
+    }
+
+    public void sendNotification(String targetUserId, String actorName, String actionText) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        HashMap<String, Object> notifMap = new HashMap<>();
+        notifMap.put("username", actorName);
+        notifMap.put("action", actionText);
+        notifMap.put("time", "Just now");
+        notifMap.put("iconRes", "default_icon"); // Your new XML icon
+        notifMap.put("timestamp", com.google.firebase.Timestamp.now()); // Needed for sorting
+
+        db.collection("users").document(targetUserId)
+                .collection("notifications")
+                .add(notifMap);
     }
 
     private void loadCategoriesFromFirestore() {

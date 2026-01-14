@@ -2,6 +2,7 @@ package com.example.knowly;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,7 +26,6 @@ public class NotificationActivity extends AppCompatActivity {
     private NotificationAdapter adapter;
     private List<NotificationItem> notificationList;
 
-    // Firebase variables
     private FirebaseFirestore db;
     private String userId;
 
@@ -34,18 +34,9 @@ public class NotificationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notifications_activity);
 
-        // 1. Firebase Initialization
-        db = FirebaseFirestore.getInstance();
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            listenForNotifications();
-        } else {
-            // Redirect to login or show a message
-            Log.e("KNOWLY", "User is not logged in!");
-        }
-
-        // 2. Navigation & UI Setup
+        // 1. Navigation & UI Setup FIRST
         NavigationHelper.setupNavigation(this);
+
         recyclerView = findViewById(R.id.notificationRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -53,36 +44,52 @@ public class NotificationActivity extends AppCompatActivity {
         adapter = new NotificationAdapter(notificationList);
         recyclerView.setAdapter(adapter);
 
-        // 3. System Setup
+        // 2. System Setup (Permissions/Channels)
         createNotificationChannel();
         checkNotificationPermission();
 
-        // 4. Start listening to Firestore
-        listenForNotifications();
+        // 3. Firebase Initialization & Safety Check
+        db = FirebaseFirestore.getInstance();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            // Start listening ONLY once here
+            listenForNotifications();
+        } else {
+            Log.e("KNOWLY", "User is not logged in!");
+            // Optional: Redirect to login so the user doesn't see a blank screen
+            // startActivity(new Intent(this, LoginActivity.class));
+            // finish();
+        }
     }
 
     private void listenForNotifications() {
         if (userId == null) return;
 
-        // Path: users -> [USERID] -> notifications
+        // Note: Make sure "timestamp" field exists in Firestore or the query will return nothing
         db.collection("users").document(userId).collection("notifications")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener((snapshots, e) -> {
-                    if (e != null || snapshots == null) return;
+                    if (e != null) {
+                        Log.e("KNOWLY", "Listen failed.", e);
+                        return;
+                    }
 
-                    for (DocumentChange dc : snapshots.getDocumentChanges()) {
-                        if (dc.getType() == DocumentChange.Type.ADDED) {
-                            // Turn Firestore data into our NotificationItem object
-                            NotificationItem item = dc.getDocument().toObject(NotificationItem.class);
+                    if (snapshots != null && !snapshots.isEmpty()) {
+                        for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                            if (dc.getType() == DocumentChange.Type.ADDED) {
+                                NotificationItem item = dc.getDocument().toObject(NotificationItem.class);
 
-                            // Add to list and update screen
-                            notificationList.add(0, item);
-                            adapter.notifyItemInserted(0);
-                            recyclerView.scrollToPosition(0);
+                                // Add to top of list
+                                notificationList.add(0, item);
+                                adapter.notifyItemInserted(0);
+                                recyclerView.scrollToPosition(0);
 
-                            // Show the Android popup
-                            showPopupNotification("KNOWLY", item.getUsername() + " " + item.getAction());
+                                // Trigger System Popup
+                                showPopupNotification("KNOWLY", item.getUsername() + " " + item.getAction());
+                            }
                         }
+                    } else {
+                        Log.d("KNOWLY", "No notifications found for user: " + userId);
                     }
                 });
     }
@@ -105,7 +112,7 @@ public class NotificationActivity extends AppCompatActivity {
 
     public void showPopupNotification(String title, String message) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "KNOWLY_CHANNEL")
-                .setSmallIcon(android.R.drawable.stat_notify_chat)
+                .setSmallIcon(android.R.drawable.stat_notify_chat) // Ensure this icon exists
                 .setContentTitle(title)
                 .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
