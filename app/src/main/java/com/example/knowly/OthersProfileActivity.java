@@ -3,6 +3,7 @@ package com.example.knowly;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,6 +13,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,6 +30,7 @@ public class OthersProfileActivity extends AppCompatActivity {
     private TextView tvUsername, tvFollowerCount, btnFollowText;
     private CardView btnFollow;
     private ImageButton backButton;
+    private ImageView profileImageView;
     private RecyclerView rvOtherUserPosts;
 
     // Stats Elements
@@ -60,6 +63,7 @@ public class OthersProfileActivity extends AppCompatActivity {
         btnFollow = findViewById(R.id.btnFollow);
         btnFollowText = findViewById(R.id.btnFollowTextView);
         backButton = findViewById(R.id.backButton_APV);
+        profileImageView = findViewById(R.id.pfp_APV); // Fixed PFP ID
         rvOtherUserPosts = findViewById(R.id.rvOtherUserPosts);
 
         tvPostsCount = findViewById(R.id.tv_posts_count);
@@ -89,10 +93,21 @@ public class OthersProfileActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
+                            // Load Username
                             String username = snapshot.child("username").getValue(String.class);
                             tvUsername.setText(username);
                             TextView headerTitle = findViewById(R.id.username_text_APV);
                             if (headerTitle != null) headerTitle.setText(username);
+
+                            // LOAD PROFILE PICTURE
+                            String pfpUrl = snapshot.child("profileImageUrl").getValue(String.class);
+                            if (pfpUrl != null && !pfpUrl.isEmpty()) {
+                                Glide.with(OthersProfileActivity.this)
+                                        .load(pfpUrl)
+                                        .placeholder(R.drawable.back_arrow) // Use a better placeholder if you have one
+                                        .circleCrop()
+                                        .into(profileImageView);
+                            }
                         }
                     }
                     @Override public void onCancelled(@NonNull DatabaseError error) {}
@@ -106,11 +121,11 @@ public class OthersProfileActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         int followers = 0;
-                        // Loop through all users to see who follows targetUserId
                         for (DataSnapshot user : snapshot.getChildren()) {
                             DataSnapshot followingList = user.child("following");
                             if (followingList.exists()) {
                                 for (DataSnapshot followEntry : followingList.getChildren()) {
+                                    // Make sure this matches the targetUserId we are viewing
                                     if (targetUserId.equals(followEntry.getValue(String.class))) {
                                         followers++;
                                     }
@@ -118,9 +133,7 @@ public class OthersProfileActivity extends AppCompatActivity {
                             }
                         }
 
-                        // Count how many people the target user follows
                         long following = snapshot.child(targetUserId).child("following").getChildrenCount();
-
                         tvFollowerCount.setText(followers + " Followers   " + following + " Following");
                     }
                     @Override public void onCancelled(@NonNull DatabaseError error) {}
@@ -198,7 +211,7 @@ public class OthersProfileActivity extends AppCompatActivity {
         if (isFollowing) {
             btnFollowText.setText("Unfollow");
             btnFollowText.setBackground(null);
-            btnFollow.setCardBackgroundColor(Color.parseColor("#BDBDBD")); // Grey
+            btnFollow.setCardBackgroundColor(Color.parseColor("#BDBDBD"));
         } else {
             btnFollowText.setText("Follow");
             btnFollowText.setBackgroundResource(R.drawable.button_gradient);
@@ -217,7 +230,6 @@ public class OthersProfileActivity extends AppCompatActivity {
                 .child(currentUserId).child("following");
 
         if (isFollowing) {
-            // Remove from following
             myFollowingRef.orderByValue().equalTo(targetUserId)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -225,14 +237,11 @@ public class OthersProfileActivity extends AppCompatActivity {
                             for (DataSnapshot ds : snapshot.getChildren()) {
                                 ds.getRef().removeValue();
                             }
-                            Toast.makeText(OthersProfileActivity.this, "Unfollowed", Toast.LENGTH_SHORT).show();
                         }
                         @Override public void onCancelled(@NonNull DatabaseError error) {}
                     });
         } else {
-            // Add to following
-            myFollowingRef.push().setValue(targetUserId)
-                    .addOnSuccessListener(aVoid -> Toast.makeText(OthersProfileActivity.this, "Followed!", Toast.LENGTH_SHORT).show());
+            myFollowingRef.push().setValue(targetUserId);
         }
     }
 }
