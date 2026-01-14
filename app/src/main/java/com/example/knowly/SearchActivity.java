@@ -3,14 +3,12 @@ package com.example.knowly;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class WeeklyFeaturedActivity extends AppCompatActivity {
-
+public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_weeklyfeatured);
-
-        //navigates for all navi bar buttons
+        // You can reuse your existing search layout if you have one
+        setContentView(R.layout.fragment_search);
         NavigationHelper.setupNavigation(this);
     }
 }

@@ -43,6 +43,8 @@ public class HomePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
 
+        //navigates for all navi bar buttons
+        NavigationHelper.setupNavigation(this);
         // ===== Tabs setup =====
         cardForYou = findViewById(R.id.cardForYou);
         cardFollowing = findViewById(R.id.cardFollowing);
@@ -60,7 +62,7 @@ public class HomePage extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Posts");
 
         // 2. Setup RecyclerView (The Feed)
-        recyclerView = findViewById(R.id.recyclerViewPosts);
+        recyclerView = findViewById(R.id.rvFeed);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
