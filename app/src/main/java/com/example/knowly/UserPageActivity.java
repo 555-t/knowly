@@ -12,8 +12,7 @@ import androidx.cardview.widget.CardView;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot; // Import for reading data
-import com.google.firebase.firestore.FirebaseFirestore; // Import for database
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class UserPageActivity extends AppCompatActivity {
 
@@ -21,8 +20,9 @@ public class UserPageActivity extends AppCompatActivity {
     private CardView logoutMenu;
     private CardView btnEditProfile;
 
-    // Text Views to update
+    // Text Views
     private TextView tvName, tvEmail, tvFollowers;
+    private TextView tvAvatarText; // <--- NEW: For the initial letter
 
     private TextView menuLogout, menuDelete;
 
@@ -39,7 +39,7 @@ public class UserPageActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // bottom nav
+        // Bottom nav setup
         NavigationHelper.setupNavigation(this);
 
         // 2. Initialize Views
@@ -47,16 +47,19 @@ public class UserPageActivity extends AppCompatActivity {
         logoutMenu = findViewById(R.id.logoutMenu);
         btnEditProfile = findViewById(R.id.btnEditProfile);
 
-        // Find the Text Views you want to change
+        // Text Views
         tvName = findViewById(R.id.tvName);
-        tvEmail = findViewById(R.id.tvEmail);
+        tvEmail = findViewById(R.id.tvEmail); // Note: If you removed this from XML, remove this line
         tvFollowers = findViewById(R.id.tvFollowers);
 
-        // menu items
+        // --- NEW: Find the ID you added to the XML ---
+        tvAvatarText = findViewById(R.id.tvAvatarText);
+
+        // Menu items
         menuLogout = findViewById(R.id.menu_logout);
         menuDelete = findViewById(R.id.menu_delete);
 
-        // force menu button above other views
+        // Force menu button above other views
         btnMenuContainer.bringToFront();
 
         // Edit Profile Click Listener
@@ -67,7 +70,7 @@ public class UserPageActivity extends AppCompatActivity {
 
         btnMenuContainer.setOnClickListener(v -> toggleMenu());
 
-        // click outside to close
+        // Click outside to close
         View root = findViewById(android.R.id.content);
         root.setOnClickListener(v -> logoutMenu.setVisibility(View.GONE));
 
@@ -85,11 +88,10 @@ public class UserPageActivity extends AppCompatActivity {
             Toast.makeText(this, "Delete Account clicked", Toast.LENGTH_SHORT).show();
         });
 
-        // 3. Load Data immediately on creation
+        // 3. Load Data immediately
         loadUserProfile();
     }
 
-    // This method runs every time you return to this screen (e.g. from Edit Profile)
     @Override
     protected void onResume() {
         super.onResume();
@@ -100,25 +102,35 @@ public class UserPageActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
-            // A. Set Email directly from Auth (it's always available)
-            tvEmail.setText(user.getEmail());
+            // Set Email safely (check if the view exists first)
+            if (tvEmail != null) {
+                tvEmail.setText(user.getEmail());
+            }
 
-            // B. Fetch the rest (Username, etc) from Firestore
+            // Fetch Username from Firestore
             db.collection("users").document(user.getUid())
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
-                            // Get "username" field we saved earlier
                             String username = documentSnapshot.getString("username");
 
-                            // Check if username is not empty
                             if (username != null && !username.isEmpty()) {
+                                // 1. Set the Name
                                 tvName.setText(username);
-                            } else {
-                                tvName.setText("No Name Set");
-                            }
 
-                            // You can also load bio or credentials here if you have TextViews for them
+                                // 2. Set the Avatar Initial (PFP)
+                                // Takes first char, uppercases it
+                                if (tvAvatarText != null) {
+                                    String initial = String.valueOf(username.charAt(0)).toUpperCase();
+                                    tvAvatarText.setText(initial);
+                                }
+                            } else {
+                                // Default fallback if no username set
+                                tvName.setText("User");
+                                if (tvAvatarText != null) {
+                                    tvAvatarText.setText("U");
+                                }
+                            }
                         }
                     })
                     .addOnFailureListener(e -> {
