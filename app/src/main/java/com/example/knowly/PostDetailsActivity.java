@@ -2,6 +2,7 @@ package com.example.knowly;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +39,7 @@ public class PostDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.postdetails_activity);
 
-        // 1. Get Post ID from Intent
+        // 1. Get Post ID from Intent passed from PostAdapter
         postId = getIntent().getStringExtra("POST_ID");
 
         if (postId == null) {
@@ -47,39 +48,43 @@ public class PostDetailsActivity extends AppCompatActivity {
             return;
         }
 
-        // 2. Initialize Views (Matching your XML IDs)
+        // 2. Initialize Views (Using safe finding for included layout)
         initViews();
 
         // 3. Setup Firebase Reference
         postRef = FirebaseDatabase.getInstance().getReference("Posts").child(postId);
 
-        // 4. Load Data
-        loadPostDetails();
-
-        // 5. Click Listeners
-        findViewById(R.id.backButton).setOnClickListener(v -> finish());
-        findViewById(R.id.btnSubmitComment).setOnClickListener(v -> submitComment());
-
+        // 4. Setup RecyclerView for Comments
         commentsRecyclerView = findViewById(R.id.commentsRecyclerView);
         commentList = new ArrayList<>();
-        commentAdapter = new CommentAdapter(commentList);
+
+        // Pass the postId to the adapter so it can handle deletions!
+        commentAdapter = new CommentAdapter(commentList, postId);
+
         commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         commentsRecyclerView.setAdapter(commentAdapter);
 
-// Call this to start listening for comments
+        // 5. Load Data from Firebase
+        loadPostDetails();
         loadComments();
+
+        // 6. Set up basic click listeners
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
+        findViewById(R.id.btnSubmitComment).setOnClickListener(v -> submitComment());
     }
 
     private void initViews() {
-        // These are inside your <include android:id="@+id/includedPostCard" ... />
-        postContent = findViewById(R.id.post_content);
-        postAuthor = findViewById(R.id.username);
-        upvoteNum = findViewById(R.id.upvote_num);
-        downvoteNum = findViewById(R.id.downvote_num);
-        commentNum = findViewById(R.id.comment_num);
-        categoryText = findViewById(R.id.category_text);
+        // Since these are inside the <include> tag, we find the card first
+        View postCard = findViewById(R.id.includedPostCard);
 
-        // Comment section views
+        postContent = postCard.findViewById(R.id.post_content);
+        postAuthor = postCard.findViewById(R.id.username);
+        upvoteNum = postCard.findViewById(R.id.upvote_num);
+        downvoteNum = postCard.findViewById(R.id.downvote_num);
+        commentNum = postCard.findViewById(R.id.comment_num);
+        categoryText = postCard.findViewById(R.id.category_text);
+
+        // This view is directly in the activity layout, not the include
         commentInput = findViewById(R.id.CommentInput);
     }
 
@@ -89,7 +94,7 @@ public class PostDetailsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Post post = snapshot.getValue(Post.class);
                 if (post != null) {
-                    // Update the Post Card UI
+                    // Update the Post UI
                     postContent.setText(post.getContent());
                     postAuthor.setText(post.getAuthor());
                     upvoteNum.setText(String.valueOf(post.getUpvote_num()));
@@ -99,6 +104,9 @@ public class PostDetailsActivity extends AppCompatActivity {
                     // Handle Category visibility
                     if (post.getCategories() != null && !post.getCategories().isEmpty()) {
                         categoryText.setText(post.getCategories().get(0));
+                        categoryText.setVisibility(View.VISIBLE);
+                    } else {
+                        categoryText.setVisibility(View.GONE);
                     }
                 }
             }
@@ -124,11 +132,10 @@ public class PostDetailsActivity extends AppCompatActivity {
             return;
         }
 
-        // Generate unique ID for the comment
+        // Push new comment to the comments sub-node
         DatabaseReference commentsRef = postRef.child("comments");
         String commentId = commentsRef.push().getKey();
 
-        // Build Comment Data
         HashMap<String, Object> commentMap = new HashMap<>();
         commentMap.put("text", commentText);
         commentMap.put("authorId", userId);
@@ -137,8 +144,8 @@ public class PostDetailsActivity extends AppCompatActivity {
         if (commentId != null) {
             commentsRef.child(commentId).setValue(commentMap)
                     .addOnSuccessListener(aVoid -> {
-                        commentInput.setText(""); // Clear the box
-                        updateCommentCount();
+                        commentInput.setText(""); // Clear input box
+                        updateCommentCount(true); // Increment count
                         Toast.makeText(PostDetailsActivity.this, "Comment added!", Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener(e -> {
@@ -147,19 +154,18 @@ public class PostDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void updateCommentCount() {
-        // Increment the comment_num field in Firebase
+    private void updateCommentCount(boolean increment) {
         postRef.child("comment_num").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 long currentCount = 0;
                 if (task.getResult().exists()) {
                     currentCount = (long) task.getResult().getValue();
                 }
-                postRef.child("comment_num").setValue(currentCount + 1);
+
+                long newCount = increment ? currentCount + 1 : Math.max(0, currentCount - 1);
+                postRef.child("comment_num").setValue(newCount);
             }
         });
-
-
     }
 
     private void loadComments() {
@@ -169,13 +175,17 @@ public class PostDetailsActivity extends AppCompatActivity {
                 commentList.clear();
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     Comment comment = ds.getValue(Comment.class);
-                    commentList.add(comment);
+                    if (comment != null) {
+                        commentList.add(comment);
+                    }
                 }
                 commentAdapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Firebase", "Error loading comments: " + error.getMessage());
+            }
         });
     }
 }
