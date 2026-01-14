@@ -16,15 +16,31 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/profile_pic"
+        <FrameLayout
+            android:id="@+id/pfp_container"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:clickable="true"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/CircleImage"
-            tools:srcCompat="@tools:sample/avatars" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/profile_pic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/chip_cat_gradient_checked"
+                app:shapeAppearanceOverlay="@style/CircleImage" />
+
+            <TextView
+                android:id="@+id/post_initial"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="S"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:fontFamily="@font/inter_bold"
+                android:textStyle="bold" />
+        </FrameLayout>
 
         <TextView
             android:id="@+id/username"
@@ -35,8 +51,8 @@
             android:text="username"
             android:textColor="#000000"
             android:textSize="16sp"
-            app:layout_constraintStart_toEndOf="@+id/profile_pic"
-            app:layout_constraintTop_toTopOf="@+id/profile_pic" />
+            app:layout_constraintStart_toEndOf="@+id/pfp_container"
+            app:layout_constraintTop_toTopOf="@+id/pfp_container" />
 
         <TextView
             android:id="@+id/time_of_post"
@@ -71,7 +87,7 @@
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_pic" />
+            app:layout_constraintTop_toBottomOf="@+id/pfp_container" />
 
         <TextView
             android:id="@+id/category_text"

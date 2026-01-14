@@ -17,7 +17,7 @@ import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private List<Post> postList;
-    // Temporary ID for testing. Later use FirebaseAuth.getInstance().getUid()
+
     private String getCurrentUserId() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             return FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -25,7 +25,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         return null;
     }
 
-    public PostAdapter(List<Post> postList) { this.postList = postList; }
+    public PostAdapter(List<Post> postList) {
+        this.postList = postList;
+    }
 
     @NonNull
     @Override
@@ -40,16 +42,44 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         String userId = getCurrentUserId();
         if (userId == null) return;
 
-        // 1. Set text views
+        // 1. Set post content
         holder.content.setText(post.getContent());
-        holder.author.setText(post.getAuthor());
 
-        // 2. Set the numbers (These now use the .size() logic from your Post class)
+        // 2. FETCH REAL USERNAME & SET PFP INITIAL
+        String authorUid = post.getAuthor();
+        if (authorUid != null) {
+            holder.author.setText("Loading...");
+            holder.postInitial.setText("?"); // Default placeholder
+
+            FirebaseDatabase.getInstance().getReference("Users")
+                    .child(authorUid)
+                    .child("username")
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult().exists()) {
+                            String name = String.valueOf(task.getResult().getValue());
+                            holder.author.setText(name);
+
+                            // Set the PFP initial (e.g., "C" for chihuahua)
+                            if (name != null && !name.isEmpty()) {
+                                holder.postInitial.setText(name.substring(0, 1).toUpperCase());
+                            }
+                        } else {
+                            // If it's the old "student_user" or ID not found
+                            holder.author.setText(authorUid);
+                            if (authorUid.length() > 0) {
+                                holder.postInitial.setText(authorUid.substring(0, 1).toUpperCase());
+                            }
+                        }
+                    });
+        }
+
+        // 3. Set the interaction numbers
         holder.upvoteNum.setText(String.valueOf(post.getUpvote_num()));
         holder.downvoteNum.setText(String.valueOf(post.getDownvote_num()));
         holder.commentNum.setText(String.valueOf(post.getComment_num()));
 
-        // 3. Category logic
+        // 4. Category logic
         if (post.getCategories() != null && !post.getCategories().isEmpty()) {
             holder.category.setText(post.getCategories().get(0));
             holder.category.setVisibility(View.VISIBLE);
@@ -57,7 +87,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             holder.category.setVisibility(View.GONE);
         }
 
-        // 4. Visual Feedback (USE 'userId' HERE)
+        // 5. Visual Feedback for Votes
         if (post.getUpvotes() != null && post.getUpvotes().containsKey(userId)) {
             holder.upvoteImg.setColorFilter(Color.parseColor("#3498db"));
         } else {
@@ -70,20 +100,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             holder.downvoteImg.setColorFilter(Color.GRAY);
         }
 
-        // 5. Firebase Toggle Logic
+        // 6. Voting Logic
         if (post.getPostId() != null) {
             DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("Posts").child(post.getPostId());
 
             holder.upvoteImg.setOnClickListener(v -> {
-                int currentPos = holder.getAdapterPosition();
-                if (currentPos == RecyclerView.NO_POSITION) return;
-
-                Post currentPost = postList.get(currentPos);
-                // USE 'userId' HERE TOO
                 DatabaseReference upRef = postRef.child("upvotes").child(userId);
                 DatabaseReference downRef = postRef.child("downvotes").child(userId);
-
-                if (currentPost.getUpvotes() != null && currentPost.getUpvotes().containsKey(userId)) {
+                if (post.getUpvotes() != null && post.getUpvotes().containsKey(userId)) {
                     upRef.removeValue();
                 } else {
                     upRef.setValue(true);
@@ -92,15 +116,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             });
 
             holder.downvoteImg.setOnClickListener(v -> {
-                int currentPos = holder.getAdapterPosition();
-                if (currentPos == RecyclerView.NO_POSITION) return;
-
-                Post currentPost = postList.get(currentPos);
-                // AND HERE
                 DatabaseReference upRef = postRef.child("upvotes").child(userId);
                 DatabaseReference downRef = postRef.child("downvotes").child(userId);
-
-                if (currentPost.getDownvotes() != null && currentPost.getDownvotes().containsKey(userId)) {
+                if (post.getDownvotes() != null && post.getDownvotes().containsKey(userId)) {
                     downRef.removeValue();
                 } else {
                     downRef.setValue(true);
@@ -109,43 +127,36 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             });
         }
 
-        holder.itemView.findViewById(R.id.comment_img).setOnClickListener(v -> {
-            int currentPos = holder.getAdapterPosition();
-            if (currentPos == RecyclerView.NO_POSITION) return;
-
-            // 1. Create the Intent to move to PostDetailsActivity
+        // 7. Navigation to Details
+        holder.commentImg.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), PostDetailsActivity.class);
-
-            // 2. Pass the Post ID so the new activity knows WHICH post to load
             intent.putExtra("POST_ID", post.getPostId());
-
-            // 3. Start the activity
             v.getContext().startActivity(intent);
         });
     }
 
     @Override
-    public int getItemCount() { return postList.size(); }
+    public int getItemCount() {
+        return postList.size();
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView content, author, category;
+        TextView content, author, category, postInitial;
         TextView upvoteNum, downvoteNum, commentNum;
-        ImageView upvoteImg, downvoteImg; // Added these for easier access
+        ImageView upvoteImg, downvoteImg, commentImg;
 
         public ViewHolder(View v) {
             super(v);
             content = v.findViewById(R.id.post_content);
             author = v.findViewById(R.id.username);
             category = v.findViewById(R.id.category_text);
+            postInitial = v.findViewById(R.id.post_initial); // NEW: Matches your new XML
             upvoteNum = v.findViewById(R.id.upvote_num);
             downvoteNum = v.findViewById(R.id.downvote_num);
             commentNum = v.findViewById(R.id.comment_num);
-
-
-
-            // Find the image views for colors and clicks
             upvoteImg = v.findViewById(R.id.upvote_img);
             downvoteImg = v.findViewById(R.id.downvote_img);
+            commentImg = v.findViewById(R.id.comment_img);
         }
     }
 }
