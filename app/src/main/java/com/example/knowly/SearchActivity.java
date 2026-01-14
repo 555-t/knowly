@@ -1,19 +1,14 @@
 package com.example.knowly;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class HomePage extends AppCompatActivity {
-
+public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.home_page);
-
-        //navigates for all navi bar buttons
+        // You can reuse your existing search layout if you have one
+        setContentView(R.layout.fragment_search);
         NavigationHelper.setupNavigation(this);
     }
 }

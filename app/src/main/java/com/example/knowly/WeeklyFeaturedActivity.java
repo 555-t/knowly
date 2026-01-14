@@ -8,7 +8,9 @@ public class WeeklyFeaturedActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Ensure this matches the filename of your Weekly Featured XML
         setContentView(R.layout.fragment_weeklyfeatured);
+
+        //navigates for all navi bar buttons
+        NavigationHelper.setupNavigation(this);
     }
 }

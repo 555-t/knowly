@@ -45,6 +45,16 @@
         <activity
             android:name=".WeeklyFeaturedActivity"
             android:exported="false" />
+        <activity
+            android:name=".UserPageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SearchActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".NotificationActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="preloaded_fonts"
