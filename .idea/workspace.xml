@@ -274,8 +274,9 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="connected create post button to createpostactivity page">
+    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="commit workspace and misc">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/home_page.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/home_page.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -693,31 +694,7 @@
       <option name="project" value="LOCAL" />
       <updated>1768304258849</updated>
     </task>
-    <task id="LOCAL-00031" summary="fixed homepage design xml">
-      <option name="closed" value="true" />
-      <created>1768363764087</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1768363764087</updated>
-    </task>
-    <task id="LOCAL-00032" summary="commit workspace">
-      <option name="closed" value="true" />
-      <created>1768364372982</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1768364372982</updated>
-    </task>
-    <task id="LOCAL-00033" summary="connected create post button to createpostactivity page">
-      <option name="closed" value="true" />
-      <created>1768365674561</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1768365674561</updated>
-    </task>
-    <option name="localTasksCounter" value="34" />
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -760,10 +737,7 @@
     <MESSAGE value="fixed bottom nav bar" />
     <MESSAGE value="fixed pages with bottom nav bar" />
     <MESSAGE value="commit workspace and misc" />
-    <MESSAGE value="fixed homepage design xml" />
-    <MESSAGE value="commit workspace" />
-    <MESSAGE value="connected create post button to createpostactivity page" />
-    <option name="LAST_COMMIT_MESSAGE" value="connected create post button to createpostactivity page" />
+    <option name="LAST_COMMIT_MESSAGE" value="commit workspace and misc" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
