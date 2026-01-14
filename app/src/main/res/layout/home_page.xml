@@ -61,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp"
+                    app:cardElevation="0dp"
                     app:cardUseCompatPadding="true">
                     <TextView
                         android:id="@+id/btnForYou"
@@ -69,6 +69,7 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/gradient_button"
                         android:gravity="center"
+                        android:paddingVertical="8dp"
                         android:text="For You"
                         android:textColor="@android:color/white" />
                 </androidx.cardview.widget.CardView>
