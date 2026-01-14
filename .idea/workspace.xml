@@ -274,9 +274,8 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="commit workspace and misc">
+    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="commit workspace">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/home_page.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/home_page.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -744,12 +743,12 @@
       <map>
         <entry key="com.example.knowly">
           <value>
-            <CheckInfo lastCheckTimestamp="1768281494131" />
+            <CheckInfo lastCheckTimestamp="1768378308822" />
           </value>
         </entry>
         <entry key="com.example.knowly.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1768281494135" />
+            <CheckInfo lastCheckTimestamp="1768378308814" />
           </value>
         </entry>
       </map>
