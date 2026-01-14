@@ -52,13 +52,29 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         // --- 1. Set post content ---
         holder.content.setText(post.getContent());
 
-        // --- 2. FETCH REAL USERNAME ---
+        // --- 2. FETCH REAL USERNAME & NAVIGATION ---
         String authorUid = post.getAuthor();
         holder.author.setTag(authorUid);
         holder.author.setText("...");
         holder.postInitial.setText("?");
 
         if (authorUid != null) {
+            // Navigation logic for Profile
+            View.OnClickListener profileClickListener = v -> {
+                if (authorUid.equals(userId)) {
+                    // Logic for clicking your own profile (optional)
+                    // v.getContext().startActivity(new Intent(v.getContext(), MyProfileActivity.class));
+                } else {
+                    Intent intent = new Intent(v.getContext(), OthersProfileActivity.class);
+                    intent.putExtra("ownerId", authorUid);
+                    v.getContext().startActivity(intent);
+                }
+            };
+
+            // Set listeners to both username and the profile initial circle
+            holder.author.setOnClickListener(profileClickListener);
+            holder.postInitial.setOnClickListener(profileClickListener);
+
             FirebaseDatabase.getInstance().getReference("Users")
                     .child(authorUid)
                     .child("username")
@@ -91,31 +107,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         holder.downvoteNum.setText(String.valueOf(post.getDownvote_num()));
         holder.commentNum.setText(String.valueOf(post.getComment_num()));
 
-        // --- 5. MULTIPLE CATEGORY LOGIC (RESTORED ORIGINAL DESIGN) ---
+        // --- 5. CATEGORY LOGIC ---
         holder.categoryGroup.removeAllViews();
         if (post.getCategories() != null && !post.getCategories().isEmpty()) {
             holder.categoryGroup.setVisibility(View.VISIBLE);
             for (String catName : post.getCategories()) {
-                // Create a TextView for the exact bubble look
                 TextView tv = new TextView(holder.itemView.getContext());
                 tv.setText(catName);
-
-                // Apply your exact gradient background
                 tv.setBackgroundResource(R.drawable.bg_category_gradient);
-
-                // Exact styling
                 tv.setTextColor(Color.parseColor("#2788A0"));
-                tv.setTextSize(12); // 12sp
+                tv.setTextSize(12);
                 tv.setAllCaps(false);
                 tv.setGravity(android.view.Gravity.CENTER);
 
-                // Convert 10dp and 4dp to pixels for padding
                 float scale = holder.itemView.getContext().getResources().getDisplayMetrics().density;
                 int padSide = (int) (10 * scale + 0.5f);
                 int padTopBottom = (int) (4 * scale + 0.5f);
                 tv.setPadding(padSide, padTopBottom, padSide, padTopBottom);
 
-                // Layout margins for spacing between the bubbles
                 com.google.android.material.chip.ChipGroup.LayoutParams params =
                         new com.google.android.material.chip.ChipGroup.LayoutParams(
                                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -158,11 +167,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 }
             });
 
-            // --- BOOKMARK LOGIC ---
             holder.bookmarkBtn.setOnClickListener(v -> {
                 boolean isCurrentlySelected = holder.bookmarkBtn.isSelected();
                 holder.bookmarkBtn.setSelected(!isCurrentlySelected);
-
                 if (holder.bookmarkBtn.isSelected()) {
                     Toast.makeText(v.getContext(), "Post Bookmarked", Toast.LENGTH_SHORT).show();
                 }
@@ -181,7 +188,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private String getTimeAgo(long time) {
         long now = System.currentTimeMillis();
         if (time > now || time <= 0) return "just now";
-
         final long diff = now - time;
         if (diff < 60000) return "just now";
         if (diff < 3600000) return (diff / 60000) + "m ago";
@@ -246,7 +252,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView content, author, postInitial, timeOfPost;
-        ChipGroup categoryGroup; // Updated from TextView to ChipGroup
+        ChipGroup categoryGroup;
         TextView upvoteNum, downvoteNum, commentNum;
         ImageView upvoteImg, downvoteImg, commentImg, bookmarkBtn;
         ImageButton moreBtn;
@@ -256,7 +262,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             content = v.findViewById(R.id.post_content);
             author = v.findViewById(R.id.username);
             timeOfPost = v.findViewById(R.id.time_of_post);
-            categoryGroup = v.findViewById(R.id.category_chip_group); // Map the ChipGroup
+            categoryGroup = v.findViewById(R.id.category_chip_group);
             postInitial = v.findViewById(R.id.post_initial);
             upvoteNum = v.findViewById(R.id.upvote_num);
             downvoteNum = v.findViewById(R.id.downvote_num);

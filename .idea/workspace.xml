@@ -297,15 +297,14 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="fixed now username can appear for everyone">
+    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="the categories for posts can be shown more than 1 now, and fixed minor design details">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/OthersProfileActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/HomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/HomePage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/Post.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/PostAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/PostAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/PostDetailsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/PostDetailsActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/bookmark_fill.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/bookmark_fill.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/bookmark_outline.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/bookmark_outline.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/selector_bookmark.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/selector_bookmark.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/vote_unfilled.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/vote_unfilled.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_post.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_post.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_profile_view_other.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_profile_view_other.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -840,7 +839,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768421046180</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="the categories for posts can be shown more than 1 now, and fixed minor design details">
+      <option name="closed" value="true" />
+      <created>1768424131514</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1768424131514</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -867,7 +874,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="did something" />
     <MESSAGE value="added weekly feature page and choose interest" />
     <MESSAGE value="dashboard profile (post, bookmarks, streaks)&#10;&#10;(cherry picked from commit d3b151c0ff488e6099ddd4b2bd9c93bd20c8041b)" />
     <MESSAGE value="fixing" />
@@ -892,7 +898,8 @@
     <MESSAGE value="tried fixing notif" />
     <MESSAGE value="fixed comment notif hvnt tried follow notif bcs no follow" />
     <MESSAGE value="fixed now username can appear for everyone" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed now username can appear for everyone" />
+    <MESSAGE value="the categories for posts can be shown more than 1 now, and fixed minor design details" />
+    <option name="LAST_COMMIT_MESSAGE" value="the categories for posts can be shown more than 1 now, and fixed minor design details" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

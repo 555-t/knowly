@@ -74,6 +74,11 @@
             android:name=".EditInterestsActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".OthersProfileActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

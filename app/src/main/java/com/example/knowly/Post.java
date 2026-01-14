@@ -5,24 +5,29 @@ import java.util.Map;
 
 public class Post {
     private String content;
-    private String author;
+    private String author; // This stores the UID of the creator
     private String postId;
-    private List<String> categories;
-    private long timestamp; // ADDED: For time calculations
+    private List<String> categories; // This stores the multiple categories
+    private long timestamp;
 
     private Map<String, Boolean> upvotes;
     private Map<String, Boolean> downvotes;
     private int comment_num;
 
-    public Post() {} // Required for Firebase
+    // Required empty constructor for Firebase
+    public Post() {}
 
     // --- Getters ---
     public String getContent() { return content; }
+
+    // Crucial for the "Following" filter in HomePage.java
     public String getAuthor() { return author; }
+
     public String getPostId() { return postId; }
+
+    // Crucial for the "For You" filter in HomePage.java
     public List<String> getCategories() { return categories; }
 
-    // ADDED: Getter for timestamp used by PostAdapter
     public long getTimestamp() { return timestamp; }
 
     // --- Vote Logic Getters ---
@@ -40,7 +45,7 @@ public class Post {
     public Map<String, Boolean> getUpvotes() { return upvotes; }
     public Map<String, Boolean> getDownvotes() { return downvotes; }
 
-    // --- Setters (Important for Firebase to fill the object) ---
+    // --- Setters (Essential for Firebase Data Mapping) ---
     public void setPostId(String postId) { this.postId = postId; }
     public void setContent(String content) { this.content = content; }
     public void setAuthor(String author) { this.author = author; }
