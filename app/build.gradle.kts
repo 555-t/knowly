@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.cardview)
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
 
 
     testImplementation(libs.junit)
@@ -71,4 +72,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation("com.github.bumptech.glide:glide:4.15.1")
+    implementation("com.google.firebase:firebase-storage")
 }

@@ -10,11 +10,10 @@
 
     <View
         android:id="@+id/Header"
-        android:layout_width="414dp"
+        android:layout_width="0dp"
         android:layout_height="105dp"
         android:background="@drawable/gradient_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,7 +24,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="44dp"
         android:background="@null"
-        android:contentDescription="go back to home page"
+        android:contentDescription="go back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/back_arrow"
@@ -33,23 +32,21 @@
 
     <TextView
         android:id="@+id/Activityname"
-        android:layout_width="215dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="44dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="48dp"
         android:fontFamily="@font/inter_bold"
         android:text="Create Post"
         android:textColor="#FCF5FD"
-        android:textSize="30sp"
+        android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/backButton"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_margin="16dp"
         android:layout_marginBottom="48dp"
         app:cardCornerRadius="20dp"
         app:cardElevation="4dp"
@@ -79,25 +76,16 @@
                     app:cardCornerRadius="25dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                    <TextView
+                        android:id="@+id/user_profile"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/gradient_button">
-
-                        <TextView
-                            android:id="@+id/user_profile"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/inter_medium"
-                            android:text="S"
-                            android:textColor="#FFFFFF"
-                            android:textSize="16sp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                        android:background="@drawable/gradient_button"
+                        android:gravity="center"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="S"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp" />
                 </androidx.cardview.widget.CardView>
 
                 <TextView
@@ -126,17 +114,16 @@
                 <EditText
                     android:id="@+id/post_content"
                     android:layout_width="0dp"
-                    android:layout_height="194dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/input_box"
-                    android:ems="10"
+                    android:minHeight="120dp"
                     android:fontFamily="@font/inter_medium"
                     android:gravity="start|top"
                     android:hint="What would you like to share today?"
                     android:inputType="textMultiLine"
-                    android:minLines="5"
                     android:padding="12dp"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -148,33 +135,69 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="4dp"
                     android:fontFamily="@font/inter_medium"
                     android:text="0/500"
                     android:textColor="#807E7E"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/post_content" />
 
                 <Button
-                    android:id="@+id/add_image"
+                    android:id="@+id/add_media"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="20dp"
-                    android:contentDescription="adding an image"
                     android:fontFamily="@font/inter_bold"
-                    android:text="Add image"
+                    android:text="Add Media"
                     android:textColor="#4E4D4D"
                     app:cornerRadius="8dp"
                     app:icon="@android:drawable/ic_menu_gallery"
                     app:iconPadding="4dp"
-                    app:iconSize="20dp"
                     app:iconTint="#232222"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/post_content"
+                    app:layout_constraintTop_toBottomOf="@+id/word_count"
                     app:strokeColor="#D1D1D1" />
+
+                <FrameLayout
+                    android:id="@+id/media_preview_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/add_media"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageView
+                        android:id="@+id/image_preview"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:scaleType="centerCrop"
+                        android:background="#EEEEEE"
+                        android:visibility="gone"/>
+
+                    <VideoView
+                        android:id="@+id/video_preview"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:visibility="gone"
+                        android:layout_gravity="center"/>
+
+                    <ImageButton
+                        android:id="@+id/btn_remove_media"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@android:drawable/ic_menu_close_clear_cancel"
+                        android:background="@drawable/gradient_button"
+                        android:layout_gravity="top|end"
+                        android:layout_margin="8dp"
+                        app:tint="#FFFFFF"/>
+                </FrameLayout>
 
                 <TextView
                     android:id="@+id/slct_category"
@@ -186,7 +209,7 @@
                     android:text="Select Categories (at least 1)"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/add_image" />
+                    app:layout_constraintTop_toBottomOf="@+id/media_preview_container" />
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/chipGroupCategories"
@@ -230,6 +253,7 @@
                         android:textSize="18sp"
                         android:textStyle="bold" />
                 </androidx.cardview.widget.CardView>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
     </androidx.cardview.widget.CardView>
