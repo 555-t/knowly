@@ -21,6 +21,7 @@ constraintlayoutVersion = "2.2.1"
 navigationFragment = "2.9.6"
 legacySupportV4 = "1.0.0"
 firebaseFirestore = "26.0.2"
+firebaseStorage = "22.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,6 +39,7 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
