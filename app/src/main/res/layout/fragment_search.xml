@@ -44,7 +44,7 @@
                 android:background="@drawable/bg_search_input"
                 android:ems="10"
                 android:fontFamily="@font/inter_medium"
-                android:hint="Search posts, users, topics..."
+                android:hint="Search keywords..."
                 android:inputType="text"
                 android:textAlignment="center"
                 android:textColor="#90FFFFFF"
