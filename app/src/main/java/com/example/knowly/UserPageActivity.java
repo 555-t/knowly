@@ -112,12 +112,6 @@ public class UserPageActivity extends AppCompatActivity {
         loadUserProfile();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadUserProfile();
-    }
-
     private void loadUserProfile() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) return;
@@ -270,5 +264,14 @@ public class UserPageActivity extends AppCompatActivity {
                 });
             });
         }
+    }
+
+    // Inside HomePage.java, SearchActivity.java, etc.
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadUserProfile();
+        // This forces the "R" to refresh every time you tap the tab
+        NavigationHelper.updateNavAvatar(this);
     }
 }
