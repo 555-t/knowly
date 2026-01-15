@@ -50,13 +50,20 @@ public class NavigationHelper {
         updateNavAvatar(activity);
     }
 
-    private static void updateNavAvatar(Activity activity) {
-        // Find the TextView inside the bottom nav bar (using the ID you added earlier)
+    public static void updateNavAvatar(Activity activity) {
         TextView tvNavAvatarText = activity.findViewById(R.id.tvNavAvatarText);
 
         if (tvNavAvatarText != null) {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            // 1. INSTANT FIX: Load from local memory first to stop the glitching
+            String cachedName = activity.getSharedPreferences("UserPrefs", Activity.MODE_PRIVATE)
+                    .getString("current_username", "");
 
+            if (!cachedName.isEmpty()) {
+                tvNavAvatarText.setText(String.valueOf(cachedName.charAt(0)).toUpperCase());
+            }
+
+            // 2. BACKGROUND SYNC: Update from Firebase in case the name changed recently
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
                 FirebaseFirestore.getInstance()
                         .collection("users")
@@ -66,21 +73,24 @@ public class NavigationHelper {
                             if (documentSnapshot.exists()) {
                                 String username = documentSnapshot.getString("username");
                                 if (username != null && !username.isEmpty()) {
-                                    // Get first letter and capitalize it
                                     String initial = String.valueOf(username.charAt(0)).toUpperCase();
-                                    tvNavAvatarText.setText(initial);
-                                } else {
-                                    tvNavAvatarText.setText("U");
+
+                                    // Only update UI if it's different to prevent flickering
+                                    if (!tvNavAvatarText.getText().toString().equals(initial)) {
+                                        tvNavAvatarText.setText(initial);
+                                    }
+
+                                    // Save locally for the NEXT activity/session
+                                    activity.getSharedPreferences("UserPrefs", Activity.MODE_PRIVATE)
+                                            .edit()
+                                            .putString("current_username", username)
+                                            .apply();
                                 }
                             }
-                        })
-                        .addOnFailureListener(e -> {
-                            // Fail silently so we don't crash or annoy user on other pages
                         });
             }
         }
     }
-
     private static void navigateTo(Activity activity, Class<?> targetClass) {
         // Don't restart the activity if we are already on it
         if (activity.getClass().equals(targetClass)) return;

@@ -176,4 +176,12 @@ public class HomePage extends BaseActivity {
             }
         });
     }
+
+    // Inside HomePage.java, SearchActivity.java, etc.
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // This forces the "R" to refresh every time you tap the tab
+        NavigationHelper.updateNavAvatar(this);
+    }
 }
