@@ -309,12 +309,12 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="connected to firestore">
+    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="added username to createpost_activity">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/CreatePostActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/CreatePostActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/PostAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/PostAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/createpost_activity.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/createpost_activity.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/NotificationAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/NotificationAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/OthersProfileActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/OthersProfileActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/comment_notif.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/comment_notif.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/following_notif.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/following_notif.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -531,14 +531,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1767333689902</updated>
-    </task>
-    <task id="LOCAL-00003" summary="did something">
-      <option name="closed" value="true" />
-      <created>1767684789914</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1767684789914</updated>
     </task>
     <task id="LOCAL-00004" summary="did something">
       <option name="closed" value="true" />
@@ -924,7 +916,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768479565300</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="added username to createpost_activity">
+      <option name="closed" value="true" />
+      <created>1768480731237</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1768480731237</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -975,7 +975,8 @@
     <MESSAGE value="fixed scrolling layout in homepage" />
     <MESSAGE value="fixed the navigation avatar" />
     <MESSAGE value="connected to firestore" />
-    <option name="LAST_COMMIT_MESSAGE" value="connected to firestore" />
+    <MESSAGE value="added username to createpost_activity" />
+    <option name="LAST_COMMIT_MESSAGE" value="added username to createpost_activity" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">

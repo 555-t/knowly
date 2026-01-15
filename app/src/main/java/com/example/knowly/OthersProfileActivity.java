@@ -112,11 +112,9 @@ public class OthersProfileActivity extends AppCompatActivity {
 
         if (isFollowing) {
             // UNFOLLOW LOGIC
-            // Remove from sub-collections
             otherUserRef.collection("followers").document(currentUserId).delete();
             currentUserRef.collection("following").document(otherUserId).delete();
 
-            // Decrease counts
             otherUserRef.update("followerCount", FieldValue.increment(-1));
             currentUserRef.update("followingCount", FieldValue.increment(-1));
 
@@ -134,10 +132,20 @@ public class OthersProfileActivity extends AppCompatActivity {
             otherUserRef.update("followerCount", FieldValue.increment(1));
             currentUserRef.update("followingCount", FieldValue.increment(1));
 
+            // --- NEW: Trigger Notification ---
+            // otherUserId is the recipient (the person being followed)
+            // "follow" is the type
+            // currentUserId is passed as the relatedId so the recipient knows who followed them
+            NotificationUtils.sendNotification(
+                    otherUserId,
+                    "follow",
+                    "started following you!",
+                    currentUserId
+            );
+
             Toast.makeText(this, "Following", Toast.LENGTH_SHORT).show();
         }
     }
-
     private void loadOtherUserData() {
         profileListener = db.collection("users").document(otherUserId)
                 .addSnapshotListener((documentSnapshot, error) -> {

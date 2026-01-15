@@ -4,6 +4,7 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +17,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private List<NotificationItem> list;
     private static final int TYPE_COMMENT = 1;
     private static final int TYPE_FOLLOW = 2;
+    private static final int TYPE_UPVOTE = 3; // Add this
 
     public NotificationAdapter(List<NotificationItem> list) {
         this.list = list;
@@ -23,12 +25,18 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemViewType(int position) {
-        if (list.get(position).getType() != null && list.get(position).getType().equals("follow")) {
-            return TYPE_FOLLOW;
+        String type = list.get(position).getType();
+
+        // Debugging: This will show up in your Logcat (filter by "NotifType")
+        android.util.Log.d("NotifType", "Notification type found: [" + type + "]");
+
+        if (type != null) {
+            String cleanType = type.trim().toLowerCase(); // Removes spaces and ignores Case
+            if (cleanType.equals("follow")) return TYPE_FOLLOW;
+            if (cleanType.equals("upvote")) return TYPE_UPVOTE;
         }
         return TYPE_COMMENT;
     }
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -36,45 +44,56 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.following_notif, parent, false);
             return new FollowViewHolder(view);
         } else {
+            // Both Upvote and Comment use this layout, we just change the icon in onBind
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_notif, parent, false);
             return new CommentViewHolder(view);
         }
     }
-
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         NotificationItem item = list.get(position);
-
-        // 1. Setup Time using helper
         String timeAgo = (item.getTimestamp() != null) ? getTimeAgo(item.getTimestampMillis()) : "Just now";
 
         TextView usernameTv, actionTv, timeTv;
-        if (holder instanceof CommentViewHolder) {
-            CommentViewHolder h = (CommentViewHolder) holder;
-            usernameTv = h.username;
-            actionTv = h.action;
-            timeTv = h.time;
-        } else {
+
+        if (holder instanceof FollowViewHolder) {
+            // --- LOGIC FOR FOLLOW ---
             FollowViewHolder h = (FollowViewHolder) holder;
             usernameTv = h.username;
-            actionTv = h.action;
+            actionTv = h.action; // This is @id/notif_info2
             timeTv = h.time;
+        } else {
+            // --- LOGIC FOR COMMENT / UPVOTE ---
+            CommentViewHolder h = (CommentViewHolder) holder;
+            usernameTv = h.username;
+            actionTv = h.action; // This is @id/notif_info
+            timeTv = h.time;
+
+            ImageView iconIv = h.itemView.findViewById(R.id.imageView5);
+            if ("upvote".equals(item.getType())) {
+                iconIv.setImageResource(android.R.drawable.btn_star_big_on);
+            } else {
+                iconIv.setImageResource(android.R.drawable.stat_notify_chat);
+            }
         }
 
-        // 2. Set Tag for verification during async load
         usernameTv.setTag(item.getFromUserId());
 
-        actionTv.setText(item.getAction());
+        // This line MUST be outside the if/else to apply to both types!
+        if (item.getAction() != null) {
+            actionTv.setText(item.getAction());
+        } else {
+            actionTv.setText("interacted with you");
+        }
+
         timeTv.setText(timeAgo);
 
-        // 3. FETCH REAL USERNAME FROM FIRESTORE
         String fromUid = item.getFromUserId();
         if (fromUid != null) {
-            usernameTv.setText("..."); // Placeholder
+            usernameTv.setText("...");
             fetchNameFromFirestore(fromUid, usernameTv);
         }
     }
-
     private void fetchNameFromFirestore(String uid, TextView textView) {
         FirebaseFirestore.getInstance().collection("users").document(uid).get()
                 .addOnSuccessListener(documentSnapshot -> {
