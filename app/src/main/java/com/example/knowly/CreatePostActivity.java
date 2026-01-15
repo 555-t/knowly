@@ -12,13 +12,10 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,10 +31,10 @@ public class CreatePostActivity extends BaseActivity {
     private AppCompatButton btnPost;
     private Button btnAddImage;
     private ImageButton backButton;
-    private DatabaseReference mDatabase;
 
-    private FirebaseFirestore db; // Use Firestore
+    private FirebaseFirestore db;
     private ChipGroup chipGroupCategories;
+    private TextView tvUsername;
 
     private List<String> selectedCategoriesList = new ArrayList<>();
 
@@ -53,19 +50,21 @@ public class CreatePostActivity extends BaseActivity {
         btnAddImage = findViewById(R.id.add_image);
         backButton = findViewById(R.id.backButton);
         chipGroupCategories = findViewById(R.id.chipGroupCategories);
-
+        tvUsername = findViewById(R.id.username); // Change ID to match your XML
         backButton.setOnClickListener(v -> finish());
+
+        loadUserData(); // Add this call
 
         btnPost.setOnClickListener(v -> {
             String text = postContent.getText().toString().trim();
             if (!text.isEmpty()) {
-                uploadPostToFirestore(text, selectedCategoriesList); // Use the list from chips
+                uploadPostToFirestore(text, selectedCategoriesList);
             } else {
                 Toast.makeText(this, "Please write something...", Toast.LENGTH_SHORT).show();
             }
         });
 
-        loadCategoriesFromFirestore();
+        loadCategoriesFromFirestore(); // Fetches global category list
     }
 
     private void uploadPostToFirestore(String content, List<String> selectedCategories) {
@@ -73,13 +72,13 @@ public class CreatePostActivity extends BaseActivity {
         if (userId == null) return;
 
         Map<String, Object> postMap = new HashMap<>();
-        postMap.put("author", userId);
+        postMap.put("author", userId); // Stores UID for relational lookup
         postMap.put("content", content);
         postMap.put("categories", selectedCategories);
         postMap.put("upvote_num", 0);
         postMap.put("downvote_num", 0);
         postMap.put("comment_num", 0);
-        postMap.put("timestamp", FieldValue.serverTimestamp());
+        postMap.put("timestamp", FieldValue.serverTimestamp()); // Uses server-side time
 
         db.collection("posts").add(postMap)
                 .addOnSuccessListener(documentReference -> {
@@ -87,7 +86,9 @@ public class CreatePostActivity extends BaseActivity {
                     finish();
                 })
                 .addOnFailureListener(e -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-    }    private void createCategoryChip(String categoryName) {
+    }
+
+    private void createCategoryChip(String categoryName) {
         Chip chip = new Chip(this);
         chip.setText(categoryName);
         chip.setCheckable(true);
@@ -110,7 +111,6 @@ public class CreatePostActivity extends BaseActivity {
     }
 
     private void loadCategoriesFromFirestore() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("categories").document("allCategories").get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
@@ -133,5 +133,19 @@ public class CreatePostActivity extends BaseActivity {
             imageUri = data.getData();
             Toast.makeText(this, "Image Attached!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void loadUserData() {
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid == null) return;
+
+        db.collection("users").document(uid).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String actualName = documentSnapshot.getString("username");
+                if (actualName != null && !actualName.isEmpty()) {
+                    tvUsername.setText(actualName);
+                }
+            }
+        });
     }
 }

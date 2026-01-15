@@ -82,16 +82,26 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             holder.postInitial.setOnClickListener(toProfile);
 
             // Fetching from Firestore "users" collection
+            // inside onBindViewHolder...
             db.collection("users").document(authorUid).get().addOnSuccessListener(documentSnapshot -> {
+                // 1. Verify the holder is still meant for this specific author (prevents flickering)
                 if (documentSnapshot.exists() && authorUid.equals(holder.author.getTag())) {
                     String name = documentSnapshot.getString("username");
                     String pfpUrl = documentSnapshot.getString("profileImageUrl");
-                    holder.author.setText(name != null ? name : "User");
 
+                    // 2. Fallback logic: If they haven't set a username, use "Anonymous User"
+                    if (name != null && !name.isEmpty()) {
+                        holder.author.setText(name);
+                    } else {
+                        holder.author.setText("Anonymous User");
+                    }
+
+                    // 3. Handle the Profile Picture / Initial
                     if (pfpUrl != null && !pfpUrl.isEmpty()) {
                         holder.postInitial.setVisibility(View.GONE);
                         Glide.with(context).load(pfpUrl).circleCrop().into(holder.profilePic);
                     } else if (name != null && !name.isEmpty()) {
+                        holder.postInitial.setVisibility(View.VISIBLE);
                         holder.postInitial.setText(name.substring(0, 1).toUpperCase());
                     }
                 }
