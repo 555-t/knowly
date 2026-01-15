@@ -31,7 +31,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="20dp"
         app:cardBackgroundColor="#FFFFFF"
@@ -42,7 +42,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="663dp"
+            android:layout_height="match_parent"
             android:padding="20dp">
 
             <TextView
@@ -184,65 +184,80 @@
                 app:layout_constraintBottom_toBottomOf="@id/label_interests"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chip_group"
+            <ScrollView
+                android:id="@+id/sv_chip_group"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="250dp"
                 android:layout_marginTop="8dp"
-                app:chipSpacingHorizontal="8dp"
-                app:layout_constraintTop_toBottomOf="@id/label_interests">
+                android:fadeScrollbars="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/label_interests">
 
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Entry"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_tab_selected"
-                    android:fontFamily="@font/inter_medium"
-                    android:text="Art"
-                    android:textColor="#00695C"
-                    app:chipBackgroundColor="#E0F2F1"
-                    app:chipCornerRadius="16dp"
-                    app:chipStrokeColor="@android:color/transparent"
-                    app:chipStrokeWidth="0dp"
-                    app:closeIconTint="#00695C"
-                    app:closeIconVisible="true" />
+                    android:layout_marginTop="8dp"
+                    app:chipSpacingHorizontal="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/label_interests">
 
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Entry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/inter_medium"
-                    android:text="Music"
-                    android:textColor="#00695C"
-                    app:chipBackgroundColor="#E0F2F1"
-                    app:chipCornerRadius="16dp"
-                    app:chipStrokeColor="@android:color/transparent"
-                    app:chipStrokeWidth="0dp"
-                    app:closeIconTint="#00695C"
-                    app:closeIconVisible="true" />
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.MaterialComponents.Chip.Entry"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_tab_selected"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Art"
+                        android:textColor="#00695C"
+                        app:chipBackgroundColor="#E0F2F1"
+                        app:chipCornerRadius="16dp"
+                        app:chipStrokeColor="@android:color/transparent"
+                        app:chipStrokeWidth="0dp"
+                        app:closeIconTint="#00695C"
+                        app:closeIconVisible="true" />
 
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Entry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/inter_medium"
-                    android:text="Computer Science"
-                    android:textColor="#00695C"
-                    app:chipBackgroundColor="#E0F2F1"
-                    app:chipCornerRadius="16dp"
-                    app:chipStrokeColor="@android:color/transparent"
-                    app:chipStrokeWidth="0dp"
-                    app:closeIconTint="#00695C"
-                    app:closeIconVisible="true" />
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.MaterialComponents.Chip.Entry"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Music"
+                        android:textColor="#00695C"
+                        app:chipBackgroundColor="#E0F2F1"
+                        app:chipCornerRadius="16dp"
+                        app:chipStrokeColor="@android:color/transparent"
+                        app:chipStrokeWidth="0dp"
+                        app:closeIconTint="#00695C"
+                        app:closeIconVisible="true" />
 
-            </com.google.android.material.chip.ChipGroup>
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.MaterialComponents.Chip.Entry"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Computer Science"
+                        android:textColor="#00695C"
+                        app:chipBackgroundColor="#E0F2F1"
+                        app:chipCornerRadius="16dp"
+                        app:chipStrokeColor="@android:color/transparent"
+                        app:chipStrokeWidth="0dp"
+                        app:closeIconTint="#00695C"
+                        app:closeIconVisible="true" />
+
+                </com.google.android.material.chip.ChipGroup>
+
+            </ScrollView>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent">
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sv_chip_group"
+                tools:layout_editor_absoluteX="20dp">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_cancel"

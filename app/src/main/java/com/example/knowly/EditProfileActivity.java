@@ -1,6 +1,5 @@
 package com.example.knowly;
 
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -8,8 +7,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.chip.Chip;
@@ -20,144 +17,178 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.firestore.DocumentSnapshot; // Needed for reading
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
 public class EditProfileActivity extends AppCompatActivity {
 
-    // Views
     private ChipGroup chipGroup;
     private TextInputLayout inputUsername, inputBio, inputCredentials;
     private Button btnCancel, btnSave;
     private TextView btnEditInterests;
 
-    // Firebase
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
-    // Launcher for the Interests page
-    private ActivityResultLauncher<Intent> editInterestsLauncher;
+    private ArrayList<String> currentInterests = new ArrayList<>();
+    private List<String> masterCategoryList = new ArrayList<>();
+    private boolean isEditingInterests = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        // 1. Initialize Firebase
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // 2. Initialize Views
         inputUsername = findViewById(R.id.input_username);
         inputBio = findViewById(R.id.input_bio);
         inputCredentials = findViewById(R.id.input_credentials);
         chipGroup = findViewById(R.id.chip_group);
-
         btnCancel = findViewById(R.id.btn_cancel);
         btnSave = findViewById(R.id.btn_save);
         btnEditInterests = findViewById(R.id.btn_edit_interests);
 
-        // 3. Register Result Launcher
-        editInterestsLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        ArrayList<String> newInterests = result.getData().getStringArrayListExtra("selected_interests");
-                        if (newInterests != null) {
-                            updateInterestsDisplay(newInterests);
-                        }
-                    }
-                }
-        );
-
-        // 4. Click Listeners
         btnCancel.setOnClickListener(v -> finish());
         btnSave.setOnClickListener(v -> saveProfileToFirebase());
+
         btnEditInterests.setOnClickListener(v -> {
-            Intent intent = new Intent(EditProfileActivity.this, EditInterestsActivity.class);
-            editInterestsLauncher.launch(intent);
+            isEditingInterests = !isEditingInterests;
+            if (isEditingInterests) {
+                btnEditInterests.setText("Done");
+                btnEditInterests.setTextColor(Color.parseColor("#4CAF50"));
+                fetchMasterListAndDisplay();
+            } else {
+                btnEditInterests.setText("Edit");
+                btnEditInterests.setTextColor(Color.parseColor("#00BCD4"));
+                updateInterestsDisplay(currentInterests);
+            }
         });
 
-        // 5. NEW: Load existing data immediately!
         loadCurrentUserData();
     }
 
-    // --- NEW FUNCTION: READS DATA FROM DB ---
+    private void fetchMasterListAndDisplay() {
+        // 1. Manually define the list (same as ChooseInterestsActivity)
+        masterCategoryList = new ArrayList<>();
+        masterCategoryList.add("Mathematics");
+        masterCategoryList.add("Science");
+        masterCategoryList.add("History");
+        masterCategoryList.add("Literature");
+        masterCategoryList.add("Computer Science");
+        masterCategoryList.add("Art");
+        masterCategoryList.add("Music");
+        masterCategoryList.add("Philosophy");
+        masterCategoryList.add("Psychology");
+        masterCategoryList.add("Biology");
+        masterCategoryList.add("Chemistry");
+        masterCategoryList.add("Physics");
+        masterCategoryList.add("Economics");
+        masterCategoryList.add("Languages");
+        masterCategoryList.add("Engineering");
+        masterCategoryList.add("Medicine");
+
+        // 2. Custom Sort: Selected items float to the top
+        Collections.sort(masterCategoryList, (s1, s2) -> {
+            boolean b1 = currentInterests.contains(s1);
+            boolean b2 = currentInterests.contains(s2);
+            // If s1 is selected and s2 is not, s1 comes first (-1)
+            if (b1 && !b2) return -1;
+            // If s2 is selected and s1 is not, s2 comes first (1)
+            if (!b1 && b2) return 1;
+            // Otherwise, sort alphabetically
+            return s1.compareTo(s2);
+        });
+
+        // 3. Render
+        displayAllChipsAsSelectable();
+    }
+
+    private void displayAllChipsAsSelectable() {
+        chipGroup.removeAllViews();
+        for (String category : masterCategoryList) {
+            Chip chip = new Chip(this);
+            chip.setText(category);
+
+            // Apply selected vs unselected styling
+            if (currentInterests.contains(category)) {
+                // Style: Selected (Matches the teal look)
+                chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#E0F2F1")));
+                chip.setTextColor(Color.parseColor("#00695C"));
+                chip.setChipStrokeWidth(0f);
+            } else {
+                // Style: Unselected (White with grey border)
+                chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
+                chip.setTextColor(Color.parseColor("#757575"));
+                chip.setChipStrokeColor(ColorStateList.valueOf(Color.parseColor("#BDBDBD")));
+                chip.setChipStrokeWidth(2f);
+            }
+
+            chip.setOnClickListener(v -> {
+                if (currentInterests.contains(category)) {
+                    currentInterests.remove(category);
+                } else {
+                    currentInterests.add(category);
+                }
+                // Redraw immediately to show the color change
+                displayAllChipsAsSelectable();
+            });
+
+            chipGroup.addView(chip);
+        }
+    }
+
     private void loadCurrentUserData() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) return;
-
-        // Clear default chips so we don't see duplicates
-        chipGroup.removeAllViews();
 
         db.collection("users").document(user.getUid())
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        // A. Fill Text Fields
-                        String username = documentSnapshot.getString("username");
-                        String bio = documentSnapshot.getString("bio");
-                        String credentials = documentSnapshot.getString("credentials");
+                        if (inputUsername.getEditText() != null)
+                            inputUsername.getEditText().setText(documentSnapshot.getString("username"));
+                        if (inputBio.getEditText() != null)
+                            inputBio.getEditText().setText(documentSnapshot.getString("bio"));
+                        if (inputCredentials.getEditText() != null)
+                            inputCredentials.getEditText().setText(documentSnapshot.getString("credentials"));
 
-                        if (inputUsername.getEditText() != null) inputUsername.getEditText().setText(username);
-                        if (inputBio.getEditText() != null) inputBio.getEditText().setText(bio);
-                        if (inputCredentials.getEditText() != null) inputCredentials.getEditText().setText(credentials);
-
-                        // B. Fill Interests Chips
-                        // Firestore stores arrays as "List<String>"
                         List<String> savedInterests = (List<String>) documentSnapshot.get("interests");
                         if (savedInterests != null) {
-                            // Convert List to ArrayList for our helper function
                             updateInterestsDisplay(new ArrayList<>(savedInterests));
                         }
                     }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Could not load profile data", Toast.LENGTH_SHORT).show();
                 });
     }
 
     private void saveProfileToFirebase() {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) return;
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) return;
 
-        String uid = currentUser.getUid();
+        Map<String, Object> profile = new HashMap<>();
+        profile.put("username", inputUsername.getEditText().getText().toString().trim());
+        profile.put("bio", inputBio.getEditText().getText().toString().trim());
+        profile.put("credentials", inputCredentials.getEditText().getText().toString().trim());
+        profile.put("interests", currentInterests);
 
-        // --- ADD THESE LINES TO EXTRACT THE TEXT ---
-        String username = inputUsername.getEditText() != null ? inputUsername.getEditText().getText().toString().trim() : "";
-        String bioString = inputBio.getEditText() != null ? inputBio.getEditText().getText().toString().trim() : "";
-        String credsString = inputCredentials.getEditText() != null ? inputCredentials.getEditText().getText().toString().trim() : "";
-
-        // 1. Prepare Firestore Data
-        Map<String, Object> userProfile = new HashMap<>();
-        userProfile.put("username", username);
-        userProfile.put("bio", bioString);           // Matches UserPageActivity fetch
-        userProfile.put("credentials", credsString); // Matches UserPageActivity fetch
-
-        // 2. Update Firestore
-        db.collection("users").document(uid)
-                .set(userProfile, SetOptions.merge())
+        db.collection("users").document(user.getUid())
+                .set(profile, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
-                    // Update Realtime Database for global sync
                     com.google.firebase.database.FirebaseDatabase.getInstance()
-                            .getReference("Users")
-                            .child(uid)
-                            .child("username")
-                            .setValue(username)
-                            .addOnSuccessListener(unused -> {
-                                Toast.makeText(this, "Profile Saved!", Toast.LENGTH_SHORT).show();
-                                finish(); // Returns to UserPageActivity
-                            });
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Save Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            .getReference("Users").child(user.getUid())
+                            .child("interests").setValue(currentInterests);
+                    Toast.makeText(this, "Profile Saved!", Toast.LENGTH_SHORT).show();
+                    finish();
                 });
     }
+
     private void updateInterestsDisplay(ArrayList<String> interests) {
+        this.currentInterests = interests;
         chipGroup.removeAllViews();
         for (String interest : interests) {
             Chip chip = new Chip(this);
@@ -166,6 +197,10 @@ public class EditProfileActivity extends AppCompatActivity {
             chip.setTextColor(Color.parseColor("#00695C"));
             chip.setCloseIconVisible(true);
             chip.setCloseIconTint(ColorStateList.valueOf(Color.parseColor("#00695C")));
+            chip.setOnCloseIconClickListener(v -> {
+                currentInterests.remove(interest);
+                updateInterestsDisplay(currentInterests);
+            });
             chipGroup.addView(chip);
         }
     }

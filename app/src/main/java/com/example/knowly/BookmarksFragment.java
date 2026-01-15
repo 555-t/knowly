@@ -1,64 +1,100 @@
 package com.example.knowly;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BookmarksFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class BookmarksFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private RecyclerView recyclerView;
+    private View layoutEmptyState;
+    private PostAdapter adapter;
+    private List<Post> bookmarkedPosts = new ArrayList<>();
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public BookmarksFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BookmarksFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BookmarksFragment newInstance(String param1, String param2) {
-        BookmarksFragment fragment = new BookmarksFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // 1. Inflate the XML you shared
+        View view = inflater.inflate(R.layout.fragment_bookmarks, container, false);
+
+        // 2. Initialize Firebase and Views
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        recyclerView = view.findViewById(R.id.rvBookmarks);
+        layoutEmptyState = view.findViewById(R.id.layoutEmptyState);
+
+        // 3. Setup RecyclerView
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        // Note: Using requireContext() to satisfy your PostAdapter's Context requirement
+        //adapter = new PostAdapter(bookmarkedPosts, requireContext());
+        recyclerView.setAdapter(adapter);
+
+        loadBookmarks();
+
+        return view;
+    }
+
+    private void loadBookmarks() {
+        String uid = mAuth.getUid();
+        if (uid == null) return;
+
+        // Listen to the user's document for the "bookmarks" array
+        db.collection("users").document(uid)
+                .addSnapshotListener((documentSnapshot, e) -> {
+                    if (documentSnapshot != null && documentSnapshot.exists()) {
+                        List<String> bookmarkIds = (List<String>) documentSnapshot.get("bookmarks");
+
+                        if (bookmarkIds == null || bookmarkIds.isEmpty()) {
+                            updateUI(true); // Show empty state
+                        } else {
+                            fetchBookmarkedPosts(bookmarkIds);
+                        }
+                    }
+                });
+    }
+
+    private void fetchBookmarkedPosts(List<String> ids) {
+        // Firestore query to get only posts whose IDs are in the bookmarks list
+        db.collection("posts")
+                .whereIn(FieldPath.documentId(), ids)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    bookmarkedPosts.clear();
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        Post post = doc.toObject(Post.class);
+                        if (post != null) {
+                            bookmarkedPosts.add(post);
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                    updateUI(bookmarkedPosts.isEmpty());
+                });
+    }
+
+    private void updateUI(boolean isEmpty) {
+        if (isEmpty) {
+            recyclerView.setVisibility(View.GONE);
+            layoutEmptyState.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            layoutEmptyState.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bookmarks, container, false);
     }
 }

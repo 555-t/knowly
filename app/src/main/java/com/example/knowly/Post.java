@@ -8,24 +8,22 @@ public class Post {
     private String author;
     private String postId;
     private List<String> categories;
-    private long timestamp; // ADDED: For time calculations
+    private long timestamp;
 
     private Map<String, Boolean> upvotes;
     private Map<String, Boolean> downvotes;
     private int comment_num;
 
-    public Post() {} // Required for Firebase
+    public Post() {}
 
     // --- Getters ---
     public String getContent() { return content; }
     public String getAuthor() { return author; }
     public String getPostId() { return postId; }
     public List<String> getCategories() { return categories; }
-
-    // ADDED: Getter for timestamp used by PostAdapter
     public long getTimestamp() { return timestamp; }
 
-    // --- Vote Logic Getters ---
+    // --- Dynamic Calculation for UI ---
     public int getUpvote_num() {
         return (upvotes != null) ? upvotes.size() : 0;
     }
@@ -36,11 +34,10 @@ public class Post {
 
     public int getComment_num() { return comment_num; }
 
-    // --- The Maps ---
     public Map<String, Boolean> getUpvotes() { return upvotes; }
     public Map<String, Boolean> getDownvotes() { return downvotes; }
 
-    // --- Setters (Important for Firebase to fill the object) ---
+    // --- Setters ---
     public void setPostId(String postId) { this.postId = postId; }
     public void setContent(String content) { this.content = content; }
     public void setAuthor(String author) { this.author = author; }

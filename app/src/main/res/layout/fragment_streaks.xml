@@ -7,10 +7,11 @@
     android:orientation="vertical"
     android:padding="24dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ImageView
         android:layout_width="75dp"
         android:layout_height="72dp"
-        android:background="@drawable/outline_check_circle_24" />
+        android:src="@drawable/outline_check_circle_24"
+        app:tint="#4CAF50" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -53,7 +54,16 @@
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="20dp">
-                <TextView android:text="150" android:textColor="#00668B" android:textSize="28sp" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tvTotalMinutes"
+                    android:text="150"
+                    android:textColor="#00668B"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
                 <TextView android:text="Total Minutes" android:textColor="#00668B" android:textSize="12sp" android:layout_width="wrap_content" android:layout_height="wrap_content" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -72,7 +82,17 @@
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="20dp">
-                <TextView android:text="0" android:textColor="#456712" android:textSize="28sp" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/inter_bold"/>
+
+                <TextView
+                    android:id="@+id/tvTodayMinutes"
+                    android:text="0"
+                    android:textColor="#456712"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_bold"/>
+
                 <TextView android:text="Today's Minutes" android:textColor="#456712" android:textSize="12sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/inter_light"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
