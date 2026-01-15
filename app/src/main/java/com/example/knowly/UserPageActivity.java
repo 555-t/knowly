@@ -6,10 +6,14 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -21,9 +25,7 @@ public class UserPageActivity extends AppCompatActivity {
     private CardView btnEditProfile;
 
     // Text Views
-    private TextView tvName, tvEmail, tvFollowers;
-    private TextView tvAvatarText; // <--- NEW: For the initial letter
-
+    private TextView tvName, tvEmail, tvFollowers, tvAvatarText, tvBio, tvCredentials;
     private TextView menuLogout, menuDelete;
 
     // Firebase
@@ -35,34 +37,43 @@ public class UserPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userpage);
 
-        // 1. Initialize Firebase
+        // 1. INITIALIZE FIREBASE
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // Bottom nav setup
-        NavigationHelper.setupNavigation(this);
-
-        // 2. Initialize Views
+        // 2. FIND VIEWS
         btnMenuContainer = findViewById(R.id.btnMenuContainer);
         logoutMenu = findViewById(R.id.logoutMenu);
         btnEditProfile = findViewById(R.id.btnEditProfile);
-
-        // Text Views
         tvName = findViewById(R.id.tvName);
-        tvEmail = findViewById(R.id.tvEmail); // Note: If you removed this from XML, remove this line
+        tvEmail = findViewById(R.id.tvEmail);
         tvFollowers = findViewById(R.id.tvFollowers);
-
-        // --- NEW: Find the ID you added to the XML ---
         tvAvatarText = findViewById(R.id.tvAvatarText);
-
-        // Menu items
+        tvBio = findViewById(R.id.tvBio);
+        tvCredentials = findViewById(R.id.tvCredentials);
         menuLogout = findViewById(R.id.menu_logout);
         menuDelete = findViewById(R.id.menu_delete);
 
-        // Force menu button above other views
+        // 3. SETUP TABS AND VIEW PAGER
+        TabLayout tabLayout = findViewById(R.id.profileTabs);
+        ViewPager2 viewPager = findViewById(R.id.profileViewPager);
+
+        ProfilePagerAdapter pagerAdapter = new ProfilePagerAdapter(this);
+        viewPager.setAdapter(pagerAdapter);
+
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            switch (position) {
+                case 0: tab.setText("My Posts"); break;
+                case 1: tab.setText("Bookmarks"); break;
+                case 2: tab.setText("Streaks"); break;
+            }
+        }).attach();
+
+        // 4. NAVIGATION & UI SETUP
+        NavigationHelper.setupNavigation(this);
         btnMenuContainer.bringToFront();
 
-        // Edit Profile Click Listener
+        // 5. CLICK LISTENERS
         btnEditProfile.setOnClickListener(v -> {
             Intent intent = new Intent(UserPageActivity.this, EditProfileActivity.class);
             startActivity(intent);
@@ -70,13 +81,13 @@ public class UserPageActivity extends AppCompatActivity {
 
         btnMenuContainer.setOnClickListener(v -> toggleMenu());
 
-        // Click outside to close
+        // Click outside to close menu
         View root = findViewById(android.R.id.content);
         root.setOnClickListener(v -> logoutMenu.setVisibility(View.GONE));
 
         menuLogout.setOnClickListener(v -> {
             logoutMenu.setVisibility(View.GONE);
-            FirebaseAuth.getInstance().signOut();
+            mAuth.signOut();
             Intent intent = new Intent(UserPageActivity.this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -88,7 +99,7 @@ public class UserPageActivity extends AppCompatActivity {
             Toast.makeText(this, "Delete Account clicked", Toast.LENGTH_SHORT).show();
         });
 
-        // 3. Load Data immediately
+        // 6. LOAD DATA
         loadUserProfile();
     }
 
@@ -100,47 +111,24 @@ public class UserPageActivity extends AppCompatActivity {
 
     private void loadUserProfile() {
         FirebaseUser user = mAuth.getCurrentUser();
-
-        // 1. Find the NAV bar text view
-        // Since the layout is <include>d, we can find it directly by ID
-        TextView tvNavAvatarText = findViewById(R.id.tvNavAvatarText);
-
         if (user != null) {
-            if (tvEmail != null) {
-                tvEmail.setText(user.getEmail());
-            }
+            tvEmail.setText(user.getEmail());
 
             db.collection("users").document(user.getUid())
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
                             String username = documentSnapshot.getString("username");
+                            String bio = documentSnapshot.getString("bio");
+                            String credentials = documentSnapshot.getString("credentials");
 
                             if (username != null && !username.isEmpty()) {
                                 tvName.setText(username);
-
-                                // --- CALCULATE INITIAL ---
-                                String initial = String.valueOf(username.charAt(0)).toUpperCase();
-
-                                // 2. Update MAIN Profile Avatar
-                                if (tvAvatarText != null) {
-                                    tvAvatarText.setText(initial);
-                                }
-
-                                // 3. Update NAVIGATION Avatar
-                                if (tvNavAvatarText != null) {
-                                    tvNavAvatarText.setText(initial);
-                                }
-
-                            } else {
-                                tvName.setText("User");
-                                if (tvAvatarText != null) tvAvatarText.setText("U");
-                                if (tvNavAvatarText != null) tvNavAvatarText.setText("U");
+                                tvAvatarText.setText(String.valueOf(username.charAt(0)).toUpperCase());
                             }
+                            tvCredentials.setText(credentials != null ? credentials : "No credentials added");
+                            tvBio.setText(bio != null ? bio : "Tell us about yourself...");
                         }
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Failed to load profile", Toast.LENGTH_SHORT).show();
                     });
         }
     }
@@ -154,6 +142,3 @@ public class UserPageActivity extends AppCompatActivity {
         }
     }
 }
-
-
-

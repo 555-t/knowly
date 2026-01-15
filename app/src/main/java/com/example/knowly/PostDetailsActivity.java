@@ -1,8 +1,13 @@
 package com.example.knowly;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,7 +36,8 @@ public class PostDetailsActivity extends AppCompatActivity {
     private String postOwnerId;
     private DatabaseReference postRef;
     private EditText commentInput;
-    private TextView postContent, postAuthor, upvoteNum, downvoteNum, commentNum, categoryText, postInitial;
+    private TextView postContent, postAuthor, upvoteNum, downvoteNum, commentNum, postInitial;
+    private ChipGroup categoryGroup;
     private RecyclerView commentsRecyclerView;
     private CommentAdapter commentAdapter;
     private List<Comment> commentList;
@@ -74,7 +81,7 @@ public class PostDetailsActivity extends AppCompatActivity {
         upvoteNum = postCard.findViewById(R.id.upvote_num);
         downvoteNum = postCard.findViewById(R.id.downvote_num);
         commentNum = postCard.findViewById(R.id.comment_num);
-        categoryText = postCard.findViewById(R.id.category_text);
+        categoryGroup = postCard.findViewById(R.id.category_chip_group);
         commentInput = findViewById(R.id.CommentInput);
     }
 
@@ -107,11 +114,35 @@ public class PostDetailsActivity extends AppCompatActivity {
                     downvoteNum.setText(String.valueOf(post.getDownvote_num()));
                     commentNum.setText(String.valueOf(post.getComment_num()));
 
+                    // --- 5. MULTIPLE CATEGORY LOGIC (RESTORED ORIGINAL STYLE) ---
+                    categoryGroup.removeAllViews(); // Prevent duplication when data updates
                     if (post.getCategories() != null && !post.getCategories().isEmpty()) {
-                        categoryText.setText(post.getCategories().get(0));
-                        categoryText.setVisibility(View.VISIBLE);
+                        categoryGroup.setVisibility(View.VISIBLE);
+                        for (String catName : post.getCategories()) {
+                            // Using TextView instead of Chip to preserve gradient look perfectly
+                            TextView tv = new TextView(PostDetailsActivity.this);
+                            tv.setText(catName);
+
+                            // Style settings
+                            tv.setBackgroundResource(R.drawable.bg_category_gradient);
+                            tv.setTextColor(Color.parseColor("#2788A0"));
+                            tv.setTextSize(12);
+
+                            // Padding: (left, top, right, bottom)
+                            tv.setPadding(30, 10, 30, 10);
+
+                            // Set margins between bubbles
+                            ChipGroup.LayoutParams params = new ChipGroup.LayoutParams(
+                                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT
+                            );
+                            params.setMargins(0, 0, 6, 6);
+                            tv.setLayoutParams(params);
+
+                            categoryGroup.addView(tv);
+                        }
                     } else {
-                        categoryText.setVisibility(View.GONE);
+                        categoryGroup.setVisibility(View.GONE);
                     }
                 }
             }
@@ -140,13 +171,9 @@ public class PostDetailsActivity extends AppCompatActivity {
 
         if (commentId != null) {
             commentsRef.child(commentId).setValue(commentMap).addOnSuccessListener(aVoid -> {
-
-                // --- UPDATED NOTIFICATION LOGIC ---
-                // Uses the new NotificationUtils and excludes notifying yourself
                 if (postOwnerId != null && !postOwnerId.equals(currentUserId)) {
                     NotificationUtils.sendNotification(postOwnerId, "comment", "commented on your post");
                 }
-
                 commentInput.setText("");
                 updateCommentCount(true);
             });

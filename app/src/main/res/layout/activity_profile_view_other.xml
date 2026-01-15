@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://tools.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F4F3"> <View
-    android:id="@+id/viewHeader"
-    android:layout_width="match_parent"
-    android:layout_height="105dp"
-    android:background="@drawable/button_gradient"
-    app:layout_constraintTop_toTopOf="parent" />
+    android:background="#F0F4F3">
+
+    <View
+        android:id="@+id/viewHeader"
+        android:layout_width="match_parent"
+        android:layout_height="105dp"
+        android:background="@drawable/button_gradient"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header_content"
@@ -104,17 +106,52 @@
                         app:layout_constraintTop_toTopOf="@+id/pfp_APV"
                         tools:text="student_name" />
 
-                    <TextView
-                        android:id="@+id/tvFollowers"
+                    <LinearLayout
+                        android:id="@+id/follower_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:fontFamily="@font/inter_medium"
-                        android:text="0 Followers   0 Following"
-                        android:textColor="#424242"
-                        android:textSize="13sp"
+                        android:orientation="horizontal"
                         app:layout_constraintStart_toStartOf="@+id/other_username_text"
-                        app:layout_constraintTop_toBottomOf="@+id/other_username_text" />
+                        app:layout_constraintTop_toBottomOf="@+id/other_username_text">
+
+                        <TextView
+                            android:id="@+id/tvFollowerCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_bold"
+                            android:text="0"
+                            android:textColor="#000000"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:fontFamily="@font/inter_medium"
+                            android:text="Followers"
+                            android:textColor="#424242"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/tvFollowingCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:fontFamily="@font/inter_bold"
+                            android:text="0"
+                            android:textColor="#000000"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:fontFamily="@font/inter_medium"
+                            android:text="Following"
+                            android:textColor="#424242"
+                            android:textSize="13sp" />
+                    </LinearLayout>
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/btnFollow"
@@ -129,12 +166,13 @@
                         app:layout_constraintTop_toBottomOf="@+id/pfp_APV">
 
                         <TextView
+                            android:id="@+id/btnFollowTextView"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@drawable/button_gradient"
                             android:fontFamily="@font/inter_bold"
                             android:gravity="center"
                             android:text="Follow"
+                            android:tag="followTextTag"
                             android:textColor="#FFFFFF"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -175,7 +213,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/inter_bold"
-                                android:text="1"
+                                android:text="0"
                                 android:textColor="#00ACC1"
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
@@ -254,8 +292,6 @@
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
