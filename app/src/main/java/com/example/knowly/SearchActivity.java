@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-// Realtime Database Imports
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,7 +24,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
-    private List<Post> allPostsList; // Keeps a copy of ALL posts
+    private List<Post> allPostsList; // Keeps a copy of ALL posts hidden in background
     private EditText searchInput;
 
     @Override
@@ -33,7 +32,7 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_search);
 
-        // 1. Setup Navigation (Bottom Bar)
+        // 1. Setup Navigation
         NavigationHelper.setupNavigation(this);
 
         // 2. Initialize Views
@@ -44,11 +43,12 @@ public class SearchActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         allPostsList = new ArrayList<>();
 
-        // Initialize adapter with empty list
-        postAdapter = new PostAdapter(new ArrayList<>());
+        // Initialize adapter with empty list (Screen starts empty)
+        // Pass 'this' as the second argument
+        postAdapter = new PostAdapter(new ArrayList<>(), this);
         recyclerView.setAdapter(postAdapter);
 
-        // 4. Load Data from Realtime Database
+        // 4. Load Data (But don't show it yet!)
         fetchPostsFromRealtimeDB();
 
         // 5. Add Search Listener
@@ -58,8 +58,16 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Filter immediately when user types
-                filter(s.toString());
+                String searchText = s.toString().trim();
+
+                // LOGIC CHANGE:
+                if (searchText.isEmpty()) {
+                    // If text is empty, clear the list
+                    postAdapter.updateList(new ArrayList<>());
+                } else {
+                    // If text exists, filter and show results
+                    filter(searchText);
+                }
             }
 
             @Override
@@ -68,27 +76,22 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void fetchPostsFromRealtimeDB() {
-        // Matches the "Posts" reference used in your PostAdapter
         DatabaseReference postsRef = FirebaseDatabase.getInstance().getReference("Posts");
 
         postsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                allPostsList.clear(); // Clear old data to avoid duplicates
+                allPostsList.clear();
 
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    // Convert JSON data to Post object
                     Post post = postSnapshot.getValue(Post.class);
-
                     if (post != null) {
-                        // Ensure the ID is set (sometimes it's missing in the body)
                         post.setPostId(postSnapshot.getKey());
                         allPostsList.add(post);
                     }
                 }
-
-                // Show the full list initially
-                postAdapter.updateList(allPostsList);
+                // NOTE: We do NOT call updateList() here anymore.
+                // The data is ready in 'allPostsList', but we wait for the user to type.
             }
 
             @Override
@@ -99,19 +102,33 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void filter(String text) {
-        List<Post> filteredList = new ArrayList<>();
+        // 1. Create two separate lists
+        List<Post> startsWithList = new ArrayList<>();
+        List<Post> containsList = new ArrayList<>();
 
-        // Loop through the downloaded list
+        String query = text.toLowerCase();
+
         for (Post post : allPostsList) {
             if (post.getContent() != null) {
-                // Check if the content contains the search text (Case Insensitive)
-                if (post.getContent().toLowerCase().contains(text.toLowerCase())) {
-                    filteredList.add(post);
+                String content = post.getContent().toLowerCase();
+
+                // 2. Sort them into buckets
+                if (content.startsWith(query)) {
+                    // Priority 1: The post actually starts with "hel" (e.g. "Hello")
+                    startsWithList.add(post);
+                } else if (content.contains(query)) {
+                    // Priority 2: The word is hidden inside (e.g. "I have hella money")
+                    containsList.add(post);
                 }
             }
         }
 
-        // Pass filtered list to adapter
-        postAdapter.updateList(filteredList);
+        // 3. Combine them: StartsWith first, Contains second
+        List<Post> finalSortedList = new ArrayList<>();
+        finalSortedList.addAll(startsWithList);
+        finalSortedList.addAll(containsList);
+
+        // 4. Update Adapter
+        postAdapter.updateList(finalSortedList);
     }
 }

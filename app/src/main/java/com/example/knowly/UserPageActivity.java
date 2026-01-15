@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.viewpager2.widget.ViewPager2;
@@ -45,12 +45,14 @@ public class UserPageActivity extends AppCompatActivity {
         btnMenuContainer = findViewById(R.id.btnMenuContainer);
         logoutMenu = findViewById(R.id.logoutMenu);
         btnEditProfile = findViewById(R.id.btnEditProfile);
+
         tvName = findViewById(R.id.tvName);
         tvEmail = findViewById(R.id.tvEmail);
         tvFollowers = findViewById(R.id.tvFollowers);
         tvAvatarText = findViewById(R.id.tvAvatarText);
         tvBio = findViewById(R.id.tvBio);
         tvCredentials = findViewById(R.id.tvCredentials);
+
         menuLogout = findViewById(R.id.menu_logout);
         menuDelete = findViewById(R.id.menu_delete);
 
@@ -85,6 +87,7 @@ public class UserPageActivity extends AppCompatActivity {
         View root = findViewById(android.R.id.content);
         root.setOnClickListener(v -> logoutMenu.setVisibility(View.GONE));
 
+        // LOGOUT BUTTON
         menuLogout.setOnClickListener(v -> {
             logoutMenu.setVisibility(View.GONE);
             mAuth.signOut();
@@ -94,9 +97,10 @@ public class UserPageActivity extends AppCompatActivity {
             finish();
         });
 
+        // DELETE BUTTON
         menuDelete.setOnClickListener(v -> {
             logoutMenu.setVisibility(View.GONE);
-            Toast.makeText(this, "Delete Account clicked", Toast.LENGTH_SHORT).show();
+            showDeleteConfirmationDialog();
         });
 
         // 6. LOAD DATA
@@ -112,8 +116,10 @@ public class UserPageActivity extends AppCompatActivity {
     private void loadUserProfile() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            tvEmail.setText(user.getEmail());
+            // Set email immediately from Auth
+            if (tvEmail != null) tvEmail.setText(user.getEmail());
 
+            // Fetch profile details from Firestore
             db.collection("users").document(user.getUid())
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
@@ -124,10 +130,19 @@ public class UserPageActivity extends AppCompatActivity {
 
                             if (username != null && !username.isEmpty()) {
                                 tvName.setText(username);
-                                tvAvatarText.setText(String.valueOf(username.charAt(0)).toUpperCase());
+                                // Update the avatar circle with the first letter
+                                if (tvAvatarText != null) {
+                                    tvAvatarText.setText(String.valueOf(username.charAt(0)).toUpperCase());
+                                }
                             }
-                            tvCredentials.setText(credentials != null ? credentials : "No credentials added");
-                            tvBio.setText(bio != null ? bio : "Tell us about yourself...");
+
+                            if (tvCredentials != null) {
+                                tvCredentials.setText(credentials != null ? credentials : "No credentials added");
+                            }
+
+                            if (tvBio != null) {
+                                tvBio.setText(bio != null ? bio : "Tell us about yourself...");
+                            }
                         }
                     });
         }
@@ -139,6 +154,51 @@ public class UserPageActivity extends AppCompatActivity {
         } else {
             logoutMenu.setVisibility(View.VISIBLE);
             logoutMenu.bringToFront();
+        }
+    }
+
+    // --- DELETE ACCOUNT LOGIC ---
+
+    private void showDeleteConfirmationDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Account")
+                .setMessage("Are you sure you want to delete your account? This action cannot be undone.")
+                .setPositiveButton("Delete", (dialog, which) -> performDeleteAccount())
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void performDeleteAccount() {
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+            String uid = user.getUid();
+
+            // 1. Delete User Data from Firestore first
+            db.collection("users").document(uid)
+                    .delete()
+                    .addOnSuccessListener(aVoid -> {
+
+                        // 2. Delete the User from Authentication
+                        user.delete()
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(UserPageActivity.this, "Account Deleted", Toast.LENGTH_SHORT).show();
+
+                                        // 3. Redirect to Login
+                                        Intent intent = new Intent(UserPageActivity.this, LoginActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        // This happens if the login session is too old (Firebase Security Rule)
+                                        Toast.makeText(UserPageActivity.this, "Security Requirement: Please Log Out and Log In again to delete.", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(UserPageActivity.this, "Error deleting data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
         }
     }
 }

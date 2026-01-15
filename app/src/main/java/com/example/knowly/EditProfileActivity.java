@@ -74,28 +74,39 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void fetchMasterListAndDisplay() {
-        // Points to categories -> allCategories -> list as seen in your screenshot
-        db.collection("categories").document("allCategories")
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        List<String> fetchedList = (List<String>) documentSnapshot.get("list");
-                        if (fetchedList != null) {
-                            masterCategoryList = new ArrayList<>(fetchedList);
+        // 1. Manually define the list (same as ChooseInterestsActivity)
+        masterCategoryList = new ArrayList<>();
+        masterCategoryList.add("Mathematics");
+        masterCategoryList.add("Science");
+        masterCategoryList.add("History");
+        masterCategoryList.add("Literature");
+        masterCategoryList.add("Computer Science");
+        masterCategoryList.add("Art");
+        masterCategoryList.add("Music");
+        masterCategoryList.add("Philosophy");
+        masterCategoryList.add("Psychology");
+        masterCategoryList.add("Biology");
+        masterCategoryList.add("Chemistry");
+        masterCategoryList.add("Physics");
+        masterCategoryList.add("Economics");
+        masterCategoryList.add("Languages");
+        masterCategoryList.add("Engineering");
+        masterCategoryList.add("Medicine");
 
-                            // CUSTOM SORT: Selected items first, then alphabetical
-                            Collections.sort(masterCategoryList, (s1, s2) -> {
-                                boolean b1 = currentInterests.contains(s1);
-                                boolean b2 = currentInterests.contains(s2);
-                                if (b1 && !b2) return -1;
-                                if (!b1 && b2) return 1;
-                                return s1.compareTo(s2);
-                            });
+        // 2. Custom Sort: Selected items float to the top
+        Collections.sort(masterCategoryList, (s1, s2) -> {
+            boolean b1 = currentInterests.contains(s1);
+            boolean b2 = currentInterests.contains(s2);
+            // If s1 is selected and s2 is not, s1 comes first (-1)
+            if (b1 && !b2) return -1;
+            // If s2 is selected and s1 is not, s2 comes first (1)
+            if (!b1 && b2) return 1;
+            // Otherwise, sort alphabetically
+            return s1.compareTo(s2);
+        });
 
-                            displayAllChipsAsSelectable();
-                        }
-                    }
-                });
+        // 3. Render
+        displayAllChipsAsSelectable();
     }
 
     private void displayAllChipsAsSelectable() {
