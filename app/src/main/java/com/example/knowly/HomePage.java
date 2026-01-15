@@ -119,7 +119,10 @@ public class HomePage extends BaseActivity {
         db.collection("posts")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener((snapshot, e) -> {
-                    if (e != null) return;
+                    if (e != null) {
+                        Log.e("FirestoreError", "Error fetching posts", e);
+                        return;
+                    }
 
                     postList.clear();
                     if (snapshot != null) {
@@ -129,15 +132,14 @@ public class HomePage extends BaseActivity {
                                 post.setPostId(doc.getId());
 
                                 if (isForYouSelected) {
-                                    // FIX: If no matches, we still show the post so the feed isn't empty,
-                                    // or you can keep it strict but ensure you HAVE matching interests.
+                                    // Only add if user has no interests (show all)
+                                    // OR if there is a category match
                                     if (currentUserInterests.isEmpty() || hasMatch(post)) {
                                         postList.add(post);
-                                    } else {
-                                        // TEMPORARY: Add this to see ALL posts while testing
-                                        postList.add(post);
                                     }
+                                    // Removed the "else { postList.add(post) }" that was showing everything
                                 } else {
+                                    // Following Tab logic
                                     if (currentUserFollowing.contains(post.getAuthor())) {
                                         postList.add(post);
                                     }
@@ -147,8 +149,7 @@ public class HomePage extends BaseActivity {
                     }
                     postAdapter.notifyDataSetChanged();
                 });
-    }
-    private boolean hasMatch(Post post) {
+    }    private boolean hasMatch(Post post) {
         if (post.getCategories() == null || currentUserInterests == null) return false;
         for (String cat : post.getCategories()) {
             if (currentUserInterests.contains(cat)) return true;

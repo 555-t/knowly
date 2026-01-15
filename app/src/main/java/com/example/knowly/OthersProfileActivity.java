@@ -1,7 +1,9 @@
 package com.example.knowly;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,6 +13,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,6 +47,9 @@ public class OthersProfileActivity extends AppCompatActivity {
     private RecyclerView rvOtherUserPosts;
     private PostAdapter postAdapter;
     private List<Post> userPostsList;
+    private TextView tvProfileInitial;
+    private ImageView ivProfilePic;
+    private TextView tvPostsCount, tvUpvotesCount, tvCommentsCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +75,13 @@ public class OthersProfileActivity extends AppCompatActivity {
         btnFollow = findViewById(R.id.btnFollow); // The CardView button
         btnFollowTextView = findViewById(R.id.btnFollowTextView); // The text inside
         backButton = findViewById(R.id.backButton_APV);
-
+        // Inside onCreate, after linking other views
+        ivProfilePic = findViewById(R.id.pfp_APV);
+        tvPostsCount = findViewById(R.id.tv_posts_count);
+        tvUpvotesCount = findViewById(R.id.tv_upvotes_count);
+        tvCommentsCount = findViewById(R.id.tv_comments_count);
+        tvProfileInitial = findViewById(R.id.pfp_initial_APV);
+        ivProfilePic = findViewById(R.id.pfp_APV);
         // 2. Setup RecyclerView
         rvOtherUserPosts = findViewById(R.id.rvOtherUserPosts);
         userPostsList = new ArrayList<>();
@@ -151,17 +163,39 @@ public class OthersProfileActivity extends AppCompatActivity {
                 .addSnapshotListener((documentSnapshot, error) -> {
                     if (documentSnapshot != null && documentSnapshot.exists()) {
                         String name = documentSnapshot.getString("username");
+                        String pfpUrl = documentSnapshot.getString("profileImageUrl");
+                        // 1. Fetch the image URL string from Firestore
+
                         Long followers = documentSnapshot.getLong("followerCount");
                         Long following = documentSnapshot.getLong("followingCount");
 
                         if (tvName != null) tvName.setText(name);
-                        if (tvFollowerCount != null) tvFollowerCount.setText(String.valueOf(followers != null ? followers : 0));
-                        if (tvFollowingCount != null) tvFollowingCount.setText(String.valueOf(following != null ? following : 0));
+                        tvFollowerCount.setText(String.valueOf(followers != null ? followers : 0));
+                        tvFollowingCount.setText(String.valueOf(following != null ? following : 0));
+
+                        // 2. Load the Image into the ShapeableImageView (pfp_APV)
+                        ImageView ivProfilePic = findViewById(R.id.pfp_APV);
+                        if (pfpUrl != null && !pfpUrl.isEmpty()) {
+                            // Show image, hide the letter
+                            ivProfilePic.setVisibility(View.VISIBLE);
+                            tvProfileInitial.setVisibility(View.GONE);
+                            Glide.with(this).load(pfpUrl).into(ivProfilePic);
+                        } else {
+                            // No Image URL: Hide image, show the letter Q (or whatever the username starts with)
+                            ivProfilePic.setVisibility(View.GONE);
+                            tvProfileInitial.setVisibility(View.VISIBLE);
+
+                            if (name != null && !name.isEmpty()) {
+                                tvProfileInitial.setText(name.substring(0, 1).toUpperCase());
+                            } else {
+                                tvProfileInitial.setText("?");
+                            }
+                        }
+
+                        updateUserStats();
                     }
                 });
-    }
-
-    private void fetchOtherUserPosts() {
+    }    private void fetchOtherUserPosts() {
         db.collection("posts")
                 .whereEqualTo("author", otherUserId)
                 .orderBy("timestamp", Query.Direction.DESCENDING)
@@ -183,5 +217,30 @@ public class OthersProfileActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (profileListener != null) profileListener.remove();
+    }
+
+    private void updateUserStats() {
+        // Count Posts
+        db.collection("posts").whereEqualTo("author", otherUserId).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    int postCount = queryDocumentSnapshots.size();
+                    tvPostsCount.setText(String.valueOf(postCount));
+
+                    // Calculate Total Upvotes across all posts
+                    long totalUpvotes = 0;
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        Long upvotes = doc.getLong("upvote_num");
+                        if (upvotes != null) totalUpvotes += upvotes;
+                    }
+                    tvUpvotesCount.setText(String.valueOf(totalUpvotes));
+
+                    // Calculate Total Comments (if you store comment_num in post doc)
+                    long totalComments = 0;
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        Long comments = doc.getLong("comment_num");
+                        if (comments != null) totalComments += comments;
+                    }
+                    tvCommentsCount.setText(String.valueOf(totalComments));
+                });
     }
 }

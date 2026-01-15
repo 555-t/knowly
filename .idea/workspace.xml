@@ -309,12 +309,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="added username to createpost_activity">
+    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="fixed notification">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/NotificationAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/NotificationAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/HomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/HomePage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/OthersProfileActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/OthersProfileActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/comment_notif.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/comment_notif.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/following_notif.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/following_notif.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_profile_view_other.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_profile_view_other.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -531,14 +530,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1767333689902</updated>
-    </task>
-    <task id="LOCAL-00004" summary="did something">
-      <option name="closed" value="true" />
-      <created>1767688262297</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1767688262297</updated>
     </task>
     <task id="LOCAL-00005" summary="added weekly feature page and choose interest">
       <option name="closed" value="true" />
@@ -924,7 +915,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768480731237</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="fixed notification">
+      <option name="closed" value="true" />
+      <created>1768483226037</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1768483226037</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -951,7 +950,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added search page, item post, splash screen" />
     <MESSAGE value="added comment button, adjusted margins for posts" />
     <MESSAGE value="did something" />
     <MESSAGE value="added weekly feature page and choose interest" />
@@ -976,7 +974,8 @@
     <MESSAGE value="fixed the navigation avatar" />
     <MESSAGE value="connected to firestore" />
     <MESSAGE value="added username to createpost_activity" />
-    <option name="LAST_COMMIT_MESSAGE" value="added username to createpost_activity" />
+    <MESSAGE value="fixed notification" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed notification" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
