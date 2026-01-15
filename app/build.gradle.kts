@@ -70,6 +70,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+
 
     implementation("com.github.bumptech.glide:glide:4.15.1")
     implementation("com.google.firebase:firebase-storage")
