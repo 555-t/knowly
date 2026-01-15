@@ -9,26 +9,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserPageActivity extends AppCompatActivity {
 
-    private RecyclerView rvUserPosts;
-    private PostAdapter postAdapter;
-    private List<Post> userPostsList;
     private MaterialCardView btnMenuContainer;
     private CardView logoutMenu;
     private CardView btnEditProfile;
@@ -46,12 +37,11 @@ public class UserPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userpage);
 
-        // 1. INITIALIZE FIREBASE FIRST
+        // 1. INITIALIZE FIREBASE
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // 2. FIND ALL VIEWS (Crucial: Do this before using them)
-        rvUserPosts = findViewById(R.id.rvUserPosts);
+        // 2. FIND VIEWS
         btnMenuContainer = findViewById(R.id.btnMenuContainer);
         logoutMenu = findViewById(R.id.logoutMenu);
         btnEditProfile = findViewById(R.id.btnEditProfile);
@@ -64,11 +54,20 @@ public class UserPageActivity extends AppCompatActivity {
         menuLogout = findViewById(R.id.menu_logout);
         menuDelete = findViewById(R.id.menu_delete);
 
-        // 3. SETUP RECYCLERVIEW
-        userPostsList = new ArrayList<>();
-        postAdapter = new PostAdapter(userPostsList);
-        rvUserPosts.setLayoutManager(new LinearLayoutManager(this));
-        rvUserPosts.setAdapter(postAdapter);
+        // 3. SETUP TABS AND VIEW PAGER
+        TabLayout tabLayout = findViewById(R.id.profileTabs);
+        ViewPager2 viewPager = findViewById(R.id.profileViewPager);
+
+        ProfilePagerAdapter pagerAdapter = new ProfilePagerAdapter(this);
+        viewPager.setAdapter(pagerAdapter);
+
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            switch (position) {
+                case 0: tab.setText("My Posts"); break;
+                case 1: tab.setText("Bookmarks"); break;
+                case 2: tab.setText("Streaks"); break;
+            }
+        }).attach();
 
         // 4. NAVIGATION & UI SETUP
         NavigationHelper.setupNavigation(this);
@@ -102,22 +101,18 @@ public class UserPageActivity extends AppCompatActivity {
 
         // 6. LOAD DATA
         loadUserProfile();
-        fetchUserPosts();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         loadUserProfile();
-        fetchUserPosts();
     }
 
     private void loadUserProfile() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            if (tvEmail != null) {
-                tvEmail.setText(user.getEmail());
-            }
+            tvEmail.setText(user.getEmail());
 
             db.collection("users").document(user.getUid())
                     .get()
@@ -131,14 +126,8 @@ public class UserPageActivity extends AppCompatActivity {
                                 tvName.setText(username);
                                 tvAvatarText.setText(String.valueOf(username.charAt(0)).toUpperCase());
                             }
-
-                            if (tvCredentials != null) {
-                                tvCredentials.setText(credentials != null ? credentials : "No credentials added");
-                            }
-
-                            if (tvBio != null) {
-                                tvBio.setText(bio != null ? bio : "Tell us about yourself...");
-                            }
+                            tvCredentials.setText(credentials != null ? credentials : "No credentials added");
+                            tvBio.setText(bio != null ? bio : "Tell us about yourself...");
                         }
                     });
         }
@@ -151,32 +140,5 @@ public class UserPageActivity extends AppCompatActivity {
             logoutMenu.setVisibility(View.VISIBLE);
             logoutMenu.bringToFront();
         }
-    }
-
-    private void fetchUserPosts() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user == null) return; // Safety check to prevent crash
-
-        String currentUid = user.getUid();
-
-        FirebaseDatabase.getInstance().getReference("Posts")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        userPostsList.clear();
-                        for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                            Post post = postSnapshot.getValue(Post.class);
-                            if (post != null && currentUid.equals(post.getAuthor())) {
-                                userPostsList.add(post);
-                            }
-                        }
-                        postAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(UserPageActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 }
