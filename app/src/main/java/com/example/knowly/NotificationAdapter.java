@@ -8,14 +8,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.List;
 
 public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<NotificationItem> list;
-
-    // View Type constants for choosing layouts
     private static final int TYPE_COMMENT = 1;
     private static final int TYPE_FOLLOW = 2;
 
@@ -47,10 +45,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         NotificationItem item = list.get(position);
 
-        // 1. Setup Time
-        String timeAgo = (item.getTimestamp() != 0) ? getTimeAgo(item.getTimestamp()) : "Just now";
+        // 1. Setup Time using helper
+        String timeAgo = (item.getTimestamp() != null) ? getTimeAgo(item.getTimestampMillis()) : "Just now";
 
-        // 2. Identify the Views based on ViewHolder type
         TextView usernameTv, actionTv, timeTv;
         if (holder instanceof CommentViewHolder) {
             CommentViewHolder h = (CommentViewHolder) holder;
@@ -64,38 +61,28 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             timeTv = h.time;
         }
 
-        // 3. SET TAG & PLACEHOLDERS (Prevents Recycling Bugs)
-        // We use the timestamp as a unique ID for this specific data binding
-        String uniqueId = String.valueOf(item.getTimestamp());
-        usernameTv.setTag(uniqueId);
+        // 2. Set Tag for verification during async load
+        usernameTv.setTag(item.getFromUserId());
 
         actionTv.setText(item.getAction());
         timeTv.setText(timeAgo);
 
-        // 4. FETCH REAL USERNAME LOGIC
-        String storedUsername = item.getUsername();
-
-        if (storedUsername != null && storedUsername.length() > 20) {
-            // It's a UID! We need to fetch the real name
-            usernameTv.setText("..."); // Temporary placeholder
-            fetchNameFromFirebase(storedUsername, usernameTv, uniqueId);
-        } else {
-            // It's already a name, just set it
-            usernameTv.setText(storedUsername != null ? storedUsername : "User");
+        // 3. FETCH REAL USERNAME FROM FIRESTORE
+        String fromUid = item.getFromUserId();
+        if (fromUid != null) {
+            usernameTv.setText("..."); // Placeholder
+            fetchNameFromFirestore(fromUid, usernameTv);
         }
     }
 
-    private void fetchNameFromFirebase(String uid, TextView textView, String tag) {
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid)
-                .child("username")
-                .get()
-                .addOnCompleteListener(task -> {
-                    // CRITICAL: Only update the UI if the view is still
-                    // supposed to show this specific notification
-                    if (textView.getTag() != null && textView.getTag().equals(tag)) {
-                        if (task.isSuccessful() && task.getResult().exists()) {
-                            textView.setText(String.valueOf(task.getResult().getValue()));
+    private void fetchNameFromFirestore(String uid, TextView textView) {
+        FirebaseFirestore.getInstance().collection("users").document(uid).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    // Check if the TextView is still intended for this UID (prevents recycling bugs)
+                    if (textView.getTag() != null && textView.getTag().equals(uid)) {
+                        if (documentSnapshot.exists()) {
+                            String name = documentSnapshot.getString("username");
+                            textView.setText(name != null ? name : "User");
                         } else {
                             textView.setText("Unknown User");
                         }
@@ -104,11 +91,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     @Override
-    public int getItemCount() {
-        return list.size();
-    }
+    public int getItemCount() { return list.size(); }
 
-    // --- ViewHolders remain the same ---
+    // --- ViewHolders ---
     public static class CommentViewHolder extends RecyclerView.ViewHolder {
         TextView username, action, time;
         public CommentViewHolder(@NonNull View itemView) {

@@ -6,16 +6,11 @@ import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,32 +19,30 @@ public class SearchActivity extends BaseActivity {
 
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
-    private List<Post> allPostsList; // Keeps a copy of ALL posts hidden in background
+    private List<Post> allPostsList;
     private EditText searchInput;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_search);
 
-        // 1. Setup Navigation
         NavigationHelper.setupNavigation(this);
+        db = FirebaseFirestore.getInstance();
 
-        // 2. Initialize Views
         searchInput = findViewById(R.id.editTextText);
         recyclerView = findViewById(R.id.recyclerView);
 
-        // 3. Setup Recycler View
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         allPostsList = new ArrayList<>();
 
-        // Initialize adapter with empty list (Screen starts empty)
-        // Pass 'this' as the second argument
-        postAdapter = new PostAdapter(new ArrayList<>(), this);
+        // Initialize with empty list
+        postAdapter = new PostAdapter(new ArrayList<Post>(), this);
         recyclerView.setAdapter(postAdapter);
 
-        // 4. Load Data (But don't show it yet!)
-        fetchPostsFromRealtimeDB();
+        // 4. Load Data from FIRESTORE
+        fetchPostsFromFirestore();
 
         // 5. Add Search Listener
         searchInput.addTextChangedListener(new TextWatcher() {
@@ -59,13 +52,9 @@ public class SearchActivity extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String searchText = s.toString().trim();
-
-                // LOGIC CHANGE:
                 if (searchText.isEmpty()) {
-                    // If text is empty, clear the list
-                    postAdapter.updateList(new ArrayList<>());
+                    postAdapter.updateList(new ArrayList<Post>());
                 } else {
-                    // If text exists, filter and show results
                     filter(searchText);
                 }
             }
@@ -75,68 +64,51 @@ public class SearchActivity extends BaseActivity {
         });
     }
 
-    private void fetchPostsFromRealtimeDB() {
-        DatabaseReference postsRef = FirebaseDatabase.getInstance().getReference("Posts");
-
-        postsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                allPostsList.clear();
-
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    Post post = postSnapshot.getValue(Post.class);
-                    if (post != null) {
-                        post.setPostId(postSnapshot.getKey());
-                        allPostsList.add(post);
-                    }
-                }
-                // NOTE: We do NOT call updateList() here anymore.
-                // The data is ready in 'allPostsList', but we wait for the user to type.
+    private void fetchPostsFromFirestore() {
+        // Path: posts collection
+        db.collection("posts").addSnapshotListener((value, error) -> {
+            if (error != null) {
+                Toast.makeText(this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                return;
             }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(SearchActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            if (value != null) {
+                allPostsList.clear();
+                for (QueryDocumentSnapshot doc : value) {
+                    Post post = doc.toObject(Post.class);
+                    post.setPostId(doc.getId()); // Essential for click listeners/votes
+                    allPostsList.add(post);
+                }
             }
         });
     }
 
     private void filter(String text) {
-        // 1. Create two separate lists
         List<Post> startsWithList = new ArrayList<>();
         List<Post> containsList = new ArrayList<>();
-
         String query = text.toLowerCase();
 
         for (Post post : allPostsList) {
             if (post.getContent() != null) {
                 String content = post.getContent().toLowerCase();
-
-                // 2. Sort them into buckets
                 if (content.startsWith(query)) {
-                    // Priority 1: The post actually starts with "hel" (e.g. "Hello")
                     startsWithList.add(post);
                 } else if (content.contains(query)) {
-                    // Priority 2: The word is hidden inside (e.g. "I have hella money")
                     containsList.add(post);
                 }
             }
         }
 
-        // 3. Combine them: StartsWith first, Contains second
         List<Post> finalSortedList = new ArrayList<>();
         finalSortedList.addAll(startsWithList);
         finalSortedList.addAll(containsList);
 
-        // 4. Update Adapter
         postAdapter.updateList(finalSortedList);
     }
 
-    // Inside HomePage.java, SearchActivity.java, etc.
     @Override
     protected void onResume() {
         super.onResume();
-        // This forces the "R" to refresh every time you tap the tab
         NavigationHelper.updateNavAvatar(this);
     }
 }

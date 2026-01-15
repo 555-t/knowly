@@ -10,7 +10,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.*;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +19,11 @@ import java.util.List;
 public class BookmarksFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private View layoutEmptyState; // Added to control the empty screen
+    private View layoutEmptyState;
     private PostAdapter adapter;
     private List<Post> bookmarkedPosts = new ArrayList<>();
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db; // Added Firestore instance
 
     @Nullable
     @Override
@@ -29,8 +31,9 @@ public class BookmarksFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_bookmarks, container, false);
 
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
         recyclerView = view.findViewById(R.id.rvBookmarks);
-        layoutEmptyState = view.findViewById(R.id.layoutEmptyState); // Initialize this
+        layoutEmptyState = view.findViewById(R.id.layoutEmptyState);
 
         if (getActivity() != null) {
             recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -44,14 +47,14 @@ public class BookmarksFragment extends Fragment {
     private void loadBookmarkedIds() {
         if (mAuth.getCurrentUser() == null) return;
 
-        FirebaseFirestore.getInstance().collection("users").document(mAuth.getUid())
+        // Listen to the 'bookmarks' array in the user's Firestore document
+        db.collection("users").document(mAuth.getUid())
                 .addSnapshotListener((snapshot, e) -> {
                     if (isAdded() && snapshot != null && snapshot.exists()) {
                         List<String> ids = (List<String>) snapshot.get("bookmarks");
                         if (ids != null && !ids.isEmpty()) {
-                            fetchPosts(ids);
+                            fetchPostsFromFirestore(ids);
                         } else {
-                            // CASE: List is empty - Show "No bookmarks"
                             bookmarkedPosts.clear();
                             updateVisibility(true);
                             if (adapter != null) adapter.notifyDataSetChanged();
@@ -60,46 +63,32 @@ public class BookmarksFragment extends Fragment {
                 });
     }
 
-    private void fetchPosts(List<String> ids) {
-        DatabaseReference postsRef = FirebaseDatabase.getInstance().getReference("Posts");
-        bookmarkedPosts.clear();
-
-        for (String id : ids) {
-            postsRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
+    private void fetchPostsFromFirestore(List<String> ids) {
+        // Query the 'posts' collection for documents whose ID is in our bookmark list
+        db.collection("posts")
+                .whereIn(FieldPath.documentId(), ids)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!isAdded()) return;
 
-                    Post post = snapshot.getValue(Post.class);
-                    if (post != null) {
-                        post.setPostId(snapshot.getKey());
-
-                        boolean alreadyExists = false;
-                        for (Post p : bookmarkedPosts) {
-                            if (p.getPostId().equals(post.getPostId())) {
-                                alreadyExists = true;
-                                break;
-                            }
-                        }
-
-                        if (!alreadyExists) {
+                    bookmarkedPosts.clear();
+                    for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+                        Post post = doc.toObject(Post.class);
+                        if (post != null) {
+                            post.setPostId(doc.getId());
                             bookmarkedPosts.add(post);
-
-                            // SUCCESS: Hide empty layout, show RecyclerView
-                            updateVisibility(false);
-
-                            if (adapter != null) adapter.notifyDataSetChanged();
                         }
                     }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {}
-            });
-        }
+                    // Toggle visibility based on whether we found the posts
+                    updateVisibility(bookmarkedPosts.isEmpty());
+                    adapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> {
+                    if (isAdded()) updateVisibility(true);
+                });
     }
 
-    // Helper method to switch visibility
     private void updateVisibility(boolean isEmpty) {
         if (isEmpty) {
             recyclerView.setVisibility(View.GONE);

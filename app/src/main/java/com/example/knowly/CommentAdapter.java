@@ -12,19 +12,23 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
 
     private List<Comment> commentList;
-    private String postId; // Added to handle deletions
+    private String postId;
+    private FirebaseFirestore db;
 
     public CommentAdapter(List<Comment> commentList, String postId) {
         this.commentList = commentList;
         this.postId = postId;
+        this.db = FirebaseFirestore.getInstance();
     }
 
     @NonNull
@@ -40,80 +44,67 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
 
         holder.commentText.setText(comment.getText());
 
-        // 1. Fetch real username from Firebase "Users" node
+        // 1. Fetch real username from Firestore "users" collection
         String uid = comment.getAuthorId();
         if (uid != null) {
-            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(uid);
-            userRef.child("username").get().addOnCompleteListener(task -> {
-                if (task.isSuccessful() && task.getResult().getValue() != null) {
-                    String name = task.getResult().getValue().toString();
-                    holder.userName.setText(name);
-                    holder.profileInitial.setText(name.substring(0, 1).toUpperCase());
-                } else {
-                    holder.userName.setText("User");
-                    holder.profileInitial.setText("U");
+            holder.userName.setTag(uid); // Tag to prevent recycling mismatch
+            db.collection("users").document(uid).get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists() && uid.equals(holder.userName.getTag())) {
+                    String name = documentSnapshot.getString("username");
+                    holder.userName.setText(name != null ? name : "User");
+                    if (name != null && !name.isEmpty()) {
+                        holder.profileInitial.setText(name.substring(0, 1).toUpperCase());
+                    }
                 }
             });
         }
 
-        // 2. Set Time Ago
-        CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(
-                comment.getTimestamp(),
-                System.currentTimeMillis(),
-                DateUtils.MINUTE_IN_MILLIS);
-        holder.commentTime.setText(timeAgo);
+        // 2. Set Time Ago (Handling Firestore long timestamp)
+        if (comment.getTimestamp() != 0) {
+            CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(
+                    comment.getTimestamp(),
+                    System.currentTimeMillis(),
+                    DateUtils.MINUTE_IN_MILLIS);
+            holder.commentTime.setText(timeAgo);
+        } else {
+            holder.commentTime.setText("Just now");
+        }
 
         // 3. Long Press to Delete (Only if you are the author)
         holder.itemView.setOnLongClickListener(v -> {
             String currentUid = FirebaseAuth.getInstance().getUid();
             if (currentUid != null && currentUid.equals(comment.getAuthorId())) {
-                showDeleteDialog(v, comment, position);
+                showDeleteDialog(v, comment);
             }
             return true;
         });
     }
 
-    private void showDeleteDialog(View v, Comment comment, int position) {
+    private void showDeleteDialog(View v, Comment comment) {
         new AlertDialog.Builder(v.getContext())
                 .setTitle("Delete Comment")
                 .setMessage("Do you want to delete this comment?")
                 .setPositiveButton("Delete", (dialog, which) -> {
-                    DatabaseReference postRef = FirebaseDatabase.getInstance()
-                            .getReference("Posts")
-                            .child(postId);
+                    // Find the specific comment document in Firestore
+                    db.collection("posts").document(postId)
+                            .collection("comments")
+                            .whereEqualTo("timestamp", comment.getTimestamp())
+                            .get()
+                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                                    // 1. Delete the document
+                                    doc.getReference().delete().addOnSuccessListener(aVoid -> {
+                                        // 2. Decrement the comment count
+                                        db.collection("posts").document(postId)
+                                                .update("comment_num", FieldValue.increment(-1));
 
-                    DatabaseReference commentsRef = postRef.child("comments");
-
-                    commentsRef.get().addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            for (com.google.firebase.database.DataSnapshot ds : task.getResult().getChildren()) {
-                                Comment c = ds.getValue(Comment.class);
-                                if (c != null && c.getTimestamp() == comment.getTimestamp()) {
-                                    // 1. Remove the comment
-                                    ds.getRef().removeValue().addOnSuccessListener(aVoid -> {
-                                        // 2. Decrement the comment count on the post
-                                        decrementCommentCount(postRef);
                                         Toast.makeText(v.getContext(), "Comment deleted", Toast.LENGTH_SHORT).show();
                                     });
-                                    break;
                                 }
-                            }
-                        }
-                    });
+                            });
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
-    }
-
-    private void decrementCommentCount(DatabaseReference postRef) {
-        postRef.child("comment_num").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult().exists()) {
-                long currentCount = (long) task.getResult().getValue();
-                if (currentCount > 0) {
-                    postRef.child("comment_num").setValue(currentCount - 1);
-                }
-            }
-        });
     }
 
     @Override

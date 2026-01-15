@@ -17,9 +17,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -152,23 +154,23 @@ public class OthersProfileActivity extends AppCompatActivity {
     }
 
     private void fetchOtherUserPosts() {
-        FirebaseDatabase.getInstance().getReference("Posts")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+        db.collection("posts")
+                .whereEqualTo("author", otherUserId)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .addSnapshotListener((value, error) -> {
+                    if (value != null) {
                         userPostsList.clear();
-                        for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                            Post post = postSnapshot.getValue(Post.class);
-                            if (post != null && otherUserId.equals(post.getAuthor())) {
-                                userPostsList.add(0, post);
+                        for (DocumentSnapshot doc : value.getDocuments()) {
+                            Post post = doc.toObject(Post.class);
+                            if (post != null) {
+                                post.setPostId(doc.getId());
+                                userPostsList.add(post);
                             }
                         }
                         postAdapter.notifyDataSetChanged();
                     }
-                    @Override public void onCancelled(@NonNull DatabaseError error) {}
                 });
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();

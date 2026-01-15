@@ -3,6 +3,7 @@ package com.example.knowly;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import android.content.Intent;
 import android.net.Uri;
@@ -22,6 +23,7 @@ import com.google.firebase.database.ServerValue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CreatePostActivity extends BaseActivity {
 
@@ -33,6 +35,8 @@ public class CreatePostActivity extends BaseActivity {
     private Button btnAddImage;
     private ImageButton backButton;
     private DatabaseReference mDatabase;
+
+    private FirebaseFirestore db; // Use Firestore
     private ChipGroup chipGroupCategories;
 
     private List<String> selectedCategoriesList = new ArrayList<>();
@@ -42,8 +46,7 @@ public class CreatePostActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.createpost_activity);
 
-        // Posts are saved in Realtime Database
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Posts");
+        db = FirebaseFirestore.getInstance(); // Initialize Firestore
 
         postContent = findViewById(R.id.post_content);
         btnPost = findViewById(R.id.btnPost);
@@ -53,16 +56,10 @@ public class CreatePostActivity extends BaseActivity {
 
         backButton.setOnClickListener(v -> finish());
 
-        btnAddImage.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
-            startActivityForResult(intent, PICK_IMAGE_CODE);
-        });
-
         btnPost.setOnClickListener(v -> {
             String text = postContent.getText().toString().trim();
             if (!text.isEmpty()) {
-                uploadPost(text);
+                uploadPostToFirestore(text, selectedCategoriesList); // Use the list from chips
             } else {
                 Toast.makeText(this, "Please write something...", Toast.LENGTH_SHORT).show();
             }
@@ -71,52 +68,26 @@ public class CreatePostActivity extends BaseActivity {
         loadCategoriesFromFirestore();
     }
 
-    private void uploadPost(String content) {
-        if (selectedCategoriesList.isEmpty()) {
-            Toast.makeText(this, "Please select at least 1 category", Toast.LENGTH_SHORT).show();
-            return;
-        }
+    private void uploadPostToFirestore(String content, List<String> selectedCategories) {
+        String userId = FirebaseAuth.getInstance().getUid();
+        if (userId == null) return;
 
-        // Get the current user's UID
-        String currentUid = FirebaseAuth.getInstance().getUid();
-
-        if (currentUid == null) {
-            Toast.makeText(this, "You must be logged in to post!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Generate a unique ID for the post
-        String postId = mDatabase.push().getKey();
-
-        // Create the data object
-        HashMap<String, Object> postMap = new HashMap<>();
-        postMap.put("postId", postId);
+        Map<String, Object> postMap = new HashMap<>();
+        postMap.put("author", userId);
         postMap.put("content", content);
-        postMap.put("author", currentUid); // Saving the UID (7Lfx6...)
-        postMap.put("timestamp", ServerValue.TIMESTAMP);
-        postMap.put("image", imageUri != null ? imageUri.toString() : "none");
-        postMap.put("categories", selectedCategoriesList);
-
-        // Initialize stats
+        postMap.put("categories", selectedCategories);
         postMap.put("upvote_num", 0);
         postMap.put("downvote_num", 0);
         postMap.put("comment_num", 0);
+        postMap.put("timestamp", FieldValue.serverTimestamp());
 
-        if (postId != null) {
-            btnPost.setEnabled(false); // Disable button to prevent double posting
-
-            mDatabase.child(postId).setValue(postMap).addOnSuccessListener(aVoid -> {
-                Log.d("CreatePost", "Post created by: " + currentUid);
-                Toast.makeText(CreatePostActivity.this, "Posted Successfully!", Toast.LENGTH_SHORT).show();
-                finish();
-            }).addOnFailureListener(e -> {
-                btnPost.setEnabled(true);
-                Toast.makeText(this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            });
-        }
-    }
-
-    private void createCategoryChip(String categoryName) {
+        db.collection("posts").add(postMap)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(this, "Post Created!", Toast.LENGTH_SHORT).show();
+                    finish();
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }    private void createCategoryChip(String categoryName) {
         Chip chip = new Chip(this);
         chip.setText(categoryName);
         chip.setCheckable(true);

@@ -18,21 +18,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private List<Post> postList;
     private Context context;
+    private FirebaseFirestore db;
 
     public PostAdapter(List<Post> postList, Context context) {
         this.postList = postList;
         this.context = context;
+        this.db = FirebaseFirestore.getInstance();
     }
 
     private String getCurrentUserId() {
@@ -61,7 +63,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         holder.downvoteNum.setText(String.valueOf(post.getDownvote_num()));
         holder.commentNum.setText(String.valueOf(post.getComment_num()));
 
-        // --- Profile Logic ---
+        // --- Profile Logic (Firestore) ---
         String authorUid = post.getAuthor();
         holder.author.setTag(authorUid);
         holder.author.setText("...");
@@ -79,20 +81,21 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             holder.profilePic.setOnClickListener(toProfile);
             holder.postInitial.setOnClickListener(toProfile);
 
-            FirebaseDatabase.getInstance().getReference("Users").child(authorUid)
-                    .get().addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && task.getResult().exists() && authorUid.equals(holder.author.getTag())) {
-                            String name = task.getResult().child("username").getValue(String.class);
-                            String pfpUrl = task.getResult().child("profileImageUrl").getValue(String.class);
-                            holder.author.setText(name != null ? name : "User");
-                            if (pfpUrl != null && !pfpUrl.isEmpty()) {
-                                holder.postInitial.setVisibility(View.GONE);
-                                Glide.with(context).load(pfpUrl).circleCrop().into(holder.profilePic);
-                            } else if (name != null && !name.isEmpty()) {
-                                holder.postInitial.setText(name.substring(0, 1).toUpperCase());
-                            }
-                        }
-                    });
+            // Fetching from Firestore "users" collection
+            db.collection("users").document(authorUid).get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists() && authorUid.equals(holder.author.getTag())) {
+                    String name = documentSnapshot.getString("username");
+                    String pfpUrl = documentSnapshot.getString("profileImageUrl");
+                    holder.author.setText(name != null ? name : "User");
+
+                    if (pfpUrl != null && !pfpUrl.isEmpty()) {
+                        holder.postInitial.setVisibility(View.GONE);
+                        Glide.with(context).load(pfpUrl).circleCrop().into(holder.profilePic);
+                    } else if (name != null && !name.isEmpty()) {
+                        holder.postInitial.setText(name.substring(0, 1).toUpperCase());
+                    }
+                }
+            });
         }
 
         // --- Categories ---
@@ -108,52 +111,41 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             }
         }
 
-        // --- Interactions (RESTORED VOTE LOGIC) ---
-        DatabaseReference postsRef = FirebaseDatabase.getInstance().getReference("Posts").child(post.getPostId());
+        // --- Interactions (Firestore Vote & Bookmark) ---
+        DocumentReference postRef = db.collection("posts").document(post.getPostId());
 
-        // 1. Update Vote UI Initial State
-        boolean isUpvoted = post.getUpvotes() != null && post.getUpvotes().containsKey(userId);
-        boolean isDownvoted = post.getDownvotes() != null && post.getDownvotes().containsKey(userId);
-        holder.upvoteImg.setSelected(isUpvoted);
-        holder.downvoteImg.setSelected(isDownvoted);
-
-        // 2. Upvote Click
-        holder.upvoteImg.setOnClickListener(v -> {
-            toggleVote(postsRef, "upvotes", "downvotes", userId, post);
+        // 1. Initial Vote State Listener
+        postRef.collection("votes").document(userId).addSnapshotListener((snapshot, e) -> {
+            if (snapshot != null && snapshot.exists()) {
+                String type = snapshot.getString("type");
+                holder.upvoteImg.setSelected("up".equals(type));
+                holder.downvoteImg.setSelected("down".equals(type));
+            } else {
+                holder.upvoteImg.setSelected(false);
+                holder.downvoteImg.setSelected(false);
+            }
         });
 
-        // 3. Downvote Click
-        holder.downvoteImg.setOnClickListener(v -> {
-            toggleVote(postsRef, "downvotes", "upvotes", userId, post);
+        // 2. Vote Click Actions
+        holder.upvoteImg.setOnClickListener(v -> handleVote(post.getPostId(), "up", holder.upvoteImg.isSelected()));
+        holder.downvoteImg.setOnClickListener(v -> handleVote(post.getPostId(), "down", holder.downvoteImg.isSelected()));
+
+        // --- Bookmark Logic ---
+        DocumentReference userRef = db.collection("users").document(userId);
+        userRef.addSnapshotListener((snapshot, e) -> {
+            if (snapshot != null && snapshot.exists()) {
+                List<String> bookmarks = (List<String>) snapshot.get("bookmarks");
+                holder.bookmarkBtn.setSelected(bookmarks != null && bookmarks.contains(post.getPostId()));
+            }
         });
 
-        // --- Bookmark Logic (FIXED) ---
-        if (post.getPostId() != null) {
-            DocumentReference userRef = FirebaseFirestore.getInstance().collection("users").document(userId);
-
-            userRef.get().addOnCompleteListener(task -> {
-                if (task.isSuccessful() && task.getResult() != null) {
-                    List<String> bookmarks = (List<String>) task.getResult().get("bookmarks");
-                    boolean isBookmarked = (bookmarks != null && bookmarks.contains(post.getPostId()));
-                    holder.bookmarkBtn.setSelected(isBookmarked);
-                    holder.bookmarkBtn.refreshDrawableState();
-                }
-            });
-
-            holder.bookmarkBtn.setOnClickListener(v -> {
-                boolean newState = !holder.bookmarkBtn.isSelected();
-                holder.bookmarkBtn.setSelected(newState);
-                holder.bookmarkBtn.refreshDrawableState();
-
-                if (!newState) {
-                    userRef.update("bookmarks", FieldValue.arrayRemove(post.getPostId()));
-                    Toast.makeText(context, "Removed", Toast.LENGTH_SHORT).show();
-                } else {
-                    userRef.update("bookmarks", FieldValue.arrayUnion(post.getPostId()));
-                    Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+        holder.bookmarkBtn.setOnClickListener(v -> {
+            if (holder.bookmarkBtn.isSelected()) {
+                userRef.update("bookmarks", FieldValue.arrayRemove(post.getPostId()));
+            } else {
+                userRef.update("bookmarks", FieldValue.arrayUnion(post.getPostId()));
+            }
+        });
 
         holder.commentImg.setOnClickListener(v -> {
             context.startActivity(new Intent(context, PostDetailsActivity.class).putExtra("POST_ID", post.getPostId()));
@@ -162,17 +154,47 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         holder.moreBtn.setOnClickListener(v -> showPopup(v, post, userId));
     }
 
-    private void toggleVote(DatabaseReference ref, String node, String otherNode, String uid, Post post) {
-        if (node.equals("upvotes") && post.getUpvotes() != null && post.getUpvotes().containsKey(uid)) {
-            ref.child(node).child(uid).removeValue();
-        } else if (node.equals("downvotes") && post.getDownvotes() != null && post.getDownvotes().containsKey(uid)) {
-            ref.child(node).child(uid).removeValue();
+    private void handleVote(String postId, String type, boolean isSelected) {
+        String userId = getCurrentUserId();
+        DocumentReference postRef = db.collection("posts").document(postId);
+        DocumentReference voteRef = postRef.collection("votes").document(userId);
+
+        if (isSelected) {
+            // User clicked the same button again -> Remove vote
+            voteRef.delete().addOnSuccessListener(aVoid -> {
+                String field = type.equals("up") ? "upvote_num" : "downvote_num";
+                postRef.update(field, FieldValue.increment(-1));
+            });
         } else {
-            ref.child(node).child(uid).setValue(true);
-            ref.child(otherNode).child(uid).removeValue();
+            // Check if they are switching from the opposite vote
+            voteRef.get().addOnSuccessListener(snapshot -> {
+                if (snapshot.exists()) {
+                    String oldType = snapshot.getString("type");
+                    if (oldType != null && !oldType.equals(type)) {
+                        // Switching: Decrement the old one
+                        String oldField = oldType.equals("up") ? "upvote_num" : "downvote_num";
+                        postRef.update(oldField, FieldValue.increment(-1));
+                    }
+                }
+
+                // Apply new vote
+                Map<String, Object> voteData = new HashMap<>();
+                voteData.put("type", type);
+                voteRef.set(voteData).addOnSuccessListener(aVoid -> {
+                    String newField = type.equals("up") ? "upvote_num" : "downvote_num";
+                    postRef.update(newField, FieldValue.increment(1));
+
+                    // ADDED: Send notification for Upvotes only
+                    if (type.equals("up")) {
+                        db.collection("posts").document(postId).get().addOnSuccessListener(postDoc -> {
+                            String ownerId = postDoc.getString("author");
+                            NotificationUtils.sendNotification(ownerId, "upvote", "upvoted your post!", postId);
+                        });
+                    }
+                });
+            });
         }
     }
-
     private String getTimeAgo(long time) {
         long diff = System.currentTimeMillis() - time;
         if (diff < 60000) return "just now";
@@ -183,11 +205,21 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     private void showPopup(View v, Post p, String id) {
         PopupMenu popup = new PopupMenu(context, v);
-        if (p.getAuthor() != null && p.getAuthor().equals(id)) popup.getMenu().add("Delete");
-        else popup.getMenu().add("Report");
+        if (p.getAuthor() != null && p.getAuthor().equals(id)) {
+            popup.getMenu().add("Delete").setOnMenuItemClickListener(item -> {
+                db.collection("posts").document(p.getPostId()).delete();
+                return true;
+            });
+        } else {
+            popup.getMenu().add("Report");
+        }
         popup.show();
     }
-
+    // Add this method inside your PostAdapter class (e.g., above getItemCount)
+    public void updateList(List<Post> newList) {
+        this.postList = newList;
+        notifyDataSetChanged();
+    }
     @Override
     public int getItemCount() { return postList.size(); }
 
@@ -214,9 +246,5 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             bookmarkBtn = v.findViewById(R.id.bookmark_btn);
             moreBtn = v.findViewById(R.id.imageButton);
         }
-    }
-    public void updateList(List<Post> newList) {
-        this.postList = newList;
-        notifyDataSetChanged();
     }
 }

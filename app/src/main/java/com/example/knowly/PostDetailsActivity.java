@@ -1,8 +1,5 @@
 package com.example.knowly;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,22 +16,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PostDetailsActivity extends AppCompatActivity {
 
     private String postId;
     private String postOwnerId;
-    private DatabaseReference postRef;
+    private DocumentReference postRef; // Changed to DocumentReference
+    private FirebaseFirestore db;
+
     private EditText commentInput;
     private TextView postContent, postAuthor, upvoteNum, downvoteNum, commentNum, postInitial;
     private ChipGroup categoryGroup;
@@ -48,21 +46,19 @@ public class PostDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.postdetails_activity);
 
         postId = getIntent().getStringExtra("POST_ID");
-
         if (postId == null) {
             Toast.makeText(this, "Error: Post not found", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
+        db = FirebaseFirestore.getInstance();
+        postRef = db.collection("posts").document(postId); // Reference to Firestore post
+
         initViews();
 
-        postRef = FirebaseDatabase.getInstance().getReference("Posts").child(postId);
-
-        commentsRecyclerView = findViewById(R.id.commentsRecyclerView);
         commentList = new ArrayList<>();
         commentAdapter = new CommentAdapter(commentList, postId);
-
         commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         commentsRecyclerView.setAdapter(commentAdapter);
 
@@ -83,131 +79,95 @@ public class PostDetailsActivity extends AppCompatActivity {
         commentNum = postCard.findViewById(R.id.comment_num);
         categoryGroup = postCard.findViewById(R.id.category_chip_group);
         commentInput = findViewById(R.id.CommentInput);
+        commentsRecyclerView = findViewById(R.id.commentsRecyclerView);
     }
 
     private void loadPostDetails() {
-        postRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Post post = snapshot.getValue(Post.class);
-                if (post != null) {
-                    postOwnerId = post.getAuthor();
-                    postContent.setText(post.getContent());
+        // Use SnapshotListener for real-time updates (upvotes/comments)
+        postRef.addSnapshotListener((snapshot, e) -> {
+            if (e != null || snapshot == null || !snapshot.exists()) return;
 
-                    if (postOwnerId != null) {
-                        FirebaseDatabase.getInstance().getReference("Users")
-                                .child(postOwnerId)
-                                .child("username")
-                                .get()
-                                .addOnCompleteListener(task -> {
-                                    if (task.isSuccessful() && task.getResult().exists()) {
-                                        String name = String.valueOf(task.getResult().getValue());
-                                        postAuthor.setText(name);
-                                        if (name != null && !name.isEmpty()) {
-                                            postInitial.setText(name.substring(0, 1).toUpperCase());
-                                        }
+            Post post = snapshot.toObject(Post.class);
+            if (post != null) {
+                postOwnerId = post.getAuthor();
+                postContent.setText(post.getContent());
+                upvoteNum.setText(String.valueOf(post.getUpvote_num()));
+                downvoteNum.setText(String.valueOf(post.getDownvote_num()));
+                commentNum.setText(String.valueOf(post.getComment_num()));
+
+                // FETCH USERNAME FROM "users" (lowercase)
+                if (postOwnerId != null) {
+                    db.collection("users").document(postOwnerId).get()
+                            .addOnSuccessListener(userDoc -> {
+                                if (userDoc.exists()) {
+                                    String name = userDoc.getString("username");
+                                    postAuthor.setText(name != null ? name : "Unknown");
+                                    if (name != null && !name.isEmpty()) {
+                                        postInitial.setText(name.substring(0, 1).toUpperCase());
                                     }
-                                });
-                    }
+                                }
+                            });
+                }
 
-                    upvoteNum.setText(String.valueOf(post.getUpvote_num()));
-                    downvoteNum.setText(String.valueOf(post.getDownvote_num()));
-                    commentNum.setText(String.valueOf(post.getComment_num()));
-
-                    // --- 5. MULTIPLE CATEGORY LOGIC (RESTORED ORIGINAL STYLE) ---
-                    categoryGroup.removeAllViews(); // Prevent duplication when data updates
-                    if (post.getCategories() != null && !post.getCategories().isEmpty()) {
-                        categoryGroup.setVisibility(View.VISIBLE);
-                        for (String catName : post.getCategories()) {
-                            // Using TextView instead of Chip to preserve gradient look perfectly
-                            TextView tv = new TextView(PostDetailsActivity.this);
-                            tv.setText(catName);
-
-                            // Style settings
-                            tv.setBackgroundResource(R.drawable.bg_category_gradient);
-                            tv.setTextColor(Color.parseColor("#2788A0"));
-                            tv.setTextSize(12);
-
-                            // Padding: (left, top, right, bottom)
-                            tv.setPadding(30, 10, 30, 10);
-
-                            // Set margins between bubbles
-                            ChipGroup.LayoutParams params = new ChipGroup.LayoutParams(
-                                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT
-                            );
-                            params.setMargins(0, 0, 6, 6);
-                            tv.setLayoutParams(params);
-
-                            categoryGroup.addView(tv);
-                        }
-                    } else {
-                        categoryGroup.setVisibility(View.GONE);
+                // CATEGORY LOGIC
+                categoryGroup.removeAllViews();
+                if (post.getCategories() != null) {
+                    categoryGroup.setVisibility(View.VISIBLE);
+                    for (String catName : post.getCategories()) {
+                        TextView tv = new TextView(this);
+                        tv.setText(catName);
+                        tv.setBackgroundResource(R.drawable.bg_category_gradient);
+                        tv.setTextColor(Color.parseColor("#2788A0"));
+                        tv.setPadding(30, 10, 30, 10);
+                        categoryGroup.addView(tv);
                     }
                 }
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Firebase", "Error: " + error.getMessage());
-            }
         });
     }
+
+// ... existing imports ...
 
     private void submitComment() {
         String commentText = commentInput.getText().toString().trim();
-        if (commentText.isEmpty()) return;
-
         String currentUserId = FirebaseAuth.getInstance().getUid();
-        if (currentUserId == null) return;
+        if (commentText.isEmpty() || currentUserId == null) return;
 
-        DatabaseReference commentsRef = postRef.child("comments");
-        String commentId = commentsRef.push().getKey();
-
-        HashMap<String, Object> commentMap = new HashMap<>();
+        Map<String, Object> commentMap = new HashMap<>();
         commentMap.put("text", commentText);
         commentMap.put("authorId", currentUserId);
-        commentMap.put("timestamp", ServerValue.TIMESTAMP);
+        commentMap.put("timestamp", FieldValue.serverTimestamp());
 
-        if (commentId != null) {
-            commentsRef.child(commentId).setValue(commentMap).addOnSuccessListener(aVoid -> {
-                if (postOwnerId != null && !postOwnerId.equals(currentUserId)) {
-                    NotificationUtils.sendNotification(postOwnerId, "comment", "commented on your post");
-                }
-                commentInput.setText("");
-                updateCommentCount(true);
-            });
-        }
-    }
+        postRef.collection("comments").add(commentMap).addOnSuccessListener(doc -> {
+            commentInput.setText("");
+            updateCommentCount(true);
 
-    private void updateCommentCount(boolean increment) {
-        postRef.child("comment_num").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                long currentCount = 0;
-                if (task.getResult().exists()) {
-                    Object val = task.getResult().getValue();
-                    if (val instanceof Long) currentCount = (Long) val;
-                }
-                long newCount = increment ? currentCount + 1 : Math.max(0, currentCount - 1);
-                postRef.child("comment_num").setValue(newCount);
+            // ADDED: Send notification to post owner
+            if (postOwnerId != null) {
+                NotificationUtils.sendNotification(
+                        postOwnerId,
+                        "comment",
+                        "commented on your post: " + commentText,
+                        postId
+                );
             }
         });
+    }
+    private void updateCommentCount(boolean increment) {
+        postRef.update("comment_num", FieldValue.increment(increment ? 1 : -1));
     }
 
     private void loadComments() {
-        postRef.child("comments").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                commentList.clear();
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    Comment comment = ds.getValue(Comment.class);
-                    if (comment != null) commentList.add(comment);
-                }
-                commentAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) { }
-        });
+        postRef.collection("comments")
+                .orderBy("timestamp", Query.Direction.ASCENDING)
+                .addSnapshotListener((snapshot, e) -> {
+                    if (e != null || snapshot == null) return;
+                    commentList.clear();
+                    for (com.google.firebase.firestore.DocumentSnapshot ds : snapshot.getDocuments()) {
+                        Comment comment = ds.toObject(Comment.class);
+                        if (comment != null) commentList.add(comment);
+                    }
+                    commentAdapter.notifyDataSetChanged();
+                });
     }
 }
