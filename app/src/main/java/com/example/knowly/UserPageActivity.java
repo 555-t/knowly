@@ -33,7 +33,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
-public class UserPageActivity extends AppCompatActivity {
+public class UserPageActivity extends BaseActivity {
 
     private MaterialCardView btnMenuContainer;
     private CardView logoutMenu, btnEditProfile;

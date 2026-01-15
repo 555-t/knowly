@@ -3,13 +3,11 @@ package com.example.knowly;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,13 +19,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomePage extends AppCompatActivity {
+// EXTEND BASEACTIVITY to inherit the background timer
+public class HomePage extends BaseActivity {
 
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
@@ -48,7 +47,10 @@ public class HomePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
 
+        // Navigation
         NavigationHelper.setupNavigation(this);
+
+        // UI Setup
         cardForYou = findViewById(R.id.cardForYou);
         cardFollowing = findViewById(R.id.cardFollowing);
         btnForYou = findViewById(R.id.btnForYou);
@@ -59,18 +61,17 @@ public class HomePage extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         postList = new ArrayList<>();
-
-        // --- FIXED LINE 67 ---
-        // We now pass 'this' as the second parameter (Context)
         postAdapter = new PostAdapter(postList, this);
         recyclerView.setAdapter(postAdapter);
 
+        // Firebase
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Posts");
         currentUserId = FirebaseAuth.getInstance().getUid();
 
         loadUserPreferences();
         fetchPostsFromFirebase();
 
+        // Listeners
         cardForYou.setOnClickListener(v -> setSelectedTab(true));
         cardFollowing.setOnClickListener(v -> setSelectedTab(false));
 
@@ -117,6 +118,7 @@ public class HomePage extends AppCompatActivity {
                         }
                         fetchPostsFromFirebase();
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
                 });
@@ -167,6 +169,7 @@ public class HomePage extends AppCompatActivity {
                 }
                 postAdapter.notifyDataSetChanged();
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(HomePage.this, "Database Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();

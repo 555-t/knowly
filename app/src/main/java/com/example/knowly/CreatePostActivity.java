@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class CreatePostActivity extends AppCompatActivity {
+public class CreatePostActivity extends BaseActivity {
 
     private static final int PICK_IMAGE_CODE = 101;
     private Uri imageUri = null;
