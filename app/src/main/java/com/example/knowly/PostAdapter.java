@@ -20,6 +20,7 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -29,7 +30,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private List<Post> postList;
     private Context context;
 
-    // Updated Constructor to include Context
     public PostAdapter(List<Post> postList, Context context) {
         this.postList = postList;
         this.context = context;
@@ -54,25 +54,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
         if (post == null || userId == null) return;
 
-        // 1. Content
+        // Content & Metadata
         holder.content.setText(post.getContent());
+        holder.timeOfPost.setText(getTimeAgo(post.getTimestamp()));
+        holder.upvoteNum.setText(String.valueOf(post.getUpvote_num()));
+        holder.downvoteNum.setText(String.valueOf(post.getDownvote_num()));
+        holder.commentNum.setText(String.valueOf(post.getComment_num()));
 
-        // 2. Profile Logic
+        // --- Profile Logic ---
         String authorUid = post.getAuthor();
         holder.author.setTag(authorUid);
         holder.author.setText("...");
         holder.postInitial.setVisibility(View.VISIBLE);
-        holder.profilePic.setImageResource(R.drawable.chip_cat_gradient_checked);
 
         if (authorUid != null && !authorUid.isEmpty()) {
             View.OnClickListener toProfile = v -> {
-                Intent intent;
-                if (authorUid.equals(userId)) {
-                    intent = new Intent(context, UserPageActivity.class);
-                } else {
-                    intent = new Intent(context, OthersProfileActivity.class);
-                    intent.putExtra("USER_ID", authorUid);
-                }
+                Intent intent = authorUid.equals(userId) ?
+                        new Intent(context, UserPageActivity.class) :
+                        new Intent(context, OthersProfileActivity.class).putExtra("USER_ID", authorUid);
                 context.startActivity(intent);
             };
 
@@ -80,34 +79,23 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             holder.profilePic.setOnClickListener(toProfile);
             holder.postInitial.setOnClickListener(toProfile);
 
-            // Fetch User Data
             FirebaseDatabase.getInstance().getReference("Users").child(authorUid)
                     .get().addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && task.getResult().exists()) {
-                            if (authorUid.equals(holder.author.getTag())) {
-                                String name = task.getResult().child("username").getValue(String.class);
-                                String pfpUrl = task.getResult().child("profileImageUrl").getValue(String.class);
-
-                                holder.author.setText(name != null ? name : "User");
-
-                                if (pfpUrl != null && !pfpUrl.isEmpty()) {
-                                    holder.postInitial.setVisibility(View.GONE);
-                                    Glide.with(context).load(pfpUrl).circleCrop().into(holder.profilePic);
-                                } else if (name != null && !name.isEmpty()) {
-                                    holder.postInitial.setText(name.substring(0, 1).toUpperCase());
-                                }
+                        if (task.isSuccessful() && task.getResult().exists() && authorUid.equals(holder.author.getTag())) {
+                            String name = task.getResult().child("username").getValue(String.class);
+                            String pfpUrl = task.getResult().child("profileImageUrl").getValue(String.class);
+                            holder.author.setText(name != null ? name : "User");
+                            if (pfpUrl != null && !pfpUrl.isEmpty()) {
+                                holder.postInitial.setVisibility(View.GONE);
+                                Glide.with(context).load(pfpUrl).circleCrop().into(holder.profilePic);
+                            } else if (name != null && !name.isEmpty()) {
+                                holder.postInitial.setText(name.substring(0, 1).toUpperCase());
                             }
                         }
                     });
         }
 
-        // 3. Stats & Metadata
-        holder.timeOfPost.setText(getTimeAgo(post.getTimestamp()));
-        holder.upvoteNum.setText(String.valueOf(post.getUpvote_num()));
-        holder.downvoteNum.setText(String.valueOf(post.getDownvote_num()));
-        holder.commentNum.setText(String.valueOf(post.getComment_num()));
-
-        // 4. Categories
+        // --- Categories ---
         holder.categoryGroup.removeAllViews();
         if (post.getCategories() != null) {
             for (String cat : post.getCategories()) {
@@ -120,33 +108,59 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             }
         }
 
-        // 5. Interaction Listeners
-        updateVoteUI(holder, post, userId);
+        // --- Interactions (RESTORED VOTE LOGIC) ---
+        DatabaseReference postsRef = FirebaseDatabase.getInstance().getReference("Posts").child(post.getPostId());
 
+        // 1. Update Vote UI Initial State
+        boolean isUpvoted = post.getUpvotes() != null && post.getUpvotes().containsKey(userId);
+        boolean isDownvoted = post.getDownvotes() != null && post.getDownvotes().containsKey(userId);
+        holder.upvoteImg.setSelected(isUpvoted);
+        holder.downvoteImg.setSelected(isDownvoted);
+
+        // 2. Upvote Click
+        holder.upvoteImg.setOnClickListener(v -> {
+            toggleVote(postsRef, "upvotes", "downvotes", userId, post);
+        });
+
+        // 3. Downvote Click
+        holder.downvoteImg.setOnClickListener(v -> {
+            toggleVote(postsRef, "downvotes", "upvotes", userId, post);
+        });
+
+        // --- Bookmark Logic (FIXED) ---
         if (post.getPostId() != null) {
-            DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("Posts").child(post.getPostId());
-            holder.upvoteImg.setOnClickListener(v -> toggleVote(postRef, "upvotes", "downvotes", userId, post));
-            holder.downvoteImg.setOnClickListener(v -> toggleVote(postRef, "downvotes", "upvotes", userId, post));
+            DocumentReference userRef = FirebaseFirestore.getInstance().collection("users").document(userId);
 
-            // --- UPDATED BOOKMARK LOGIC ---
+            userRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    List<String> bookmarks = (List<String>) task.getResult().get("bookmarks");
+                    boolean isBookmarked = (bookmarks != null && bookmarks.contains(post.getPostId()));
+                    holder.bookmarkBtn.setSelected(isBookmarked);
+                    holder.bookmarkBtn.refreshDrawableState();
+                }
+            });
+
             holder.bookmarkBtn.setOnClickListener(v -> {
-                FirebaseFirestore.getInstance().collection("users").document(userId)
-                        .update("bookmarks", FieldValue.arrayUnion(post.getPostId()))
-                        .addOnSuccessListener(aVoid -> Toast.makeText(context, "Saved to Bookmarks!", Toast.LENGTH_SHORT).show())
-                        .addOnFailureListener(e -> Toast.makeText(context, "Error saving bookmark", Toast.LENGTH_SHORT).show());
+                boolean newState = !holder.bookmarkBtn.isSelected();
+                holder.bookmarkBtn.setSelected(newState);
+                holder.bookmarkBtn.refreshDrawableState();
+
+                if (!newState) {
+                    userRef.update("bookmarks", FieldValue.arrayRemove(post.getPostId()));
+                    Toast.makeText(context, "Removed", Toast.LENGTH_SHORT).show();
+                } else {
+                    userRef.update("bookmarks", FieldValue.arrayUnion(post.getPostId()));
+                    Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
+                }
             });
         }
 
         holder.commentImg.setOnClickListener(v -> {
-            Intent i = new Intent(context, PostDetailsActivity.class);
-            i.putExtra("POST_ID", post.getPostId());
-            context.startActivity(i);
+            context.startActivity(new Intent(context, PostDetailsActivity.class).putExtra("POST_ID", post.getPostId()));
         });
 
         holder.moreBtn.setOnClickListener(v -> showPopup(v, post, userId));
     }
-
-    // --- Helper Methods ---
 
     private void toggleVote(DatabaseReference ref, String node, String otherNode, String uid, Post post) {
         if (node.equals("upvotes") && post.getUpvotes() != null && post.getUpvotes().containsKey(uid)) {
@@ -165,13 +179,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         if (diff < 3600000) return (diff / 60000) + "m ago";
         if (diff < 86400000) return (diff / 3600000) + "h ago";
         return (diff / 86400000) + "d ago";
-    }
-
-    private void updateVoteUI(ViewHolder h, Post p, String id) {
-        int active = Color.parseColor("#3498db");
-        int gray = Color.parseColor("#808080");
-        h.upvoteImg.setColorFilter(p.getUpvotes() != null && p.getUpvotes().containsKey(id) ? active : gray);
-        h.downvoteImg.setColorFilter(p.getDownvotes() != null && p.getDownvotes().containsKey(id) ? Color.RED : gray);
     }
 
     private void showPopup(View v, Post p, String id) {
