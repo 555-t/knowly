@@ -7,18 +7,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +23,8 @@ public class NotificationActivity extends BaseActivity {
 
     private RecyclerView recyclerView;
     private NotificationAdapter adapter;
-    private List<NotificationItem> notificationList;
-
-    private DatabaseReference dbRef;
+    private List<NotificationItem> notificationList; // Ensure NotificationItem class matches Firestore fields
+    private FirebaseFirestore db;
     private String userId;
 
     @Override
@@ -38,7 +33,6 @@ public class NotificationActivity extends BaseActivity {
         setContentView(R.layout.notifications_activity);
 
         // 1. Navigation & UI Setup
-        // This MUST stay here to keep the bottom nav working
         NavigationHelper.setupNavigation(this);
 
         recyclerView = findViewById(R.id.notificationRecyclerView);
@@ -48,57 +42,53 @@ public class NotificationActivity extends BaseActivity {
         adapter = new NotificationAdapter(notificationList);
         recyclerView.setAdapter(adapter);
 
-        // 2. System Setup (Permissions/Channels)
+        // 2. System Setup
         createNotificationChannel();
         checkNotificationPermission();
 
-        // 3. Firebase Realtime Database Initialization
+        // 3. Firestore Initialization
+        db = FirebaseFirestore.getInstance();
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            // Point to Realtime Database "Notifications" node
-            dbRef = FirebaseDatabase.getInstance().getReference("Notifications").child(userId);
-            listenForNotifications();
+            listenForFirestoreNotifications();
         } else {
             Log.e("KNOWLY", "User is not logged in!");
         }
     }
 
-    private void listenForNotifications() {
+    private void listenForFirestoreNotifications() {
         if (userId == null) return;
 
-        // Using ValueEventListener for Realtime Database
-        // .limitToLast(50) ensures we don't load thousands of old notifications
-        dbRef.orderByChild("timestamp").limitToLast(50)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+        // Path: users -> [UID] -> notifications
+        db.collection("users").document(userId)
+                .collection("notifications")
+                .orderBy("timestamp", Query.Direction.DESCENDING) // Newest first
+                .limit(50)
+                .addSnapshotListener((snapshots, e) -> {
+                    if (e != null) {
+                        Log.e("KNOWLY", "Listen failed.", e);
+                        return;
+                    }
+
+                    if (snapshots != null) {
                         notificationList.clear();
-                        for (DataSnapshot ds : snapshot.getChildren()) {
-                            NotificationItem item = ds.getValue(NotificationItem.class);
+                        for (DocumentSnapshot doc : snapshots.getDocuments()) {
+                            NotificationItem item = doc.toObject(NotificationItem.class);
                             if (item != null) {
-                                // Add to index 0 so newest appears at the top
-                                notificationList.add(0, item);
+                                notificationList.add(item);
                             }
                         }
                         adapter.notifyDataSetChanged();
 
-                        // If the list is updated, show a popup for the very latest one
-                        if (!notificationList.isEmpty()) {
+                        // System Tray Popup for the newest notification
+                        if (!snapshots.getMetadata().hasPendingWrites() && !notificationList.isEmpty()) {
                             NotificationItem latest = notificationList.get(0);
-                            // Optional: only show popup if the timestamp is very recent (within last 10 seconds)
-                            long now = System.currentTimeMillis();
-                            if (now - latest.getTimestamp() < 10000) {
-                                showPopupNotification("KNOWLY", latest.getUsername() + " " + latest.getAction());
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Log.e("KNOWLY", "Database error: " + error.getMessage());
+                            showPopupNotification("KNOWLY", latest.getAction());                        }
                     }
                 });
     }
+
+    // --- Keep your existing permission and channel methods below ---
 
     private void checkNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -116,11 +106,8 @@ public class NotificationActivity extends BaseActivity {
                     NotificationManager.IMPORTANCE_HIGH
             );
             channel.setDescription("Notifications for interactions");
-
             NotificationManager manager = getSystemService(NotificationManager.class);
-            if (manager != null) {
-                manager.createNotificationChannel(channel);
-            }
+            if (manager != null) manager.createNotificationChannel(channel);
         }
     }
 

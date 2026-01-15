@@ -1,7 +1,9 @@
 package com.example.knowly;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,15 +13,18 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +47,9 @@ public class OthersProfileActivity extends AppCompatActivity {
     private RecyclerView rvOtherUserPosts;
     private PostAdapter postAdapter;
     private List<Post> userPostsList;
+    private TextView tvProfileInitial;
+    private ImageView ivProfilePic;
+    private TextView tvPostsCount, tvUpvotesCount, tvCommentsCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +75,13 @@ public class OthersProfileActivity extends AppCompatActivity {
         btnFollow = findViewById(R.id.btnFollow); // The CardView button
         btnFollowTextView = findViewById(R.id.btnFollowTextView); // The text inside
         backButton = findViewById(R.id.backButton_APV);
-
+        // Inside onCreate, after linking other views
+        ivProfilePic = findViewById(R.id.pfp_APV);
+        tvPostsCount = findViewById(R.id.tv_posts_count);
+        tvUpvotesCount = findViewById(R.id.tv_upvotes_count);
+        tvCommentsCount = findViewById(R.id.tv_comments_count);
+        tvProfileInitial = findViewById(R.id.pfp_initial_APV);
+        ivProfilePic = findViewById(R.id.pfp_APV);
         // 2. Setup RecyclerView
         rvOtherUserPosts = findViewById(R.id.rvOtherUserPosts);
         userPostsList = new ArrayList<>();
@@ -110,11 +124,9 @@ public class OthersProfileActivity extends AppCompatActivity {
 
         if (isFollowing) {
             // UNFOLLOW LOGIC
-            // Remove from sub-collections
             otherUserRef.collection("followers").document(currentUserId).delete();
             currentUserRef.collection("following").document(otherUserId).delete();
 
-            // Decrease counts
             otherUserRef.update("followerCount", FieldValue.increment(-1));
             currentUserRef.update("followingCount", FieldValue.increment(-1));
 
@@ -132,46 +144,103 @@ public class OthersProfileActivity extends AppCompatActivity {
             otherUserRef.update("followerCount", FieldValue.increment(1));
             currentUserRef.update("followingCount", FieldValue.increment(1));
 
+            // --- NEW: Trigger Notification ---
+            // otherUserId is the recipient (the person being followed)
+            // "follow" is the type
+            // currentUserId is passed as the relatedId so the recipient knows who followed them
+            NotificationUtils.sendNotification(
+                    otherUserId,
+                    "follow",
+                    "started following you!",
+                    currentUserId
+            );
+
             Toast.makeText(this, "Following", Toast.LENGTH_SHORT).show();
         }
     }
-
     private void loadOtherUserData() {
         profileListener = db.collection("users").document(otherUserId)
                 .addSnapshotListener((documentSnapshot, error) -> {
                     if (documentSnapshot != null && documentSnapshot.exists()) {
                         String name = documentSnapshot.getString("username");
+                        String pfpUrl = documentSnapshot.getString("profileImageUrl");
+                        // 1. Fetch the image URL string from Firestore
+
                         Long followers = documentSnapshot.getLong("followerCount");
                         Long following = documentSnapshot.getLong("followingCount");
 
                         if (tvName != null) tvName.setText(name);
-                        if (tvFollowerCount != null) tvFollowerCount.setText(String.valueOf(followers != null ? followers : 0));
-                        if (tvFollowingCount != null) tvFollowingCount.setText(String.valueOf(following != null ? following : 0));
+                        tvFollowerCount.setText(String.valueOf(followers != null ? followers : 0));
+                        tvFollowingCount.setText(String.valueOf(following != null ? following : 0));
+
+                        // 2. Load the Image into the ShapeableImageView (pfp_APV)
+                        ImageView ivProfilePic = findViewById(R.id.pfp_APV);
+                        if (pfpUrl != null && !pfpUrl.isEmpty()) {
+                            // Show image, hide the letter
+                            ivProfilePic.setVisibility(View.VISIBLE);
+                            tvProfileInitial.setVisibility(View.GONE);
+                            Glide.with(this).load(pfpUrl).into(ivProfilePic);
+                        } else {
+                            // No Image URL: Hide image, show the letter Q (or whatever the username starts with)
+                            ivProfilePic.setVisibility(View.GONE);
+                            tvProfileInitial.setVisibility(View.VISIBLE);
+
+                            if (name != null && !name.isEmpty()) {
+                                tvProfileInitial.setText(name.substring(0, 1).toUpperCase());
+                            } else {
+                                tvProfileInitial.setText("?");
+                            }
+                        }
+
+                        updateUserStats();
                     }
                 });
-    }
-
-    private void fetchOtherUserPosts() {
-        FirebaseDatabase.getInstance().getReference("Posts")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+    }    private void fetchOtherUserPosts() {
+        db.collection("posts")
+                .whereEqualTo("author", otherUserId)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .addSnapshotListener((value, error) -> {
+                    if (value != null) {
                         userPostsList.clear();
-                        for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                            Post post = postSnapshot.getValue(Post.class);
-                            if (post != null && otherUserId.equals(post.getAuthor())) {
-                                userPostsList.add(0, post);
+                        for (DocumentSnapshot doc : value.getDocuments()) {
+                            Post post = doc.toObject(Post.class);
+                            if (post != null) {
+                                post.setPostId(doc.getId());
+                                userPostsList.add(post);
                             }
                         }
                         postAdapter.notifyDataSetChanged();
                     }
-                    @Override public void onCancelled(@NonNull DatabaseError error) {}
                 });
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (profileListener != null) profileListener.remove();
+    }
+
+    private void updateUserStats() {
+        // Count Posts
+        db.collection("posts").whereEqualTo("author", otherUserId).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    int postCount = queryDocumentSnapshots.size();
+                    tvPostsCount.setText(String.valueOf(postCount));
+
+                    // Calculate Total Upvotes across all posts
+                    long totalUpvotes = 0;
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        Long upvotes = doc.getLong("upvote_num");
+                        if (upvotes != null) totalUpvotes += upvotes;
+                    }
+                    tvUpvotesCount.setText(String.valueOf(totalUpvotes));
+
+                    // Calculate Total Comments (if you store comment_num in post doc)
+                    long totalComments = 0;
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        Long comments = doc.getLong("comment_num");
+                        if (comments != null) totalComments += comments;
+                    }
+                    tvCommentsCount.setText(String.valueOf(totalComments));
+                });
     }
 }

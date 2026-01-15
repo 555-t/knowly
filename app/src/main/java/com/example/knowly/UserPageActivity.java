@@ -8,9 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.viewpager2.widget.ViewPager2;
@@ -23,11 +21,6 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -43,8 +36,7 @@ public class UserPageActivity extends BaseActivity {
     private ChipGroup cgInterests;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mRealtimeDb; // For Posts
-    private FirebaseFirestore mFirestore;  // For Profile & Follows
+    private FirebaseFirestore mFirestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +45,6 @@ public class UserPageActivity extends BaseActivity {
 
         // 1. Initialize Firebase
         mAuth = FirebaseAuth.getInstance();
-        mRealtimeDb = FirebaseDatabase.getInstance().getReference();
         mFirestore = FirebaseFirestore.getInstance();
 
         // 2. Initialize Views
@@ -75,7 +66,7 @@ public class UserPageActivity extends BaseActivity {
         menuLogout = findViewById(R.id.menu_logout);
         menuDelete = findViewById(R.id.menu_delete);
 
-        // 3. Setup Tabs
+        // 3. Setup Tabs (My Posts, Bookmarks, Streaks)
         TabLayout tabLayout = findViewById(R.id.profileTabs);
         ViewPager2 viewPager = findViewById(R.id.profileViewPager);
         ProfilePagerAdapter pagerAdapter = new ProfilePagerAdapter(this);
@@ -119,7 +110,7 @@ public class UserPageActivity extends BaseActivity {
         String uid = user.getUid();
         tvEmail.setText(user.getEmail());
 
-        // --- FETCH PROFILE ---
+        // Fetch profile details from Firestore
         mFirestore.collection("users").document(uid)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -130,9 +121,7 @@ public class UserPageActivity extends BaseActivity {
                         tvAvatarText.setText("U");
                     }
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to load profile", Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e -> Toast.makeText(this, "Failed to load profile", Toast.LENGTH_SHORT).show());
     }
 
     private void updateUIWithFirestoreData(DocumentSnapshot doc, String uid) {
@@ -141,73 +130,60 @@ public class UserPageActivity extends BaseActivity {
         if (username != null && !username.isEmpty()) {
             tvName.setText(username);
             tvAvatarText.setText(username.substring(0, 1).toUpperCase());
-            updatePostCount(uid, username);
         } else {
             tvName.setText("User");
             tvAvatarText.setText("U");
-            updatePostCount(uid, null);
         }
 
-        // 2. Bio & Credentials
+        // 2. Post Count (Using author UID matching Firestore structure)
+        updatePostCount(uid);
+
+        // 3. Bio & Credentials
         String bio = doc.getString("bio");
         String credentials = doc.getString("credentials");
-
         tvBio.setText((bio != null && !bio.isEmpty()) ? bio : "No bio yet...");
         tvCredentials.setText((credentials != null && !credentials.isEmpty()) ? credentials : "Student");
 
-        // 3. Interests
+        // 4. Interests
         List<String> interests = (List<String>) doc.get("interests");
         displayInterests(interests);
 
-        // 4. Update Follow Counts (NEW)
+        // 5. Follow Counts
         updateFollowCounts(uid);
     }
 
-    // --- NEW: FETCH FOLLOWER COUNTS ---
+    private void updatePostCount(String currentUid) {
+        // Query posts collection where 'author' field matches current UID
+        mFirestore.collection("posts")
+                .whereEqualTo("author", currentUid)
+                .addSnapshotListener((snapshots, e) -> {
+                    if (e != null) return;
+                    if (snapshots != null) {
+                        tvPostsCount.setText(snapshots.size() + " Posts");
+                    } else {
+                        tvPostsCount.setText("0 Posts");
+                    }
+                });
+    }
+
     private void updateFollowCounts(String uid) {
-        // Count 'followers' subcollection
+        // Followers count from subcollection
         mFirestore.collection("users").document(uid).collection("followers")
                 .addSnapshotListener((snapshots, e) -> {
                     if (e != null) return;
                     if (snapshots != null) {
                         tvFollowersCount.setText(snapshots.size() + " Followers");
-                    } else {
-                        tvFollowersCount.setText("0 Followers");
                     }
                 });
 
-        // Count 'following' subcollection
+        // Following count from subcollection
         mFirestore.collection("users").document(uid).collection("following")
                 .addSnapshotListener((snapshots, e) -> {
                     if (e != null) return;
                     if (snapshots != null) {
                         tvFollowingCount.setText(snapshots.size() + " Following");
-                    } else {
-                        tvFollowingCount.setText("0 Following");
                     }
                 });
-    }
-
-    // --- REALTIME DB FOR POSTS ---
-    private void updatePostCount(String currentUid, String currentUsername) {
-        mRealtimeDb.child("Posts").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int count = 0;
-                for (DataSnapshot postSnap : snapshot.getChildren()) {
-                    String authorField = postSnap.child("author").getValue(String.class);
-                    // Match by UID (safest) or Username
-                    if (currentUid.equals(authorField) ||
-                            (currentUsername != null && currentUsername.equals(authorField))) {
-                        count++;
-                    }
-                }
-                tvPostsCount.setText(count + " Posts");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
     }
 
     private void displayInterests(List<String> interests) {
@@ -254,7 +230,6 @@ public class UserPageActivity extends BaseActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             String uid = user.getUid();
-
             mFirestore.collection("users").document(uid).delete().addOnSuccessListener(aVoid -> {
                 user.delete().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -266,12 +241,10 @@ public class UserPageActivity extends BaseActivity {
         }
     }
 
-    // Inside HomePage.java, SearchActivity.java, etc.
     @Override
     protected void onResume() {
         super.onResume();
         loadUserProfile();
-        // This forces the "R" to refresh every time you tap the tab
         NavigationHelper.updateNavAvatar(this);
     }
 }

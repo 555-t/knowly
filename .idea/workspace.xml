@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AnalysisUIOptions">
-    <option name="ANALYZE_INJECTED_CODE" value="false" />
-  </component>
   <component name="AndroidLayouts">
     <shared>
       <config>
@@ -11,6 +8,11 @@
       </config>
     </shared>
     <layouts>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/back_arrow.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/bg_category_gradient.xml">
         <config>
           <theme>@style/Theme.Knowly</theme>
@@ -26,12 +28,12 @@
           <theme>@style/Theme.Knowly</theme>
         </config>
       </layout>
-      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/btn_gradient_rounded.xml">
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/comment.xml">
         <config>
           <theme>@style/Theme.Knowly</theme>
         </config>
       </layout>
-      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/comment.xml">
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/default_icon.xml">
         <config>
           <theme>@style/Theme.Knowly</theme>
         </config>
@@ -62,6 +64,16 @@
         </config>
       </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/nav_weekly_selector.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/outline_face_24.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/drawable/profile_header_gradient.xml">
         <config>
           <theme>@style/Theme.Knowly</theme>
         </config>
@@ -231,7 +243,7 @@
           <theme>@style/Theme.Knowly</theme>
         </config>
       </layout>
-      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/item_comment.xml">
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/item_notification.xml">
         <config>
           <theme>@style/Theme.Knowly</theme>
         </config>
@@ -266,6 +278,11 @@
           <theme>@style/Theme.Knowly</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/menu_setting.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/app/src/main/res/layout/notifications_activity.xml">
         <config>
           <theme>@style/Theme.Knowly</theme>
@@ -276,15 +293,27 @@
           <theme>@style/Theme.Knowly</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/menu/menu_main.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/app/src/main/res/menu/menu_post_more.xml">
+        <config>
+          <theme>@style/Theme.Knowly</theme>
+        </config>
+      </layout>
     </layouts>
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="updated CreatePostActivity.java">
+    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="fixed notification">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/HomePage.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/HomePage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/OthersProfileActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/OthersProfileActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_profile_view_other.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_profile_view_other.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -301,7 +330,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\Malak\.android\avd\MyPhone.avd)]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[DeviceId(pluginId=LocalEmulator, isTemplate=false, identifier=path=C:\Users\60193\.android\avd\Medium_Phone_API_36.1_2.avd)]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -313,17 +342,15 @@
         <task path="$PROJECT_DIR$">
           <activation />
         </task>
+        <task path="$PROJECT_DIR$/app">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="Knowly" type="f1a62948:ProjectNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="Knowly" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
               </path>
             </expand>
             <select />
@@ -336,13 +363,26 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="valueResourceFile" />
-        <option value="resourceFile" />
         <option value="layoutResourceFile" />
         <option value="Class" />
+        <option value="resourceFile" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
+    <excluded-from-favorite>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="master" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </excluded-from-favorite>
     <option name="PREVIOUS_COMMIT_AUTHORS">
       <list>
         <option value="xing &lt;kaixinglye@gmail.com&gt;" />
@@ -364,7 +404,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/555-t/knowly.git&quot;,
-    &quot;accountId&quot;: &quot;7eb6e738-c634-4f9f-9c5c-0ed0cbe6f161&quot;
+    &quot;accountId&quot;: &quot;e6299d23-8f47-4e10-91a3-47639db719ad&quot;
   }
 }</component>
   <component name="ProblemsViewState">
@@ -378,30 +418,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Android App.UserPageActivity.executor": "Run",
-    "Android App.app.executor": "Run",
-    "Gradle.Download Sources.executor": "Run",
-    "ResourceManagerPrefKey.ResourceType": "LAYOUT",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "com.google.services.firebase.aqiPopupShown": "true",
-    "git-widget-placeholder": "master",
-    "last_directory_selection": "C:/Users/User/Documents/GitHub/knowly/app/src/main/java",
-    "last_opened_file_path": "C:/Users/User/Documents/GitHub/knowly/app/src/main/res/drawable",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.17",
-    "project.structure.side.proportion": "0.2",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "com.google.gct.login2.settings.GoogleLoginApplicationSettingsConfigurableProvider"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Android App.app.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
+    &quot;ResourceManagerPrefKey.ResourceType&quot;: &quot;LAYOUT&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;com.google.services.firebase.aqiPopupShown&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_directory_selection&quot;: &quot;C:/Users/User/Documents/GitHub/knowly/app/src/main/java&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/User/Documents/GitHub/knowly/app/src/main/res/drawable&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;AndroidSdkUpdater&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.example.knowly" />
@@ -413,79 +449,7 @@
       <recent name="C:\Users\User\Documents\GitHub\knowly\app\src\main\res\drawable" />
     </key>
   </component>
-  <component name="RunManager" selected="Android App.app">
-    <configuration name="UserPageActivity" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false" temporary="true">
-      <module name="Knowly.app" />
-      <option name="ANDROID_RUN_CONFIGURATION_SCHEMA_VERSION" value="1" />
-      <option name="DEPLOY" value="true" />
-      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
-      <option name="DEPLOY_AS_INSTANT" value="false" />
-      <option name="ARTIFACT_NAME" value="" />
-      <option name="PM_INSTALL_OPTIONS" value="" />
-      <option name="ALL_USERS" value="false" />
-      <option name="ALWAYS_INSTALL_WITH_PM" value="false" />
-      <option name="ALLOW_ASSUME_VERIFIED" value="false" />
-      <option name="CLEAR_APP_STORAGE" value="false" />
-      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
-      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
-      <option name="MODE" value="specific_activity" />
-      <option name="RESTORE_ENABLED" value="false" />
-      <option name="RESTORE_FILE" value="" />
-      <option name="RESTORE_FRESH_INSTALL_ONLY" value="false" />
-      <option name="CLEAR_LOGCAT" value="false" />
-      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
-      <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
-      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
-      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
-      <option name="DEBUGGER_TYPE" value="Auto" />
-      <Auto>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
-        <option name="DEBUG_SANDBOX_SDK" value="false" />
-      </Auto>
-      <Hybrid>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
-        <option name="DEBUG_SANDBOX_SDK" value="false" />
-      </Hybrid>
-      <Java>
-        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
-        <option name="DEBUG_SANDBOX_SDK" value="false" />
-      </Java>
-      <Native>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
-        <option name="DEBUG_SANDBOX_SDK" value="false" />
-      </Native>
-      <Profilers>
-        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
-        <option name="STARTUP_PROFILING_ENABLED" value="false" />
-        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
-        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Java/Kotlin Method Sample (legacy)" />
-        <option name="STARTUP_NATIVE_MEMORY_PROFILING_ENABLED" value="false" />
-        <option name="NATIVE_MEMORY_SAMPLE_RATE_BYTES" value="2048" />
-      </Profilers>
-      <option name="DEEP_LINK" value="" />
-      <option name="ACTIVITY" value="" />
-      <option name="ACTIVITY_CLASS" value="com.example.knowly.UserPageActivity" />
-      <option name="SEARCH_ACTIVITY_IN_GLOBAL_SCOPE" value="false" />
-      <option name="SKIP_ACTIVITY_VALIDATION" value="false" />
-      <method v="2">
-        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager">
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
       <module name="Knowly.app" />
       <option name="ANDROID_RUN_CONFIGURATION_SCHEMA_VERSION" value="1" />
@@ -558,11 +522,6 @@
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Android App.UserPageActivity" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -571,14 +530,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1767333689902</updated>
-    </task>
-    <task id="LOCAL-00004" summary="did something">
-      <option name="closed" value="true" />
-      <created>1767688262297</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1767688262297</updated>
     </task>
     <task id="LOCAL-00005" summary="added weekly feature page and choose interest">
       <option name="closed" value="true" />
@@ -812,159 +763,167 @@
       <option name="project" value="LOCAL" />
       <updated>1768400982704</updated>
     </task>
-    <task id="LOCAL-00034" summary="made it so downvotes and upvotes are working">
+    <task id="LOCAL-00034" summary="added notification">
       <option name="closed" value="true" />
-      <created>1768407267867</created>
+      <created>1768407297929</created>
       <option name="number" value="00034" />
       <option name="presentableId" value="LOCAL-00034" />
       <option name="project" value="LOCAL" />
-      <updated>1768407267867</updated>
+      <updated>1768407297929</updated>
     </task>
-    <task id="LOCAL-00035" summary="clicking on comment button opens postdetails page, and can comment now">
+    <task id="LOCAL-00035" summary="added notification">
       <option name="closed" value="true" />
-      <created>1768410609202</created>
+      <created>1768407302051</created>
       <option name="number" value="00035" />
       <option name="presentableId" value="LOCAL-00035" />
       <option name="project" value="LOCAL" />
-      <updated>1768410609202</updated>
+      <updated>1768407302051</updated>
     </task>
-    <task id="LOCAL-00036" summary="can delete comment">
+    <task id="LOCAL-00036" summary="updated notification">
       <option name="closed" value="true" />
-      <created>1768411478200</created>
+      <created>1768411946603</created>
       <option name="number" value="00036" />
       <option name="presentableId" value="LOCAL-00036" />
       <option name="project" value="LOCAL" />
-      <updated>1768411478200</updated>
+      <updated>1768411946603</updated>
     </task>
-    <task id="LOCAL-00037" summary="Added EditProfileActivity.java to firebase">
+    <task id="LOCAL-00037" summary="updated notification">
       <option name="closed" value="true" />
-      <created>1768415874651</created>
+      <created>1768414021534</created>
       <option name="number" value="00037" />
       <option name="presentableId" value="LOCAL-00037" />
       <option name="project" value="LOCAL" />
-      <updated>1768415874651</updated>
+      <updated>1768414021534</updated>
     </task>
-    <task id="LOCAL-00038" summary="Added EditProfileActivity.java to firebase">
+    <task id="LOCAL-00038" summary="updated notification">
       <option name="closed" value="true" />
-      <created>1768417215729</created>
+      <created>1768415589494</created>
       <option name="number" value="00038" />
       <option name="presentableId" value="LOCAL-00038" />
       <option name="project" value="LOCAL" />
-      <updated>1768417215730</updated>
+      <updated>1768415589494</updated>
     </task>
-    <task id="LOCAL-00039" summary="Added EditProfileActivity.java to firebase">
+    <task id="LOCAL-00039" summary="updated notification">
       <option name="closed" value="true" />
-      <created>1768417759363</created>
+      <created>1768417542698</created>
       <option name="number" value="00039" />
       <option name="presentableId" value="LOCAL-00039" />
       <option name="project" value="LOCAL" />
-      <updated>1768417759363</updated>
+      <updated>1768417542698</updated>
     </task>
-    <task id="LOCAL-00040" summary="fixed the userprofile in UserPageActivity.java and NavigationHelper.java">
+    <task id="LOCAL-00040" summary="updated notification">
       <option name="closed" value="true" />
-      <created>1768418433559</created>
+      <created>1768417552709</created>
       <option name="number" value="00040" />
       <option name="presentableId" value="LOCAL-00040" />
       <option name="project" value="LOCAL" />
-      <updated>1768418433559</updated>
+      <updated>1768417552709</updated>
     </task>
-    <task id="LOCAL-00041" summary="fixed the userprofile in UserPageActivity.java and NavigationHelper.java">
+    <task id="LOCAL-00041" summary="updated notification">
       <option name="closed" value="true" />
-      <created>1768419973026</created>
+      <created>1768419272035</created>
       <option name="number" value="00041" />
       <option name="presentableId" value="LOCAL-00041" />
       <option name="project" value="LOCAL" />
-      <updated>1768419973026</updated>
+      <updated>1768419272035</updated>
     </task>
-    <task id="LOCAL-00042" summary="fixed the userprofile in UserPageActivity.java and NavigationHelper.java">
+    <task id="LOCAL-00042" summary="updated notification">
       <option name="closed" value="true" />
-      <created>1768449956240</created>
+      <created>1768419971224</created>
       <option name="number" value="00042" />
       <option name="presentableId" value="LOCAL-00042" />
       <option name="project" value="LOCAL" />
-      <updated>1768449956240</updated>
+      <updated>1768419971224</updated>
     </task>
-    <task id="LOCAL-00043" summary="added SearchActivity.java">
+    <task id="LOCAL-00043" summary="updated notification">
       <option name="closed" value="true" />
-      <created>1768451478247</created>
+      <created>1768421118103</created>
       <option name="number" value="00043" />
       <option name="presentableId" value="LOCAL-00043" />
       <option name="project" value="LOCAL" />
-      <updated>1768451478247</updated>
+      <updated>1768421118103</updated>
     </task>
-    <task id="LOCAL-00044" summary="added SearchActivity.java">
+    <task id="LOCAL-00044" summary="updated notification">
       <option name="closed" value="true" />
-      <created>1768452894787</created>
+      <created>1768421440411</created>
       <option name="number" value="00044" />
       <option name="presentableId" value="LOCAL-00044" />
       <option name="project" value="LOCAL" />
-      <updated>1768452894787</updated>
+      <updated>1768421440411</updated>
     </task>
-    <task id="LOCAL-00045" summary="added SearchActivity.java">
+    <task id="LOCAL-00045" summary="updated profile bio and credentials and username changes">
       <option name="closed" value="true" />
-      <created>1768453414673</created>
+      <created>1768424616733</created>
       <option name="number" value="00045" />
       <option name="presentableId" value="LOCAL-00045" />
       <option name="project" value="LOCAL" />
-      <updated>1768453414673</updated>
+      <updated>1768424616733</updated>
     </task>
-    <task id="LOCAL-00046" summary="fixed LoginActivity.java and RegisterActivity.java">
+    <task id="LOCAL-00046" summary="updated profile bio and credentials and username changes">
       <option name="closed" value="true" />
-      <created>1768461221593</created>
+      <created>1768426739476</created>
       <option name="number" value="00046" />
       <option name="presentableId" value="LOCAL-00046" />
       <option name="project" value="LOCAL" />
-      <updated>1768461221593</updated>
+      <updated>1768426739476</updated>
     </task>
-    <task id="LOCAL-00047" summary="fixed LoginActivity.java and RegisterActivity.java">
+    <task id="LOCAL-00047" summary="updated profile bio and credentials and username changes">
       <option name="closed" value="true" />
-      <created>1768463372500</created>
+      <created>1768461253410</created>
       <option name="number" value="00047" />
       <option name="presentableId" value="LOCAL-00047" />
       <option name="project" value="LOCAL" />
-      <updated>1768463372500</updated>
+      <updated>1768461253410</updated>
     </task>
-    <task id="LOCAL-00048" summary="fixed UserPageActivity.java">
+    <task id="LOCAL-00048" summary="updated profile bio and credentials and username changes">
       <option name="closed" value="true" />
-      <created>1768464795441</created>
+      <created>1768464807305</created>
       <option name="number" value="00048" />
       <option name="presentableId" value="LOCAL-00048" />
       <option name="project" value="LOCAL" />
-      <updated>1768464795441</updated>
+      <updated>1768464807305</updated>
     </task>
-    <task id="LOCAL-00049" summary="fixed UserPageActivity.java">
+    <task id="LOCAL-00049" summary="fixed scrolling layout in homepage">
       <option name="closed" value="true" />
-      <created>1768466777615</created>
+      <created>1768465532295</created>
       <option name="number" value="00049" />
       <option name="presentableId" value="LOCAL-00049" />
       <option name="project" value="LOCAL" />
-      <updated>1768466777615</updated>
+      <updated>1768465532295</updated>
     </task>
-    <task id="LOCAL-00050" summary="fixed UserPageActivity.java">
+    <task id="LOCAL-00050" summary="fixed the navigation avatar">
       <option name="closed" value="true" />
-      <created>1768466787118</created>
+      <created>1768468060760</created>
       <option name="number" value="00050" />
       <option name="presentableId" value="LOCAL-00050" />
       <option name="project" value="LOCAL" />
-      <updated>1768466787118</updated>
+      <updated>1768468060760</updated>
     </task>
-    <task id="LOCAL-00051" summary="fixed streaks in UserPageActivity.java">
+    <task id="LOCAL-00051" summary="connected to firestore">
       <option name="closed" value="true" />
-      <created>1768467322107</created>
+      <created>1768479565300</created>
       <option name="number" value="00051" />
       <option name="presentableId" value="LOCAL-00051" />
       <option name="project" value="LOCAL" />
-      <updated>1768467322108</updated>
+      <updated>1768479565300</updated>
     </task>
-    <task id="LOCAL-00052" summary="updated CreatePostActivity.java">
+    <task id="LOCAL-00052" summary="added username to createpost_activity">
       <option name="closed" value="true" />
-      <created>1768470758759</created>
+      <created>1768480731237</created>
       <option name="number" value="00052" />
       <option name="presentableId" value="LOCAL-00052" />
       <option name="project" value="LOCAL" />
-      <updated>1768470758760</updated>
+      <updated>1768480731237</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="fixed notification">
+      <option name="closed" value="true" />
+      <created>1768483226037</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1768483226037</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -991,6 +950,8 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <MESSAGE value="added comment button, adjusted margins for posts" />
+    <MESSAGE value="did something" />
     <MESSAGE value="added weekly feature page and choose interest" />
     <MESSAGE value="dashboard profile (post, bookmarks, streaks)&#10;&#10;(cherry picked from commit d3b151c0ff488e6099ddd4b2bd9c93bd20c8041b)" />
     <MESSAGE value="fixing" />
@@ -1006,29 +967,27 @@
     <MESSAGE value="commit workspace and misc" />
     <MESSAGE value="connected home_page to fragment_weeklyfeatured.xml" />
     <MESSAGE value="connected navigation bar to all other pages" />
-    <MESSAGE value="made it so downvotes and upvotes are working" />
-    <MESSAGE value="clicking on comment button opens postdetails page, and can comment now" />
-    <MESSAGE value="can delete comment" />
-    <MESSAGE value="Added EditProfileActivity.java to firebase" />
-    <MESSAGE value="fixed the userprofile in UserPageActivity.java and NavigationHelper.java" />
-    <MESSAGE value="added SearchActivity.java" />
-    <MESSAGE value="fixed LoginActivity.java and RegisterActivity.java" />
-    <MESSAGE value="fixed UserPageActivity.java" />
-    <MESSAGE value="fixed streaks in UserPageActivity.java" />
-    <MESSAGE value="updated CreatePostActivity.java" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated CreatePostActivity.java" />
+    <MESSAGE value="added notification" />
+    <MESSAGE value="updated notification" />
+    <MESSAGE value="updated profile bio and credentials and username changes" />
+    <MESSAGE value="fixed scrolling layout in homepage" />
+    <MESSAGE value="fixed the navigation avatar" />
+    <MESSAGE value="connected to firestore" />
+    <MESSAGE value="added username to createpost_activity" />
+    <MESSAGE value="fixed notification" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed notification" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
       <map>
         <entry key="com.example.knowly">
           <value>
-            <CheckInfo lastCheckTimestamp="1768463979232" />
+            <CheckInfo lastCheckTimestamp="1768464011683" />
           </value>
         </entry>
         <entry key="com.example.knowly.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1768463979234" />
+            <CheckInfo lastCheckTimestamp="1768464011676" />
           </value>
         </entry>
       </map>

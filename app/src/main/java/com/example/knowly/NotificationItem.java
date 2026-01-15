@@ -1,19 +1,19 @@
 package com.example.knowly;
 
+import com.google.firebase.Timestamp;
+
 public class NotificationItem {
     private String username;
     private String action;
-    private String iconRes;
-    private String type;      // IMPORTANT: "follow" or "comment"
-    private long timestamp;   // Changed from Timestamp to long for RTDB
+    private String type;
+    private Timestamp timestamp; // Use Timestamp for Firestore compatibility
     private String fromUserId;
-    private String postId;    // To know which post was commented on
+    private String postId;
 
-    // MANDATORY: Firebase needs this empty constructor
     public NotificationItem() {}
 
-    // Constructor for creating new notifications
-    public NotificationItem(String username, String action, String type, long timestamp, String fromUserId) {
+    // Updated Constructor
+    public NotificationItem(String username, String action, String type, Timestamp timestamp, String fromUserId) {
         this.username = username;
         this.action = action;
         this.type = type;
@@ -24,18 +24,21 @@ public class NotificationItem {
     // --- Getters ---
     public String getUsername() { return username; }
     public String getAction() { return action; }
-    public String getIconRes() { return iconRes; }
     public String getType() { return type; }
-    public long getTimestamp() { return timestamp; }
+    public Timestamp getTimestamp() { return timestamp; } // Returns Timestamp
     public String getFromUserId() { return fromUserId; }
     public String getPostId() { return postId; }
 
-    // --- Setters (Required for Firebase RTDB to map data) ---
+    // --- Setters ---
     public void setUsername(String username) { this.username = username; }
     public void setAction(String action) { this.action = action; }
-    public void setIconRes(String iconRes) { this.iconRes = iconRes; }
     public void setType(String type) { this.type = type; }
-    public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
+    public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; }
     public void setFromUserId(String fromUserId) { this.fromUserId = fromUserId; }
     public void setPostId(String postId) { this.postId = postId; }
+
+    // Helper to get long milliseconds for DateUtils
+    public long getTimestampMillis() {
+        return (timestamp != null) ? timestamp.toDate().getTime() : 0;
+    }
 }

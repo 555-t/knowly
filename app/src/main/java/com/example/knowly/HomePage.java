@@ -3,36 +3,30 @@ package com.example.knowly;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
 
-// EXTEND BASEACTIVITY to inherit the background timer
 public class HomePage extends BaseActivity {
 
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
     private List<Post> postList;
-    private DatabaseReference mDatabase;
-
+    private FirebaseFirestore db;
     private CardView cardForYou, cardFollowing;
     private TextView btnForYou, btnFollowing;
 
@@ -47,7 +41,9 @@ public class HomePage extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
 
-        // Navigation
+        db = FirebaseFirestore.getInstance();
+        currentUserId = FirebaseAuth.getInstance().getUid();
+
         NavigationHelper.setupNavigation(this);
 
         // UI Setup
@@ -57,19 +53,14 @@ public class HomePage extends BaseActivity {
         btnFollowing = findViewById(R.id.btnFollowing);
 
         recyclerView = findViewById(R.id.rvFeed);
-        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         postList = new ArrayList<>();
         postAdapter = new PostAdapter(postList, this);
         recyclerView.setAdapter(postAdapter);
 
-        // Firebase
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Posts");
-        currentUserId = FirebaseAuth.getInstance().getUid();
-
+        // Load preferences first, then posts
         loadUserPreferences();
-        fetchPostsFromFirebase();
 
         // Listeners
         cardForYou.setOnClickListener(v -> setSelectedTab(true));
@@ -77,53 +68,37 @@ public class HomePage extends BaseActivity {
 
         MaterialCardView createPostBtn = findViewById(R.id.createpostbutton);
         if (createPostBtn != null) {
-            createPostBtn.setOnClickListener(v -> {
-                startActivity(new Intent(HomePage.this, CreatePostActivity.class));
-            });
-        }
-
-        ImageView navWeekly = findViewById(R.id.navWeekly);
-        if (navWeekly != null) {
-            navWeekly.setOnClickListener(v -> {
-                startActivity(new Intent(HomePage.this, WeeklyFeaturedActivity.class));
-            });
+            createPostBtn.setOnClickListener(v -> startActivity(new Intent(HomePage.this, CreatePostActivity.class)));
         }
     }
 
     private void loadUserPreferences() {
         if (currentUserId == null) return;
 
-        FirebaseFirestore.getInstance().collection("users").document(currentUserId)
-                .collection("following")
+        // 1. Listen for Interests (Array field on User document)
+        db.collection("users").document(currentUserId)
                 .addSnapshotListener((snapshot, e) -> {
-                    if (e != null) return;
-                    if (snapshot != null) {
-                        currentUserFollowing.clear();
-                        for (DocumentSnapshot doc : snapshot.getDocuments()) {
-                            currentUserFollowing.add(doc.getId());
-                        }
-                        fetchPostsFromFirebase();
-                    }
+                    if (e != null || snapshot == null || !snapshot.exists()) return;
+                    currentUserInterests = (List<String>) snapshot.get("interests");
+                    if (currentUserInterests == null) currentUserInterests = new ArrayList<>();
+                    fetchPostsFromFirestore();
                 });
 
-        FirebaseDatabase.getInstance().getReference("Users").child(currentUserId).child("interests")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        currentUserInterests.clear();
-                        if (snapshot.exists()) {
-                            for (DataSnapshot ds : snapshot.getChildren()) {
-                                currentUserInterests.add(ds.getValue(String.class));
-                            }
-                        }
-                        fetchPostsFromFirebase();
+        // 2. Listen for Following (Sub-collection)
+        db.collection("users").document(currentUserId).collection("following")
+                .addSnapshotListener((querySnapshot, e) -> {
+                    if (e != null || querySnapshot == null) return;
+
+                    currentUserFollowing.clear();
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        // The document ID in this sub-collection is the followed User's UID
+                        currentUserFollowing.add(doc.getId());
                     }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {}
+                    // Refresh the feed now that we have the UIDs
+                    fetchPostsFromFirestore();
                 });
     }
-
     private void setSelectedTab(boolean isForYou) {
         isForYouSelected = isForYou;
         if (isForYouSelected) {
@@ -137,51 +112,48 @@ public class HomePage extends BaseActivity {
             btnForYou.setBackgroundResource(R.drawable.bg_tab_flat);
             btnForYou.setTextColor(Color.parseColor("#7A7A7A"));
         }
-        fetchPostsFromFirebase();
+        fetchPostsFromFirestore();
     }
 
-    private void fetchPostsFromFirebase() {
-        mDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                postList.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    Post post = dataSnapshot.getValue(Post.class);
-                    if (post != null) {
-                        post.setPostId(dataSnapshot.getKey());
-                        if (isForYouSelected) {
-                            if (currentUserInterests.isEmpty()) {
-                                postList.add(0, post);
-                            } else if (post.getCategories() != null) {
-                                for (String cat : post.getCategories()) {
-                                    if (currentUserInterests.contains(cat)) {
-                                        postList.add(0, post);
-                                        break;
+    private void fetchPostsFromFirestore() {
+        db.collection("posts")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .addSnapshotListener((snapshot, e) -> {
+                    if (e != null) {
+                        Log.e("FirestoreError", "Error fetching posts", e);
+                        return;
+                    }
+
+                    postList.clear();
+                    if (snapshot != null) {
+                        for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                            Post post = doc.toObject(Post.class);
+                            if (post != null) {
+                                post.setPostId(doc.getId());
+
+                                if (isForYouSelected) {
+                                    // Only add if user has no interests (show all)
+                                    // OR if there is a category match
+                                    if (currentUserInterests.isEmpty() || hasMatch(post)) {
+                                        postList.add(post);
+                                    }
+                                    // Removed the "else { postList.add(post) }" that was showing everything
+                                } else {
+                                    // Following Tab logic
+                                    if (currentUserFollowing.contains(post.getAuthor())) {
+                                        postList.add(post);
                                     }
                                 }
                             }
-                        } else {
-                            if (currentUserFollowing.contains(post.getAuthor())) {
-                                postList.add(0, post);
-                            }
                         }
                     }
-                }
-                postAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(HomePage.this, "Database Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    // Inside HomePage.java, SearchActivity.java, etc.
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // This forces the "R" to refresh every time you tap the tab
-        NavigationHelper.updateNavAvatar(this);
+                    postAdapter.notifyDataSetChanged();
+                });
+    }    private boolean hasMatch(Post post) {
+        if (post.getCategories() == null || currentUserInterests == null) return false;
+        for (String cat : post.getCategories()) {
+            if (currentUserInterests.contains(cat)) return true;
+        }
+        return false;
     }
 }
