@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class WeeklyFeaturedActivity extends AppCompatActivity {
+public class WeeklyFeaturedActivity extends BaseActivity {
 
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
