@@ -71,7 +71,7 @@ public class OthersProfileActivity extends AppCompatActivity {
         // 2. Setup RecyclerView
         rvOtherUserPosts = findViewById(R.id.rvOtherUserPosts);
         userPostsList = new ArrayList<>();
-        postAdapter = new PostAdapter(userPostsList);
+        postAdapter = new PostAdapter(userPostsList, this);
         if (rvOtherUserPosts != null) {
             rvOtherUserPosts.setLayoutManager(new LinearLayoutManager(this));
             rvOtherUserPosts.setAdapter(postAdapter);
