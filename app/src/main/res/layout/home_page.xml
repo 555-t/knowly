@@ -9,6 +9,19 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvFeed"
+        android:layout_width="415dp"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="20dp"
+        android:paddingTop="190dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toTopOf="@id/included_nav"
+        app:layout_constraintTop_toBottomOf="parent"
+        tools:listitem="@layout/item_post" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,6 +32,8 @@
             android:id="@+id/appbar_WF"
             android:layout_width="match_parent"
             android:layout_height="105dp"
+            android:elevation="8dp"
+            android:background="@android:color/transparent"
             app:layout_constraintTop_toTopOf="parent">
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -93,16 +108,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvFeed"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:clipToPadding="false"
-            android:paddingBottom="20dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@id/included_nav"
-            app:layout_constraintTop_toBottomOf="@id/tabsCard"
-            tools:listitem="@layout/item_post" />
 
         <include
             android:id="@+id/included_nav"
