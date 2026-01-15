@@ -201,4 +201,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             moreBtn = v.findViewById(R.id.imageButton);
         }
     }
+    public void updateList(List<Post> newList) {
+        this.postList = newList;
+        notifyDataSetChanged();
+    }
 }
