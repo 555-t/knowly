@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -20,6 +21,7 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -63,7 +65,6 @@ public class UserPageActivity extends AppCompatActivity {
         tvFollowingCount = findViewById(R.id.tvFollowingCount);
 
         cgInterests = findViewById(R.id.cgInterests);
-
         menuLogout = findViewById(R.id.menu_logout);
         menuDelete = findViewById(R.id.menu_delete);
 
@@ -92,11 +93,6 @@ public class UserPageActivity extends AppCompatActivity {
 
         btnMenuContainer.setOnClickListener(v -> toggleMenu());
 
-        // Click outside to close menu
-        View root = findViewById(android.R.id.content);
-        root.setOnClickListener(v -> logoutMenu.setVisibility(View.GONE));
-
-        // LOGOUT BUTTON
         menuLogout.setOnClickListener(v -> {
             mAuth.signOut();
             Intent intent = new Intent(this, LoginActivity.class);
@@ -105,9 +101,7 @@ public class UserPageActivity extends AppCompatActivity {
             finish();
         });
 
-        // DELETE BUTTON
         menuDelete.setOnClickListener(v -> {
-            Toast.makeText(this, "Account deletion requires re-authentication.", Toast.LENGTH_SHORT).show();
             logoutMenu.setVisibility(View.GONE);
             showDeleteConfirmationDialog();
         });
@@ -118,46 +112,56 @@ public class UserPageActivity extends AppCompatActivity {
 
     private void loadUserProfile() {
         FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            // Set email immediately from Auth
-            if (tvEmail != null) tvEmail.setText(user.getEmail());
-        String uid = mAuth.getUid();
-        if (uid == null) return;
+        if (user == null) return;
 
-        // 1. Fetch User Data & Follow Stats
+        String uid = user.getUid();
+        String userEmail = user.getEmail();
+
+        // 1. Initial UI setup (Safe fallbacks)
+        tvEmail.setText(userEmail);
+        if (userEmail != null && !userEmail.isEmpty()) {
+            tvAvatarText.setText(userEmail.substring(0, 1).toUpperCase());
+        }
+
+        // 2. Fetch real data from Realtime Database
         mDatabase.child("Users").child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists() && !isFinishing()) {
+                    // If the database has a username, use it!
                     String username = snapshot.child("username").getValue(String.class);
-                    tvName.setText(username != null ? username : "User");
-                    tvEmail.setText(snapshot.child("email").getValue(String.class));
-
-                    // FOLLOWERS/FOLLOWING:
-                    // Counts the number of entries under the "followers" and "following" nodes
-                    long followers = snapshot.child("followers").getChildrenCount();
-                    long following = snapshot.child("following").getChildrenCount();
-
-                    tvFollowersCount.setText(followers + " Followers");
-                    tvFollowingCount.setText(following + " Following");
-            // Fetch profile details from Firestore
-            db.collection("users").document(user.getUid())
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            String username = documentSnapshot.getString("username");
-                            String bio = documentSnapshot.getString("bio");
-                            String credentials = documentSnapshot.getString("credentials");
+                    String bio = snapshot.child("bio").getValue(String.class);
+                    String credentials = snapshot.child("credentials").getValue(String.class);
 
                     if (username != null && !username.isEmpty()) {
+                        tvName.setText(username);
                         tvAvatarText.setText(username.substring(0, 1).toUpperCase());
+                    } else {
+                        // Fallback only if the DB field is literally empty
+                        tvName.setText("User");
                     }
+
+                    // Update Stats
+                    long followers = snapshot.child("followers").getChildrenCount();
+                    long following = snapshot.child("following").getChildrenCount();
+                    tvFollowersCount.setText(followers + " Followers");
+                    tvFollowingCount.setText(following + " Following");
+
+                    // Update Bio/Credentials
+                    tvBio.setText(bio != null && !bio.isEmpty() ? bio : "No bio yet...");
+                    tvCredentials.setText(credentials != null ? credentials : "Student");
+
                     displayInterests(snapshot.child("interests"));
 
-                    // 2. Fetch Post Count (Triggered here so we have the 'username' to match)
+                    // Fetch Posts using the confirmed username/UID
                     updatePostCount(uid, username);
+                } else {
+                    // This only runs if the UID does not exist in the "Users" node at all
+                    tvName.setText("Setting up...");
+                    tvBio.setText("Complete your profile!");
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         });
@@ -169,11 +173,9 @@ public class UserPageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int count = 0;
                 for (DataSnapshot postSnap : snapshot.getChildren()) {
-                    // Your DB uses 'author' for username and 'publisher' or 'uid' for IDs
                     String authorField = postSnap.child("author").getValue(String.class);
                     String publisherField = postSnap.child("publisher").getValue(String.class);
 
-                    // Match by either Username OR UID to be safe
                     if (currentUid.equals(publisherField) ||
                             (currentUsername != null && currentUsername.equals(authorField))) {
                         count++;
@@ -200,35 +202,15 @@ public class UserPageActivity extends AppCompatActivity {
                 chip.setChipStrokeColor(ColorStateList.valueOf(Color.parseColor("#BDBDBD")));
                 chip.setChipStrokeWidth(2f);
                 chip.setTextColor(Color.parseColor("#424242"));
-
                 try {
                     chip.setTypeface(ResourcesCompat.getFont(this, R.font.inter_medium));
                 } catch (Exception e) {
-                    // Fallback to system medium
                     chip.setTypeface(null, android.graphics.Typeface.BOLD);
                 }
-
                 chip.setClickable(false);
                 chip.setCheckable(false);
                 cgInterests.addView(chip);
             }
-                            if (username != null && !username.isEmpty()) {
-                                tvName.setText(username);
-                                // Update the avatar circle with the first letter
-                                if (tvAvatarText != null) {
-                                    tvAvatarText.setText(String.valueOf(username.charAt(0)).toUpperCase());
-                                }
-                            }
-
-                            if (tvCredentials != null) {
-                                tvCredentials.setText(credentials != null ? credentials : "No credentials added");
-                            }
-
-                            if (tvBio != null) {
-                                tvBio.setText(bio != null ? bio : "Tell us about yourself...");
-                            }
-                        }
-                    });
         }
     }
 
@@ -241,12 +223,10 @@ public class UserPageActivity extends AppCompatActivity {
         }
     }
 
-    // --- DELETE ACCOUNT LOGIC ---
-
     private void showDeleteConfirmationDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Account")
-                .setMessage("Are you sure you want to delete your account? This action cannot be undone.")
+                .setMessage("Are you sure you want to delete your account?")
                 .setPositiveButton("Delete", (dialog, which) -> performDeleteAccount())
                 .setNegativeButton("Cancel", null)
                 .show();
@@ -254,35 +234,17 @@ public class UserPageActivity extends AppCompatActivity {
 
     private void performDeleteAccount() {
         FirebaseUser user = mAuth.getCurrentUser();
-
         if (user != null) {
             String uid = user.getUid();
-
-            // 1. Delete User Data from Firestore first
-            db.collection("users").document(uid)
-                    .delete()
-                    .addOnSuccessListener(aVoid -> {
-
-                        // 2. Delete the User from Authentication
-                        user.delete()
-                                .addOnCompleteListener(task -> {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(UserPageActivity.this, "Account Deleted", Toast.LENGTH_SHORT).show();
-
-                                        // 3. Redirect to Login
-                                        Intent intent = new Intent(UserPageActivity.this, LoginActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intent);
-                                        finish();
-                                    } else {
-                                        // This happens if the login session is too old (Firebase Security Rule)
-                                        Toast.makeText(UserPageActivity.this, "Security Requirement: Please Log Out and Log In again to delete.", Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(UserPageActivity.this, "Error deleting data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
+            // Delete from Realtime Database
+            mDatabase.child("Users").child(uid).removeValue().addOnSuccessListener(aVoid -> {
+                user.delete().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        startActivity(new Intent(UserPageActivity.this, LoginActivity.class));
+                        finish();
+                    }
+                });
+            });
         }
     }
 }
