@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="100dp" android:clipChildren="false"
+    android:layout_height="100dp"
+    android:clipChildren="false"
     android:clipToPadding="false"
-    android:paddingTop="20dp"
-    >
+    android:paddingTop="20dp">
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
@@ -14,38 +13,38 @@
         android:layout_height="70dp"
         android:layout_gravity="bottom"
         android:backgroundTint="#FFFFFF"
-        app:contentInsetStart="0dp"
-        app:contentInsetEnd="0dp"
         android:clipChildren="false"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        app:contentInsetEnd="0dp"
+        app:contentInsetStart="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clipChildren="false"
             android:gravity="center"
             android:orientation="horizontal"
-            android:weightSum="5"
-            android:clipChildren="false">
+            android:weightSum="5">
 
             <ImageView
                 android:id="@+id/navHome"
                 android:layout_width="0dp"
                 android:layout_height="24dp"
                 android:layout_weight="1"
-                android:src="@drawable/nav_home_selector"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
+                android:src="@drawable/nav_home_selector" />
 
             <ImageView
                 android:id="@+id/navWeekly"
                 android:layout_width="0dp"
                 android:layout_height="24dp"
                 android:layout_weight="1"
-                android:src="@drawable/nav_weekly_selector"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
+                android:src="@drawable/nav_weekly_selector" />
 
 
             <FrameLayout
@@ -59,7 +58,8 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="18dp" app:cardCornerRadius="30dp"
+                    android:layout_marginBottom="18dp"
+                    app:cardCornerRadius="30dp"
                     app:cardElevation="8dp"
                     app:strokeWidth="0dp"
 
@@ -83,19 +83,20 @@
                 android:layout_width="0dp"
                 android:layout_height="24dp"
                 android:layout_weight="1"
-                android:src="@drawable/nav_search_selector"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
+                android:src="@drawable/nav_search_selector" />
+
             <ImageView
                 android:id="@+id/navNotifications"
                 android:layout_width="0dp"
                 android:layout_height="24dp"
                 android:layout_weight="1"
-                android:src="@drawable/nav_notif_selector"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
+                android:src="@drawable/nav_notif_selector" />
 
         </LinearLayout>
     </com.google.android.material.bottomappbar.BottomAppBar>

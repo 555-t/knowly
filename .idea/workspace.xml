@@ -297,10 +297,10 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="idk what i did anymore">
+    <list default="true" id="9ebb3301-2147-4c3d-ae7e-47083129cada" name="Changes" comment="user page">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/UserPageActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/knowly/UserPageActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_userpage.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_userpage.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/bottom_nav_bar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/bottom_nav_bar.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -376,7 +376,7 @@
   }
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="_Designer_Tab" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
@@ -498,14 +498,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1767333689902</updated>
-    </task>
-    <task id="LOCAL-00002" summary="added comment button, adjusted margins for posts">
-      <option name="closed" value="true" />
-      <created>1767676831184</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1767676831184</updated>
     </task>
     <task id="LOCAL-00003" summary="did something">
       <option name="closed" value="true" />
@@ -891,7 +883,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768461586380</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="user page">
+      <option name="closed" value="true" />
+      <created>1768463322480</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1768463322480</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -918,7 +918,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="readded inter bold font that was deleted" />
     <MESSAGE value="updated userpage" />
     <MESSAGE value="fixed userpage" />
     <MESSAGE value="fixed bottom nav bar" />
@@ -943,19 +942,20 @@
     <MESSAGE value="a bunch of everything" />
     <MESSAGE value="post bookmarks comments" />
     <MESSAGE value="idk what i did anymore" />
-    <option name="LAST_COMMIT_MESSAGE" value="idk what i did anymore" />
+    <MESSAGE value="user page" />
+    <option name="LAST_COMMIT_MESSAGE" value="user page" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
       <map>
         <entry key="com.example.knowly">
           <value>
-            <CheckInfo lastCheckTimestamp="1768377568650" />
+            <CheckInfo lastCheckTimestamp="1768464526656" />
           </value>
         </entry>
         <entry key="com.example.knowly.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1768377568658" />
+            <CheckInfo lastCheckTimestamp="1768464526654" />
           </value>
         </entry>
       </map>
