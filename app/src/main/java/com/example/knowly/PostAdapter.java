@@ -1,5 +1,6 @@
 package com.example.knowly;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -9,6 +10,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,13 +20,19 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private List<Post> postList;
+    private Context context;
 
-    public PostAdapter(List<Post> postList) {
+    // Updated Constructor to include Context
+    public PostAdapter(List<Post> postList, Context context) {
         this.postList = postList;
+        this.context = context;
     }
 
     private String getCurrentUserId() {
@@ -43,17 +52,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         Post post = postList.get(position);
         String userId = getCurrentUserId();
 
-        // Safety check to prevent crash if data is missing
         if (post == null || userId == null) return;
 
-        // 1. Set Content
+        // 1. Content
         holder.content.setText(post.getContent());
 
-        // 2. Profile & Navigation Logic (The Fix)
+        // 2. Profile Logic
         String authorUid = post.getAuthor();
         holder.author.setTag(authorUid);
-
-        // Reset UI for recycled views to avoid showing wrong user info
         holder.author.setText("...");
         holder.postInitial.setVisibility(View.VISIBLE);
         holder.profilePic.setImageResource(R.drawable.chip_cat_gradient_checked);
@@ -61,28 +67,23 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         if (authorUid != null && !authorUid.isEmpty()) {
             View.OnClickListener toProfile = v -> {
                 Intent intent;
-                // Check if the author is the current logged-in user
                 if (authorUid.equals(userId)) {
-                    intent = new Intent(v.getContext(), UserPageActivity.class);
+                    intent = new Intent(context, UserPageActivity.class);
                 } else {
-                    // It's someone else, go to OthersProfileActivity
-                    intent = new Intent(v.getContext(), OthersProfileActivity.class);
-                    // MANDATORY: Use "USER_ID" to match OthersProfileActivity's getIntent()
+                    intent = new Intent(context, OthersProfileActivity.class);
                     intent.putExtra("USER_ID", authorUid);
                 }
-                v.getContext().startActivity(intent);
+                context.startActivity(intent);
             };
 
-            // Set clicks for all profile parts
             holder.author.setOnClickListener(toProfile);
             holder.profilePic.setOnClickListener(toProfile);
             holder.postInitial.setOnClickListener(toProfile);
 
-            // Fetch Username/PFP from Realtime Database
+            // Fetch User Data
             FirebaseDatabase.getInstance().getReference("Users").child(authorUid)
                     .get().addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
-                            // Only update if the holder is still showing the same author (safe scroll)
+                        if (task.isSuccessful() && task.getResult().exists()) {
                             if (authorUid.equals(holder.author.getTag())) {
                                 String name = task.getResult().child("username").getValue(String.class);
                                 String pfpUrl = task.getResult().child("profileImageUrl").getValue(String.class);
@@ -91,10 +92,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
                                 if (pfpUrl != null && !pfpUrl.isEmpty()) {
                                     holder.postInitial.setVisibility(View.GONE);
-                                    Glide.with(holder.itemView.getContext())
-                                            .load(pfpUrl)
-                                            .circleCrop()
-                                            .into(holder.profilePic);
+                                    Glide.with(context).load(pfpUrl).circleCrop().into(holder.profilePic);
                                 } else if (name != null && !name.isEmpty()) {
                                     holder.postInitial.setText(name.substring(0, 1).toUpperCase());
                                 }
@@ -113,7 +111,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         holder.categoryGroup.removeAllViews();
         if (post.getCategories() != null) {
             for (String cat : post.getCategories()) {
-                TextView tv = new TextView(holder.itemView.getContext());
+                TextView tv = new TextView(context);
                 tv.setText(cat);
                 tv.setBackgroundResource(R.drawable.bg_category_gradient);
                 tv.setTextColor(Color.parseColor("#2788A0"));
@@ -124,16 +122,25 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
         // 5. Interaction Listeners
         updateVoteUI(holder, post, userId);
+
         if (post.getPostId() != null) {
             DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("Posts").child(post.getPostId());
             holder.upvoteImg.setOnClickListener(v -> toggleVote(postRef, "upvotes", "downvotes", userId, post));
             holder.downvoteImg.setOnClickListener(v -> toggleVote(postRef, "downvotes", "upvotes", userId, post));
+
+            // --- UPDATED BOOKMARK LOGIC ---
+            holder.bookmarkBtn.setOnClickListener(v -> {
+                FirebaseFirestore.getInstance().collection("users").document(userId)
+                        .update("bookmarks", FieldValue.arrayUnion(post.getPostId()))
+                        .addOnSuccessListener(aVoid -> Toast.makeText(context, "Saved to Bookmarks!", Toast.LENGTH_SHORT).show())
+                        .addOnFailureListener(e -> Toast.makeText(context, "Error saving bookmark", Toast.LENGTH_SHORT).show());
+            });
         }
 
         holder.commentImg.setOnClickListener(v -> {
-            Intent i = new Intent(v.getContext(), PostDetailsActivity.class);
+            Intent i = new Intent(context, PostDetailsActivity.class);
             i.putExtra("POST_ID", post.getPostId());
-            v.getContext().startActivity(i);
+            context.startActivity(i);
         });
 
         holder.moreBtn.setOnClickListener(v -> showPopup(v, post, userId));
@@ -168,7 +175,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
     private void showPopup(View v, Post p, String id) {
-        PopupMenu popup = new PopupMenu(v.getContext(), v);
+        PopupMenu popup = new PopupMenu(context, v);
         if (p.getAuthor() != null && p.getAuthor().equals(id)) popup.getMenu().add("Delete");
         else popup.getMenu().add("Report");
         popup.show();

@@ -38,7 +38,7 @@ public class WeeklyFeaturedActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         featuredPosts = new ArrayList<>();
-        postAdapter = new PostAdapter(featuredPosts);
+        postAdapter = new PostAdapter(featuredPosts, this);
         recyclerView.setAdapter(postAdapter);
 
         // 3. Load the data

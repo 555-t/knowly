@@ -29,57 +29,51 @@ import java.util.List;
 
 public class HomePage extends AppCompatActivity {
 
-    // --- Feed / Firebase ---
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
     private List<Post> postList;
     private DatabaseReference mDatabase;
 
-    // --- Tabs (For You / Following) ---
     private CardView cardForYou, cardFollowing;
     private TextView btnForYou, btnFollowing;
 
-    // --- Filtering Data ---
     private List<String> currentUserInterests = new ArrayList<>();
     private List<String> currentUserFollowing = new ArrayList<>();
     private String currentUserId;
 
-    private boolean isForYouSelected = true; // Default to For You
+    private boolean isForYouSelected = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
 
-        // 1. Initialize Views and Navigation
         NavigationHelper.setupNavigation(this);
         cardForYou = findViewById(R.id.cardForYou);
         cardFollowing = findViewById(R.id.cardFollowing);
         btnForYou = findViewById(R.id.btnForYou);
         btnFollowing = findViewById(R.id.btnFollowing);
 
-        // 2. Setup RecyclerView
         recyclerView = findViewById(R.id.rvFeed);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         postList = new ArrayList<>();
-        postAdapter = new PostAdapter(postList);
+
+        // --- FIXED LINE 67 ---
+        // We now pass 'this' as the second parameter (Context)
+        postAdapter = new PostAdapter(postList, this);
         recyclerView.setAdapter(postAdapter);
 
-        // 3. Initialize Firebase
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Posts");
         currentUserId = FirebaseAuth.getInstance().getUid();
 
-        // 4. Load Data
         loadUserPreferences();
         fetchPostsFromFirebase();
 
-        // 5. Tab Click Listeners
         cardForYou.setOnClickListener(v -> setSelectedTab(true));
         cardFollowing.setOnClickListener(v -> setSelectedTab(false));
 
-        // 6. Navigation Buttons
         MaterialCardView createPostBtn = findViewById(R.id.createpostbutton);
         if (createPostBtn != null) {
             createPostBtn.setOnClickListener(v -> {
@@ -98,25 +92,19 @@ public class HomePage extends AppCompatActivity {
     private void loadUserPreferences() {
         if (currentUserId == null) return;
 
-        // --- SYNC WITH FIRESTORE (Following List) ---
-        // This listens to the same place your Unfollow button deletes from
         FirebaseFirestore.getInstance().collection("users").document(currentUserId)
                 .collection("following")
                 .addSnapshotListener((snapshot, e) -> {
                     if (e != null) return;
-
                     if (snapshot != null) {
                         currentUserFollowing.clear();
                         for (DocumentSnapshot doc : snapshot.getDocuments()) {
-                            // The document ID is the UID of the user you follow
                             currentUserFollowing.add(doc.getId());
                         }
-                        // Refresh the feed immediately when follow list changes
                         fetchPostsFromFirebase();
                     }
                 });
 
-        // --- SYNC WITH REALTIME DB (Interests) ---
         FirebaseDatabase.getInstance().getReference("Users").child(currentUserId).child("interests")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -129,7 +117,6 @@ public class HomePage extends AppCompatActivity {
                         }
                         fetchPostsFromFirebase();
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
                 });
@@ -137,7 +124,6 @@ public class HomePage extends AppCompatActivity {
 
     private void setSelectedTab(boolean isForYou) {
         isForYouSelected = isForYou;
-
         if (isForYouSelected) {
             btnForYou.setBackgroundResource(R.drawable.gradient_button);
             btnForYou.setTextColor(Color.WHITE);
@@ -149,7 +135,6 @@ public class HomePage extends AppCompatActivity {
             btnForYou.setBackgroundResource(R.drawable.bg_tab_flat);
             btnForYou.setTextColor(Color.parseColor("#7A7A7A"));
         }
-
         fetchPostsFromFirebase();
     }
 
@@ -162,9 +147,7 @@ public class HomePage extends AppCompatActivity {
                     Post post = dataSnapshot.getValue(Post.class);
                     if (post != null) {
                         post.setPostId(dataSnapshot.getKey());
-
                         if (isForYouSelected) {
-                            // FOR YOU: Show posts matching interests OR all if none selected
                             if (currentUserInterests.isEmpty()) {
                                 postList.add(0, post);
                             } else if (post.getCategories() != null) {
@@ -176,7 +159,6 @@ public class HomePage extends AppCompatActivity {
                                 }
                             }
                         } else {
-                            // FOLLOWING: ONLY show posts if author is in the currentUserFollowing list
                             if (currentUserFollowing.contains(post.getAuthor())) {
                                 postList.add(0, post);
                             }
@@ -185,7 +167,6 @@ public class HomePage extends AppCompatActivity {
                 }
                 postAdapter.notifyDataSetChanged();
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(HomePage.this, "Database Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
